@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=Smartiecoin Core
+Comment=Smartiecoin P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Smartiecoin peer-to-peer Netzwerk
+Comment[fr]=Smartiecoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Smartiecoin, eşten eşe kriptografik sanal para birimi
+Exec=smartiecoin-qt %u
+Terminal=false
+Type=Application
+Icon=dash128
+MimeType=x-scheme-handler/smartiecoin;
+Categories=Office;Finance;P2P;Network;Qt;
+StartupWMClass=Smartiecoin-qt

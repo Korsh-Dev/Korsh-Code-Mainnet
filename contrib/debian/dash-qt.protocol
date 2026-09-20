@@ -1,0 +1,11 @@
+[Protocol]
+exec=smartiecoin-qt '%u'
+protocol=smartiecoin
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false
