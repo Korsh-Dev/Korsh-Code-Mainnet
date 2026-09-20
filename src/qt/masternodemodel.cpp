@@ -263,7 +263,7 @@ QVariant MasternodeModel::data(const QModelIndex& index, int role) const
         case Column::STATUS:
             return {};
         case Column::COLLATERAL_AMOUNT:
-            return entry->type() == MnType::Evo ? QString("75,000") : QString("15,000");
+            return entry->type() == MnType::Evo ? QString("7,500") : QString("1,500");
         case Column::POSE:
             return QString::number(entry->posePenalty());
         case Column::REGISTERED:
