@@ -29,7 +29,10 @@ EXCLUDE_FILES_WITH_PREFIX = ['src/crypto/ctaes',
                              'src/crypto/x11/sph',
                              'src/ctpl_stl.h',
                              'src/dashbls',
+                             'src/crypto/yespower',
                              'src/gsl',
+                             'src/sapling',
+                             'src/rust/include/librustzcash.h',
                              'src/immer']
 
 

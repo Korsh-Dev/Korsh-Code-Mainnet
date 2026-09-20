@@ -85,7 +85,9 @@ std::optional<ConfigError> InitConfig(ArgsManager& args, SettingsAbortFn setting
                     fs::quoted(fs::PathToString(base_path)),
                     fs::quoted(BITCOIN_CONF_FILENAME),
                     fs::quoted(fs::PathToString(orig_config_path)),
-                    config_source);
+                    config_source,
+                    fs::quoted(fs::PathToString(base_path)),
+                    fs::quoted(BITCOIN_CONF_FILENAME));
                 if (args.GetBoolArg("-allowignoredconf", false)) {
                     LogWarning("%s", error);
                 } else {
