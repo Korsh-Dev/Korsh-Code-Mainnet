@@ -9,7 +9,7 @@
 
 ## Reporting a Vulnerability
 
-To report security issues send an email to smartiecoin@gmail.com (not for support).
+To report security issues send an email to korsh@gmail.com (not for support).
 
 The following keys may be used to communicate sensitive information to developers:
 

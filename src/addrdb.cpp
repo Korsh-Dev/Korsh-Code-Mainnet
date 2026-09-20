@@ -137,7 +137,7 @@ bool WritePeersRefreshMarker()
         return error("%s: Failed to open file %s", __func__, fs::PathToString(marker_path));
     }
 
-    const std::string marker = strprintf("Smartiecoin peers.dat refreshed by client version %d\n", CLIENT_VERSION);
+    const std::string marker = strprintf("Korsh peers.dat refreshed by client version %d\n", CLIENT_VERSION);
     if (std::fwrite(marker.data(), 1, marker.size(), file) != marker.size()) {
         std::fclose(file);
         return error("%s: Failed to write file %s", __func__, fs::PathToString(marker_path));

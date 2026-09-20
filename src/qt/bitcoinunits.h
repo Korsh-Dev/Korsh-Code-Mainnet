@@ -41,9 +41,9 @@ public:
       @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
      */
     enum class Unit {
-        SMT,
-        mSMT,
-        uSMT,
+        KSH,
+        mKSH,
+        uKSH,
         duffs
     };
     Q_ENUM(Unit)

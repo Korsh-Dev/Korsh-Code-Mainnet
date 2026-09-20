@@ -1,8 +1,8 @@
 name: Build Windows (MSYS2 / BDB 6.2 + Qt5)
 
 # Windows-native build using MSYS2 + MinGW-w64 on GitHub's windows-latest
-# runner. Produces fully-static smartiecoind.exe / smartiecoin-cli.exe /
-# smartiecoin-qt.exe linked against Berkeley DB 6.2 (the MSYS2-packaged
+# runner. Produces fully-static korshd.exe / korsh-cli.exe /
+# korsh-qt.exe linked against Berkeley DB 6.2 (the MSYS2-packaged
 # version), matching the wallet.dat Btree v10 format that v0.1.9 / v0.2.x
 # Windows wallets were written in. No DLLs alongside.
 #
@@ -166,30 +166,30 @@ jobs:
 
       - name: collect binaries
         run: |
-          mkdir -p artifacts/smartiecoin-windows-msys2
-          cp src/smartiecoind.exe       artifacts/smartiecoin-windows-msys2/
-          cp src/smartiecoin-cli.exe    artifacts/smartiecoin-windows-msys2/
-          cp src/qt/smartiecoin-qt.exe  artifacts/smartiecoin-windows-msys2/
+          mkdir -p artifacts/korsh-windows-msys2
+          cp src/korshd.exe       artifacts/korsh-windows-msys2/
+          cp src/korsh-cli.exe    artifacts/korsh-windows-msys2/
+          cp src/qt/korsh-qt.exe  artifacts/korsh-windows-msys2/
           # strip debug symbols to get saner file sizes
-          strip artifacts/smartiecoin-windows-msys2/smartiecoind.exe      || true
-          strip artifacts/smartiecoin-windows-msys2/smartiecoin-cli.exe   || true
-          strip artifacts/smartiecoin-windows-msys2/smartiecoin-qt.exe    || true
-          ls -la artifacts/smartiecoin-windows-msys2/
-          file artifacts/smartiecoin-windows-msys2/*.exe
+          strip artifacts/korsh-windows-msys2/korshd.exe      || true
+          strip artifacts/korsh-windows-msys2/korsh-cli.exe   || true
+          strip artifacts/korsh-windows-msys2/korsh-qt.exe    || true
+          ls -la artifacts/korsh-windows-msys2/
+          file artifacts/korsh-windows-msys2/*.exe
           # Verify static link: should NOT contain libdb_cxx / Qt5*.dll references
           echo ""
-          echo "=== DLL deps for smartiecoind.exe (should be Win32 system only) ==="
-          strings artifacts/smartiecoin-windows-msys2/smartiecoind.exe | grep -iE "\\.dll$" | sort -u | head -20
+          echo "=== DLL deps for korshd.exe (should be Win32 system only) ==="
+          strings artifacts/korsh-windows-msys2/korshd.exe | grep -iE "\\.dll$" | sort -u | head -20
           echo ""
-          echo "=== DLL deps for smartiecoin-qt.exe (should be Win32 system only) ==="
-          strings artifacts/smartiecoin-windows-msys2/smartiecoin-qt.exe | grep -iE "\\.dll$" | sort -u | head -30
+          echo "=== DLL deps for korsh-qt.exe (should be Win32 system only) ==="
+          strings artifacts/korsh-windows-msys2/korsh-qt.exe | grep -iE "\\.dll$" | sort -u | head -30
           echo ""
           echo "=== BDB version baked in ==="
-          (strings artifacts/smartiecoin-windows-msys2/smartiecoind.exe | grep -E "Berkeley DB [0-9]" | head -3) || true
+          (strings artifacts/korsh-windows-msys2/korshd.exe | grep -E "Berkeley DB [0-9]" | head -3) || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: smartiecoin-windows-msys2
-          path: artifacts/smartiecoin-windows-msys2/
+          name: korsh-windows-msys2
+          path: artifacts/korsh-windows-msys2/
           retention-days: 30

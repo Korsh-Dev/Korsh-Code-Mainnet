@@ -14,14 +14,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "Smartiecoin Core"
-            VALUE "FileDescription",    "smartiecoin-wallet (CLI tool for " PACKAGE_NAME " wallets)"
+            VALUE "CompanyName",        "Korsh Core"
+            VALUE "FileDescription",    "korsh-wallet (CLI tool for " PACKAGE_NAME " wallets)"
             VALUE "FileVersion",        PACKAGE_VERSION
-            VALUE "InternalName",       "smartiecoin-wallet"
+            VALUE "InternalName",       "korsh-wallet"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "smartiecoin-wallet.exe"
-            VALUE "ProductName",        "smartiecoin-wallet"
+            VALUE "OriginalFilename",   "korsh-wallet.exe"
+            VALUE "ProductName",        "korsh-wallet"
             VALUE "ProductVersion",     PACKAGE_VERSION
         END
     END

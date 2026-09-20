@@ -56,7 +56,7 @@ class DIP3Test(BitcoinTestFramework):
         self.log.info("funding controller node")
         while self.nodes[0].getbalance() < (self.num_initial_mn + 3) * MASTERNODE_COLLATERAL:
             self.generate(self.nodes[0], 10, sync_fun=self.no_op) # generate enough for collaterals
-        self.log.info("controller node has {} smartiecoin".format(self.nodes[0].getbalance()))
+        self.log.info("controller node has {} korsh".format(self.nodes[0].getbalance()))
 
         # Make sure we're below block 135 (which activates dip3)
         self.log.info("testing rejection of ProTx before dip3 activation")

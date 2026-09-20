@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-systemd: smartiecoind.service
-Upstart: smartiecoind.conf
-OpenRC:  smartiecoind.openrc
-         smartiecoind.openrcconf
-CentOS:  smartiecoind.init
-macOS:   org.smartiecoin.smartiecoind.plist
+systemd: korshd.service
+Upstart: korshd.conf
+OpenRC:  korshd.openrc
+         korshd.openrcconf
+CentOS:  korshd.init
+macOS:   org.korsh.korshd.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

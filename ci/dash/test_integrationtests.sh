@@ -11,7 +11,7 @@ set -e
 
 PASS_ARGS="$*"
 
-source ./ci/smartiecoin/matrix.sh
+source ./ci/korsh/matrix.sh
 
 if [ "$RUN_FUNCTIONAL_TESTS" != "true" ]; then
   echo "Skipping integration tests"

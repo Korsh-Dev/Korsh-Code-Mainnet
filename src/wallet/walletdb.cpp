@@ -790,7 +790,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             SecureString mnemonic;
             SecureString mnemonic_passphrase;
             // it's okay if wallet doesn't have mnemonic.
-            // The wallet may be created in an older version of Smartiecoin Core or by importing descriptor
+            // The wallet may be created in an older version of Korsh Core or by importing descriptor
             try
             {
                 ssValue >> mnemonic;
@@ -822,7 +822,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             std::vector<unsigned char> mnemonic;
             std::vector<unsigned char> mnemonic_passphrase;
             // it's okay if wallet doesn't have mnemonic.
-            // The wallet may be created in an older version of Smartiecoin Core or by importing descriptor
+            // The wallet may be created in an older version of Korsh Core or by importing descriptor
             try
             {
                 ssValue >> mnemonic;

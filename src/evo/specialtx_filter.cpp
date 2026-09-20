@@ -15,7 +15,7 @@
 /**
  * Rationale for Special Transaction Field Extraction:
  *
- * This implementation extracts specific fields from Smartiecoin special transactions
+ * This implementation extracts specific fields from Korsh special transactions
  * to maintain parity with the bloom filter implementation (CBloomFilter::CheckSpecialTransactionMatchesAndUpdate).
  *
  * The fields extracted are those that SPV clients might need to detect:

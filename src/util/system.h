@@ -33,7 +33,7 @@
 #include <utility>
 #include <vector>
 
-//Smartiecoin only features
+//Korsh only features
 
 extern int nWalletBackups;
 extern const std::string gCoinJoinName;
@@ -96,7 +96,7 @@ std::streampos GetFileSize(const char* path, std::streamsize max = std::numeric_
 /** Release all directory locks. This is used for unit testing only, at runtime
  * the global destructor will take care of the locks.
  */
-/** Smartiecoin: We also use this to release locks earlier when restarting the client */
+/** Korsh: We also use this to release locks earlier when restarting the client */
 void ReleaseDirectoryLocks();
 
 bool TryCreateDirectories(const fs::path& p);

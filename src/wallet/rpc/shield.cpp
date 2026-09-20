@@ -63,7 +63,7 @@ bool ShieldActiveForNextBlock(const CWallet& wallet)
 {
     const auto tip_height = wallet.chain().getHeight();
     if (!tip_height) return false;
-    return (*tip_height + 1) >= Params().GetConsensus().nSMTShieldHeight;
+    return (*tip_height + 1) >= Params().GetConsensus().nKSHShieldHeight;
 }
 
 void EnsureShieldActiveForNextBlock(const CWallet& wallet)
@@ -71,7 +71,7 @@ void EnsureShieldActiveForNextBlock(const CWallet& wallet)
     if (!ShieldActiveForNextBlock(wallet)) {
         throw JSONRPCError(RPC_WALLET_ERROR,
             strprintf("Shielded transactions are not active yet. Activation height is %d.",
-                      Params().GetConsensus().nSMTShieldHeight));
+                      Params().GetConsensus().nKSHShieldHeight));
     }
 }
 
@@ -285,7 +285,7 @@ libzcash::SaplingPaymentAddress DecodeShieldAddressOrThrow(const std::string& en
 {
     const auto address = KeyIO::DecodeSaplingPaymentAddress(encoded);
     if (!address) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Smartiecoin shielded address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Korsh shielded address");
     }
     return *address;
 }
@@ -331,7 +331,7 @@ CTxDestination DecodeTransparentAddressOrThrow(const std::string& encoded)
     std::string error;
     CTxDestination dest = DecodeDestination(encoded, error);
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, error.empty() ? "Invalid Smartiecoin transparent address" : error);
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, error.empty() ? "Invalid Korsh transparent address" : error);
     }
     return dest;
 }
@@ -451,7 +451,7 @@ CMutableTransaction BuildShieldFromNotesTemplate(const std::vector<SaplingSpenda
 RPCHelpMan getnewshieldaddress()
 {
     return RPCHelpMan{"getnewshieldaddress",
-        "\nReturns a new Smartiecoin shielded Sapling address.\n",
+        "\nReturns a new Korsh shielded Sapling address.\n",
         {
             {"label", RPCArg::Type::STR, RPCArg::Default{""}, "Optional label kept for CLI compatibility; shielded labels are not displayed in the legacy address book yet."},
         },
@@ -501,7 +501,7 @@ RPCHelpMan getshieldbalance()
             {"minconf", RPCArg::Type::NUM, RPCArg::Default{1}, "Only include notes confirmed at least this many times."},
             {"include_unspendable", RPCArg::Type::BOOL, RPCArg::Default{false}, "Include notes for which this wallet only has viewing authority."},
         },
-        RPCResult{RPCResult::Type::STR_AMOUNT, "amount", "Shielded balance in SMT"},
+        RPCResult{RPCResult::Type::STR_AMOUNT, "amount", "Shielded balance in KSH"},
         RPCExamples{HelpExampleCli("getshieldbalance", "") + HelpExampleRpc("getshieldbalance", "")},
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue {
             std::shared_ptr<CWallet> const pwallet = GetWalletForJSONRPCRequest(request);
@@ -565,12 +565,12 @@ RPCHelpMan listshieldunspent()
 RPCHelpMan sendtoshieldaddress()
 {
     return RPCHelpMan{"sendtoshieldaddress",
-        "\nSends transparent wallet funds to a Smartiecoin shielded Sapling address.\n",
+        "\nSends transparent wallet funds to a Korsh shielded Sapling address.\n",
         {
             {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The shielded Sapling recipient address."},
-            {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The amount in SMT to shield."},
+            {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The amount in KSH to shield."},
             {"minconf", RPCArg::Type::NUM, RPCArg::Default{1}, "Only use transparent inputs confirmed at least this many times."},
-            {"fee", RPCArg::Type::AMOUNT, RPCArg::DefaultHint{"automatic"}, "Optional absolute transaction fee in SMT."},
+            {"fee", RPCArg::Type::AMOUNT, RPCArg::DefaultHint{"automatic"}, "Optional absolute transaction fee in KSH."},
             {"verbose", RPCArg::Type::BOOL, RPCArg::Default{false}, "Return an object with txid, fee, and hex."},
         },
         RPCResult{RPCResult::Type::ANY, "result", "The transaction id, or an object when verbose=true."},
@@ -666,10 +666,10 @@ RPCHelpMan sendfromshieldaddress()
         "\nSends shielded Sapling funds to either a transparent address or another shielded address.\n",
         {
             {"fromaddress", RPCArg::Type::STR, RPCArg::Optional::NO, "The wallet shielded address to spend from, or \"*\" for all wallet shielded notes."},
-            {"toaddress", RPCArg::Type::STR, RPCArg::Optional::NO, "A transparent Smartiecoin address or shielded Sapling address."},
-            {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The amount in SMT to send."},
+            {"toaddress", RPCArg::Type::STR, RPCArg::Optional::NO, "A transparent Korsh address or shielded Sapling address."},
+            {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The amount in KSH to send."},
             {"minconf", RPCArg::Type::NUM, RPCArg::Default{1}, "Only use shielded notes confirmed at least this many times."},
-            {"fee", RPCArg::Type::AMOUNT, RPCArg::DefaultHint{"automatic"}, "Optional absolute transaction fee in SMT."},
+            {"fee", RPCArg::Type::AMOUNT, RPCArg::DefaultHint{"automatic"}, "Optional absolute transaction fee in KSH."},
             {"verbose", RPCArg::Type::BOOL, RPCArg::Default{false}, "Return an object with txid, fee, and hex."},
         },
         RPCResult{RPCResult::Type::ANY, "result", "The transaction id, or an object when verbose=true."},

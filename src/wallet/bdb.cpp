@@ -283,7 +283,7 @@ bool TryAutoConvertBerkeleyWallet(const fs::path& wallet_dir, const fs::path& wa
     if (temp_path_len == 0 || temp_path_len >= MAX_PATH) return false;
 
     const fs::path temp_root = fs::path(std::wstring(temp_path_buffer, temp_path_len)) /
-        fs::PathFromString(strprintf("SmartiecoinBdbRecovery-%d-%lu", GetTime(), static_cast<unsigned long>(GetCurrentProcessId())));
+        fs::PathFromString(strprintf("KorshBdbRecovery-%d-%lu", GetTime(), static_cast<unsigned long>(GetCurrentProcessId())));
     TryCreateDirectories(temp_root);
 
     const fs::path db_dump62 = temp_root / "db_dump62.exe";
@@ -523,7 +523,7 @@ bool BerkeleyEnvironment::Open(bilingual_str& err)
         if (ret == DB_RUNRECOVERY) {
             err += Untranslated(" ") + _("This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet");
             if (!backup_dir.empty()) {
-                err += Untranslated(" ") + strprintf(_("Smartiecoin backed up stale Berkeley DB environment files to %s, but the wallet still could not be opened. The wallet.dat file was not moved."), fs::quoted(fs::PathToString(backup_dir)));
+                err += Untranslated(" ") + strprintf(_("Korsh backed up stale Berkeley DB environment files to %s, but the wallet still could not be opened. The wallet.dat file was not moved."), fs::quoted(fs::PathToString(backup_dir)));
             }
         }
         return false;
@@ -670,7 +670,7 @@ bool BerkeleyDatabase::Verify(bilingual_str& errorStr)
             if (newer_bdb_file) {
                 errorStr = strprintf(_("%s was written by a newer Berkeley DB file format. Convert this wallet back to Berkeley DB 4.8 or restore a pre-upgrade backup before opening it with this release."), fs::quoted(fs::PathToString(file_path)));
             } else {
-                errorStr = strprintf(_("%s corrupt. Try using the wallet tool smartiecoin-wallet to salvage or restoring a backup."), fs::quoted(fs::PathToString(file_path)));
+                errorStr = strprintf(_("%s corrupt. Try using the wallet tool korsh-wallet to salvage or restoring a backup."), fs::quoted(fs::PathToString(file_path)));
             }
             return false;
         }

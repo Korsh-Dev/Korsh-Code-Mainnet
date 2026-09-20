@@ -7,8 +7,8 @@ export LC_ALL=C
 set -e
 
 ROOTDIR=dist
-BUNDLE="${ROOTDIR}/Smartiecoin-Qt.app"
-BINARY="${BUNDLE}/Contents/MacOS/Smartiecoin-Qt"
+BUNDLE="${ROOTDIR}/Korsh-Qt.app"
+BINARY="${BUNDLE}/Contents/MacOS/Korsh-Qt"
 SIGNAPPLE=signapple
 TEMPDIR=sign.temp
 ARCH=$(${SIGNAPPLE} info ${BINARY} | head -n 1 | cut -d " " -f 1)

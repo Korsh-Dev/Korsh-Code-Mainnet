@@ -1,9 +1,9 @@
-# Smartiecoin Core Development Guide
+# Korsh Core Development Guide
 
 ## Overview
 
-Smartiecoin Core is the reference implementation for Smartiecoin, a cryptocurrency. It builds on top of Bitcoin Core, a codebase that
-is primarily written in C++20 (requiring at least Clang 16 or GCC 11.1). Smartiecoin Core uses the GNU Autotools build system.
+Korsh Core is the reference implementation for Korsh, a cryptocurrency. It builds on top of Bitcoin Core, a codebase that
+is primarily written in C++20 (requiring at least Clang 16 or GCC 11.1). Korsh Core uses the GNU Autotools build system.
 
 ## Directory Structure
 
@@ -12,7 +12,7 @@ is primarily written in C++20 (requiring at least Clang 16 or GCC 11.1). Smartie
   - `src/fuzz/` - Fuzzing harnesses
   - `src/index/` - Optional indexes
   - `src/interfaces/` - Interfaces for codebase isolation and inter-process communication
-  - `src/qt/` - Implementation of Smartiecoin Qt, the GUI (uses Qt 5)
+  - `src/qt/` - Implementation of Korsh Qt, the GUI (uses Qt 5)
   - `src/rpc/` - JSON-RPC server and endpoints
   - `src/util/` - Utility functions
   - `src/wallet/` - Wallet implementation (uses Berkeley DB and SQLite)
@@ -20,7 +20,7 @@ is primarily written in C++20 (requiring at least Clang 16 or GCC 11.1). Smartie
 - **Unit Tests**
   - `src/test/`, `src/wallet/test/` - C++20 unit tests (uses `Boost::Test`)
   - `src/qt/test/` - C++20 unit tests for GUI implementation (uses Qt 5)
-- **Functional Tests**: `test/functional/` - Python tests (minimum version in `.python-version`) dependent on `smartiecoind` and `smartiecoin-node`
+- **Functional Tests**: `test/functional/` - Python tests (minimum version in `.python-version`) dependent on `korshd` and `korsh-node`
 
 ### Directories to Exclude
 
@@ -112,10 +112,10 @@ test/lint/lint-circular-dependencies.py
 
 ## High-Level Architecture
 
-Smartiecoin Core extends Bitcoin Core through composition, using a layered architecture:
+Korsh Core extends Bitcoin Core through composition, using a layered architecture:
 
 ```
-Smartiecoin Core Components
+Korsh Core Components
 ├── Bitcoin Core Foundation (Blockchain, consensus, networking)
 ├── Masternodes (Infrastructure)
 │   ├── LLMQ (Quorum infrastructure)
@@ -156,14 +156,14 @@ Smartiecoin Core Components
 - **Efficient Updates**: Differential updates for masternode lists
 - **Credit Pool Management**: Platform integration support
 
-#### Smartiecoin-Specific Databases
+#### Korsh-Specific Databases
 
-- **CFlatDB**: A Smartiecoin-specific flat file database format used for persistent storage
+- **CFlatDB**: A Korsh-specific flat file database format used for persistent storage
   - `MasternodeMetaStore`: Masternode metadata persistence
   - `GovernanceStore`: Governance object storage
   - `SporkStore`: Spork state persistence
   - `NetFulfilledRequestStore`: Network request tracking
-- **CDBWrapper**: Bitcoin Core database wrapper extended for Smartiecoin-specific data
+- **CDBWrapper**: Bitcoin Core database wrapper extended for Korsh-specific data
   - `CDKGSessionManager`: LLMQ DKG session persistence
   - `CEvoDb`: Specialized database for Evolution/deterministic masternode data
   - `CInstantSendDb`: InstantSend lock persistence
@@ -174,8 +174,8 @@ Smartiecoin Core Components
 
 #### Initialization Flow
 1. **Basic Setup**: Core Bitcoin initialization
-2. **Parameter Interaction**: Smartiecoin-specific configuration validation
-3. **Interface Setup**: Smartiecoin manager instantiation in NodeContext
+2. **Parameter Interaction**: Korsh-specific configuration validation
+3. **Interface Setup**: Korsh manager instantiation in NodeContext
 4. **Main Initialization**: EvoDb, masternode system, LLMQ, governance startup
 
 #### Consensus Integration
@@ -194,7 +194,7 @@ Smartiecoin Core Components
 - **NodeContext**: Central dependency injection container
 - **LLMQContext**: LLMQ-specific context and state management
 - **ValidationInterface**: Event distribution for block/transaction processing
-- **ChainstateManager**: Enhanced with Smartiecoin-specific validation
+- **ChainstateManager**: Enhanced with Korsh-specific validation
 - **Chainstate Initialization**: Separated into `src/node/chainstate.*`
 - **Special Transaction Serialization**: Payload serialization routines (`src/evo/specialtx.h`)
 - **BLS Integration**: Cryptographic foundation for advanced features
@@ -206,11 +206,11 @@ Smartiecoin Core Components
 # Clean build
 make clean
 
-# Run smartiecoind with debug logging
-./src/smartiecoind -debug=all -printtoconsole
+# Run korshd with debug logging
+./src/korshd -debug=all -printtoconsole
 
-# Run functional test with custom smartiecoind
-test/functional/test_runner.py --smartiecoind=/path/to/smartiecoind
+# Run functional test with custom korshd
+test/functional/test_runner.py --korshd=/path/to/korshd
 
 # Generate compile_commands.json for IDEs
 bear -- make -j"$(( $(nproc) - 1 ))"
@@ -218,15 +218,15 @@ bear -- make -j"$(( $(nproc) - 1 ))"
 
 ### Debugging
 ```bash
-# Debug smartiecoind
-gdb ./src/smartiecoind
+# Debug korshd
+gdb ./src/korshd
 
 # Profile performance
 test/functional/test_runner.py --perf
 perf report -i /path/to/datadir/test.perf.data --stdio | c++filt
 
 # Memory debugging
-valgrind --leak-check=full ./src/smartiecoind
+valgrind --leak-check=full ./src/korshd
 ```
 
 ### GitHub CI Debugging with `gh` CLI
@@ -239,13 +239,13 @@ gh pr checks <PR_NUMBER> --json name,state,link,description
 gh pr checks <PR_NUMBER> --json name,state,link --jq '.[] | select(.state == "FAILURE" or .state == "PENDING")'
 
 # View logs from a specific CI job
-gh api repos/SmartiesCoin/Smartiecoin/actions/jobs/<JOB_ID>/logs
+gh api repos/SmartiesCoin/Korsh/actions/jobs/<JOB_ID>/logs
 
 # Filter failed jobs and steps from a run
 gh run view <RUN_ID> --json jobs --jq '.jobs[] | select(.conclusion == "failure") | {name, conclusion}'
 
 # Example: Get lint failure logs for PR 6691
-# gh api repos/SmartiesCoin/Smartiecoin/actions/jobs/46274126203/logs
+# gh api repos/SmartiesCoin/Korsh/actions/jobs/46274126203/logs
 ```
 
 ## Branch Structure
@@ -261,5 +261,5 @@ gh run view <RUN_ID> --json jobs --jq '.jobs[] | select(.conclusion == "failure"
 - Special transactions use payload extensions - see `src/evo/specialtx.h`
 - Masternode lists use immutable data structures (Immer library) for thread safety
 - LLMQ quorums have different configurations for different purposes
-- Smartiecoin uses `unordered_lru_cache` for efficient caching with LRU eviction
-- The codebase extensively uses Smartiecoin-specific data structures for performance
+- Korsh uses `unordered_lru_cache` for efficient caching with LRU eviction
+- The codebase extensively uses Korsh-specific data structures for performance

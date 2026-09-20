@@ -59,7 +59,7 @@ so you should log out and log back in.
 ## Option 3: Using Docker image
 
 Please refer to Docker image
-[here](https://github.com/SmartiesCoin/Smartiecoin/tree/master/contrib/containers/guix/Dockerfile).
+[here](https://github.com/SmartiesCoin/Korsh/tree/master/contrib/containers/guix/Dockerfile).
 
 ## Option 4: Using a distribution-maintained package
 
@@ -406,7 +406,7 @@ in the Guix Reference Manual for more details.
 
 ## Optional setup
 
-At this point, you are set up to [use Guix to build Smartiecoin
+At this point, you are set up to [use Guix to build Korsh
 Core](./README.md#usage). However, if you want to polish your setup a bit and
 make it "what Guix intended", then read the next few subsections.
 

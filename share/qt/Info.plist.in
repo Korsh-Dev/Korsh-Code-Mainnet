@@ -11,7 +11,7 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>smartiecoin.icns</string>
+  <string>korsh.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
@@ -31,15 +31,15 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Smartiecoin-Qt</string>
+  <string>Korsh-Qt</string>
   <key>CFBundleName</key>
-  <string>Smartiecoin-Qt</string>
+  <string>Korsh-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.smartiecoin.Smartiecoin-Qt</string>
+  <string>org.korsh.Korsh-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -47,10 +47,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.smartiecoin.SmartiecoinPayment</string>
+      <string>org.korsh.KorshPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>smartiecoin</string>
+        <string>korsh</string>
       </array>
     </dict>
   </array>

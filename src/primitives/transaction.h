@@ -216,7 +216,7 @@ public:
     static const int32_t CURRENT_VERSION=2;
     // Special transaction version
     static const int32_t SPECIAL_VERSION = 3;
-    // Shielded transaction payload version. Smartiecoin special transactions
+    // Shielded transaction payload version. Korsh special transactions
     // already use version 3, so Sapling starts at 4 to keep v3 txids stable.
     static const int32_t SHIELDED_VERSION = 4;
 

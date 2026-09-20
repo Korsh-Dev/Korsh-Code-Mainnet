@@ -9,7 +9,7 @@ export LC_ALL=C.UTF-8
 
 set -e
 
-source ./ci/smartiecoin/matrix.sh
+source ./ci/korsh/matrix.sh
 
 unset CC CXX DISPLAY;
 
@@ -55,5 +55,5 @@ fi
 # GitHub Actions can segment a job into steps, linting is a separate step
 # so Actions runners will perform this step separately.
 if [ "${RUN_TIDY}" = "true" ] && [ "${GITHUB_ACTIONS}" != "true" ]; then
-  "${BASE_ROOT_DIR}/ci/smartiecoin/lint-tidy.sh"
+  "${BASE_ROOT_DIR}/ci/korsh/lint-tidy.sh"
 fi

@@ -184,7 +184,7 @@ static RPCHelpMan gobject_prepare()
 
     CGovernanceObject govobj(hashParent, nRevision, nTime, uint256(), strDataHex);
 
-    // This command is dangerous because it consumes 5 SMT irreversibly.
+    // This command is dangerous because it consumes 5 KSH irreversibly.
     // If params are lost, it's very hard to bruteforce them and yet
     // users ignore all instructions on dashcentral etc. and do not save them...
     // Let's log them here and hope users do not mess with debug.log
@@ -1022,10 +1022,10 @@ static RPCHelpMan getsuperblockbudget()
 Span<const CRPCCommand> GetWalletGovernanceRPCCommands()
 {
     static const CRPCCommand commands[]{
-        {"smartiecoin", &gobject_prepare},
-        {"smartiecoin", &gobject_list_prepared},
-        {"smartiecoin", &gobject_vote_many},
-        {"smartiecoin", &gobject_vote_alias},
+        {"korsh", &gobject_prepare},
+        {"korsh", &gobject_list_prepared},
+        {"korsh", &gobject_vote_many},
+        {"korsh", &gobject_vote_alias},
     };
     return commands;
 }
@@ -1034,18 +1034,18 @@ Span<const CRPCCommand> GetWalletGovernanceRPCCommands()
 void RegisterGovernanceRPCCommands(CRPCTable &t)
 {
     static const CRPCCommand commands[]{
-        {"smartiecoin", &getgovernanceinfo},
-        {"smartiecoin", &getsuperblockbudget},
-        {"smartiecoin", &gobject},
-        {"smartiecoin", &gobject_count},
-        {"smartiecoin", &gobject_deserialize},
-        {"smartiecoin", &gobject_check},
-        {"smartiecoin", &gobject_submit},
-        {"smartiecoin", &gobject_list},
-        {"smartiecoin", &gobject_diff},
-        {"smartiecoin", &gobject_get},
-        {"smartiecoin", &gobject_getcurrentvotes},
-        {"smartiecoin", &voteraw},
+        {"korsh", &getgovernanceinfo},
+        {"korsh", &getsuperblockbudget},
+        {"korsh", &gobject},
+        {"korsh", &gobject_count},
+        {"korsh", &gobject_deserialize},
+        {"korsh", &gobject_check},
+        {"korsh", &gobject_submit},
+        {"korsh", &gobject_list},
+        {"korsh", &gobject_diff},
+        {"korsh", &gobject_get},
+        {"korsh", &gobject_getcurrentvotes},
+        {"korsh", &voteraw},
     };
     for (const auto& command : commands) {
         t.appendCommand(command.name, &command);

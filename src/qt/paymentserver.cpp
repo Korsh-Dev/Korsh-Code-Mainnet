@@ -36,7 +36,7 @@
 #include <QUrlQuery>
 
 const int BITCOIN_IPC_CONNECT_TIMEOUT = 1000; // milliseconds
-const QString BITCOIN_IPC_PREFIX("smartiecoin:");
+const QString BITCOIN_IPC_PREFIX("korsh:");
 
 //
 // Create a name that is unique for:
@@ -45,7 +45,7 @@ const QString BITCOIN_IPC_PREFIX("smartiecoin:");
 //
 static QString ipcServerName()
 {
-    QString name("SmartiecoinQt");
+    QString name("KorshQt");
 
     // Append a simple hash of the datadir
     // Note that gArgs.GetDataDirNet() returns a different path
@@ -79,7 +79,7 @@ void PaymentServer::ipcParseCommandLine(int argc, char* argv[])
         QString arg(argv[i]);
         if (arg.startsWith("-")) continue;
 
-        if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // smartiecoin: URI
+        if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // korsh: URI
         {
             savedPaymentRequests.insert(arg);
         }
@@ -129,7 +129,7 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer)
     : QObject(parent)
 {
     // Install global event filter to catch QFileOpenEvents
-    // on Mac: sent when you click smartiecoin: links
+    // on Mac: sent when you click korsh: links
     // other OSes: helpful when dealing with payment request files
     if (parent)
         parent->installEventFilter(this);
@@ -146,7 +146,7 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer)
         if (!uriServer->listen(name)) {
             // constructor is called early in init, so don't use "Q_EMIT message()" here
             QMessageBox::critical(nullptr, tr("Payment request error"),
-                tr("Cannot start smartiecoin: click-to-pay handler"));
+                tr("Cannot start korsh: click-to-pay handler"));
         }
         else {
             connect(uriServer, &QLocalServer::newConnection, this, &PaymentServer::handleURIConnection);
@@ -157,7 +157,7 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer)
 PaymentServer::~PaymentServer() = default;
 
 //
-// OSX-specific way of handling smartiecoin: URIs
+// OSX-specific way of handling korsh: URIs
 //
 bool PaymentServer::eventFilter(QObject *object, QEvent *event)
 {
@@ -192,12 +192,12 @@ void PaymentServer::handleURIOrFile(const QString& s)
         return;
     }
 
-    if (s.startsWith("smartiecoin://", Qt::CaseInsensitive))
+    if (s.startsWith("korsh://", Qt::CaseInsensitive))
     {
-        Q_EMIT message(tr("URI handling"), tr("'smartiecoin://' is not a valid URI. Use 'smartiecoin:' instead."),
+        Q_EMIT message(tr("URI handling"), tr("'korsh://' is not a valid URI. Use 'korsh:' instead."),
             CClientUIInterface::MSG_ERROR);
     }
-    else if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // smartiecoin: URI
+    else if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // korsh: URI
     {
         QUrlQuery uri((QUrl(s)));
         // normal URI
@@ -224,7 +224,7 @@ void PaymentServer::handleURIOrFile(const QString& s)
             }
             else
                 Q_EMIT message(tr("URI handling"),
-                    tr("URI cannot be parsed! This can be caused by an invalid Smartiecoin address or malformed URI parameters."),
+                    tr("URI cannot be parsed! This can be caused by an invalid Korsh address or malformed URI parameters."),
                     CClientUIInterface::ICON_WARNING);
 
             return;

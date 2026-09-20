@@ -260,7 +260,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent, bool fAllow
 
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a Smartiecoin address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a Korsh address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
     widget->setValidator(new BitcoinAddressEntryValidator(parent, fAllowURI));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
@@ -315,8 +315,8 @@ void AddButtonShortcut(QAbstractButton* button, const QKeySequence& shortcut)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no smartiecoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("smartiecoin"))
+    // return if URI is not valid or is no korsh: URI
+    if(!uri.isValid() || uri.scheme() != QString("korsh"))
         return false;
 
     SendCoinsRecipient rv;
@@ -358,7 +358,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if (!BitcoinUnits::parse(BitcoinUnit::SMT, i->second, &rv.amount)) {
+                if (!BitcoinUnits::parse(BitcoinUnit::KSH, i->second, &rv.amount)) {
                     return false;
                 }
             }
@@ -389,12 +389,12 @@ bool validateBitcoinURI(const QString& uri)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("smartiecoin:%1").arg(info.address);
+    QString ret = QString("korsh:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnit::SMT, info.amount, false, BitcoinUnits::SeparatorStyle::NEVER));
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnit::KSH, info.amount, false, BitcoinUnits::SeparatorStyle::NEVER));
         paramCount++;
     }
 
@@ -623,7 +623,7 @@ void openConfigfile()
 {
     fs::path pathConfig = GetConfigFile(gArgs.GetPathArg("-conf", BITCOIN_CONF_FILENAME));
 
-    /* Open smartiecoin.conf with the associated application */
+    /* Open korsh.conf with the associated application */
     if (fs::exists(pathConfig)) {
         // Workaround for macOS-specific behavior; see #15409.
         if (!QDesktopServices::openUrl(QUrl::fromLocalFile(PathToQString(pathConfig)))) {
@@ -699,15 +699,15 @@ fs::path static StartupShortcutPath()
 {
     std::string chain = gArgs.GetChainName();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Smartiecoin Core.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Korsh Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Smartiecoin Core (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("Smartiecoin Core (%s).lnk", chain));
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Korsh Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("Korsh Core (%s).lnk", chain));
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for "Smartiecoin Core*.lnk"
+    // check for "Korsh Core*.lnk"
     return fs::exists(StartupShortcutPath());
 }
 
@@ -782,8 +782,8 @@ fs::path static GetAutostartFilePath()
 {
     std::string chain = gArgs.GetChainName();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "smartiecoincore.desktop";
-    return GetAutostartDir() / fs::u8path(strprintf("smartiecoincore-%s.desktop", chain));
+        return GetAutostartDir() / "korshcore.desktop";
+    return GetAutostartDir() / fs::u8path(strprintf("korshcore-%s.desktop", chain));
 }
 
 bool GetStartOnSystemStartup()
@@ -824,13 +824,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (!optionFile.good())
             return false;
         std::string chain = gArgs.GetChainName();
-        // Write a smartiecoincore.desktop file to the autostart directory:
+        // Write a korshcore.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=Smartiecoin Core\n";
+            optionFile << "Name=Korsh Core\n";
         else
-            optionFile << strprintf("Name=Smartiecoin Core (%s)\n", chain);
+            optionFile << strprintf("Name=Korsh Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -chain=%s\n", chain);
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";

@@ -36,7 +36,7 @@
 #include <utility>
 #include <variant>
 
-const char * const BITCOIN_CONF_FILENAME = "smartiecoin.conf";
+const char * const BITCOIN_CONF_FILENAME = "korsh.conf";
 const char * const BITCOIN_SETTINGS_FILENAME = "settings.json";
 
 ArgsManager gArgs;
@@ -207,7 +207,7 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
 
         if (key[0] != '-') {
             if (!m_accept_any_command && m_command.empty()) {
-                // The first non-smartiecoin arg is a registered command
+                // The first non-korsh arg is a registered command
                 std::optional<unsigned int> flags = GetArgFlags(key);
                 if (!flags || !(*flags & ArgsManager::COMMAND)) {
                     error = strprintf("Invalid command '%s'", argv[i]);
@@ -737,12 +737,12 @@ bool HasTestOption(const ArgsManager& args, const std::string& test_option)
 
 fs::path GetDefaultDataDir()
 {
-    // Windows: C:\Users\Username\AppData\Roaming\SmartiecoinCore
-    // macOS: ~/Library/Application Support/SmartiecoinCore
-    // Unix-like: ~/.smartiecoincore
+    // Windows: C:\Users\Username\AppData\Roaming\KorshCore
+    // macOS: ~/Library/Application Support/KorshCore
+    // Unix-like: ~/.korshcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "SmartiecoinCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "KorshCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -752,10 +752,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef __APPLE__
     // macOS
-    return pathRet / "Library/Application Support/SmartiecoinCore";
+    return pathRet / "Library/Application Support/KorshCore";
 #else
     // Unix-like
-    return pathRet / ".smartiecoincore";
+    return pathRet / ".korshcore";
 #endif
 #endif
 }

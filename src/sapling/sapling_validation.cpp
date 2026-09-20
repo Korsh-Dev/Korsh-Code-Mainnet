@@ -73,7 +73,7 @@ bool CheckTransactionWithoutProofVerification(const CTransaction& tx, TxValidati
 
 bool ContextualCheckTransaction(const CTransaction& tx, TxValidationState& state, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
-    const bool shieldActive = DeploymentActiveAfter(pindexPrev, consensusParams, Consensus::DEPLOYMENT_SMT_SHIELD);
+    const bool shieldActive = DeploymentActiveAfter(pindexPrev, consensusParams, Consensus::DEPLOYMENT_KSH_SHIELD);
 
     if (tx.IsShieldedTxVersion() && !shieldActive) {
         return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-txns-shield-not-active");

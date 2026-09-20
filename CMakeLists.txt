@@ -6,7 +6,7 @@
 # You'll also have to manually change the executable in the configuration to the correct path of the already built executable
 
 cmake_minimum_required(VERSION 3.7)
-project(smartiecoin)
+project(korsh)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -119,4 +119,4 @@ file(GLOB SOURCE_FILES
         src/zmq/*.h
         )
 
-add_executable(smartiecoin ${SOURCE_FILES})
+add_executable(korsh ${SOURCE_FILES})

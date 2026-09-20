@@ -5,6 +5,8 @@
 
 **Korsh Core** is the reference implementation of Korsh (KSH), a decentralized, peer-to-peer cryptocurrency focused on security, fast settlement, ASIC-resistant CPU mining, and community governance.
 
+Korsh is a fork of Smartiecoin Core; Smartiecoin attribution is retained in source credits and licenses.
+
 ---
 
 ## Network Specifications
@@ -13,11 +15,13 @@
 | :--- | :--- |
 | **Coin Name** | Korsh |
 | **Ticker** | **KSH** |
-| **Consensus Model** | **Pure Proof-of-Work (Yespower CPU, No Masternodes / No Quorums)** |
+| **Consensus Model** | **Proof-of-Work (YesPower CPU) with deterministic masternodes; quorums and Dash Platform disabled** |
 | **Block Time** | 60 seconds (1 minute) |
-| **Initial Block Subsidy** | **50 KSH** (100% directly to CPU miner) |
+| **Initial Block Subsidy** | **50 KSH** (50% miner / 50% masternode; no treasury while superblocks are disabled) |
 | **Halving Interval** | 1,000,000 blocks |
 | **Maximum Supply Cap** | 10,000,000 KSH |
+| **Masternode Activation** | Block 2; payment schedule available from block 2 |
+| **Quorums / Dash Platform** | Disabled on mainnet; reserved for future height activation |
 | **Default P2P Port** | `8383` |
 | **RPC Default Port** | `8382` |
 
@@ -78,9 +82,9 @@ make -j$(nproc)
 ```
 
 The compiled binaries will be located in `src/`:
-* `korshd` / `smartiecoind` — Headless full node daemon
-* `korsh-cli` / `smartiecoin-cli` — RPC command-line tool
-* `korsh-tx` / `smartiecoin-tx` — Transaction creation tool
+* `korshd` / `korshd` — Headless full node daemon
+* `korsh-cli` / `korsh-cli` — RPC command-line tool
+* `korsh-tx` / `korsh-tx` — Transaction creation tool
 
 ---
 

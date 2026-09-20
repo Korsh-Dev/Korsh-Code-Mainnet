@@ -115,7 +115,7 @@ static bool AppInit(NodeContext& node, int argc, char* argv[])
 
     util::ThreadSetInternalName("init");
 
-    // If Qt is used, parameters/smartiecoin.conf are parsed in qt/bitcoin.cpp's main()
+    // If Qt is used, parameters/korsh.conf are parsed in qt/bitcoin.cpp's main()
     ArgsManager& args = *Assert(node.args);
     SetupServerArgs(args);
     std::string error;
@@ -135,7 +135,7 @@ static bool AppInit(NodeContext& node, int argc, char* argv[])
         if (args.IsArgSet("-version")) {
             strUsage += FormatParagraph(LicenseInfo());
         } else {
-            strUsage += "\nUsage:  smartiecoind [options]             Start " PACKAGE_NAME "\n"
+            strUsage += "\nUsage:  korshd [options]             Start " PACKAGE_NAME "\n"
                 "\n";
             strUsage += args.GetHelpMessage();
         }
@@ -171,7 +171,7 @@ static bool AppInit(NodeContext& node, int argc, char* argv[])
         // Error out when loose non-argument tokens are encountered on command line
         for (int i = 1; i < argc; i++) {
             if (!IsSwitchChar(argv[i][0])) {
-                return InitError(Untranslated(strprintf("Command line contains unexpected token '%s', see smartiecoind -h for a list of options.\n", argv[i])));
+                return InitError(Untranslated(strprintf("Command line contains unexpected token '%s', see korshd -h for a list of options.\n", argv[i])));
             }
         }
 
@@ -180,7 +180,7 @@ static bool AppInit(NodeContext& node, int argc, char* argv[])
             return false;
         }
 
-        // -server defaults to true for smartiecoind but not for the GUI so do this here
+        // -server defaults to true for korshd but not for the GUI so do this here
         args.SoftSetBoolArg("-server", true);
         // Set this early so that parameter interactions go to console
         InitLogging(args);
@@ -273,7 +273,7 @@ MAIN_FUNCTION
 
     SetupEnvironment();
 
-    // Connect smartiecoind signal handlers
+    // Connect korshd signal handlers
     noui_connect();
 
     return (AppInit(node, argc, argv) ? EXIT_SUCCESS : EXIT_FAILURE);

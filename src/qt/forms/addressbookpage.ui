@@ -157,7 +157,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../smartiecoin.qrc"/>
+  <include location="../korsh.qrc"/>
  </resources>
  <connections/>
 </ui>

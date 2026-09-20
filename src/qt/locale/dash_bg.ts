@@ -66,12 +66,12 @@
         <translation>Избери</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Това са вашите SMT адреси за изпращане на плащания. Преди изпращане винаги проверявайте количеството и адреса за получаване на монетите.</translation>
+        <source>These are your KSH addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Това са вашите KSH адреси за изпращане на плащания. Преди изпращане винаги проверявайте количеството и адреса за получаване на монетите.</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Това са вашите SMT адреси за получаване на плащания. Използвайте бутона „Създаване на нов адрес за получаване“ в раздела за получаване, за да създадете нови адреси. </translation>
+        <source>These are your KSH addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Това са вашите KSH адреси за получаване на плащания. Използвайте бутона „Създаване на нов адрес за получаване“ в раздела за получаване, за да създадете нови адреси. </translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -225,8 +225,8 @@
         <translation>Потвърдете на шифрирането на портфейла</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR SMT&lt;/b&gt;!</source>
-        <translation>Внимание: Ако шифрирате вашия портфейл и загубите паролата си,  &lt;b&gt;ЩЕ ЗАГУБИТЕ ВСИЧКИ SMT МОНЕТИ!&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR KSH&lt;/b&gt;!</source>
+        <translation>Внимание: Ако шифрирате вашия портфейл и загубите паролата си,  &lt;b&gt;ЩЕ ЗАГУБИТЕ ВСИЧКИ KSH МОНЕТИ!&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -365,16 +365,16 @@
         <translation>&amp;Изпращане</translation>
     </message>
     <message>
-        <source>Send coins to a SMT address</source>
-        <translation>Изпращане на монети към SMT адрес</translation>
+        <source>Send coins to a KSH address</source>
+        <translation>Изпращане на монети към KSH адрес</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Получаване</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and smartiecoin: URIs)</source>
-        <translation>Заявка за плащане (генерира QR кодове и smartiecoin: URI)</translation>
+        <source>Request payments (generates QR codes and korsh: URIs)</source>
+        <translation>Заявка за плащане (генерира QR кодове и korsh: URI)</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -489,8 +489,8 @@
         <translation>&amp;Относно %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a SMT address</source>
-        <translation>Изпрати %1 средства до SMT адрес</translation>
+        <source>Send %1 funds to a KSH address</source>
+        <translation>Изпрати %1 средства до KSH адрес</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -525,12 +525,12 @@
         <translation>&amp;Заключи Портфейл</translation>
     </message>
     <message>
-        <source>Sign messages with your SMT addresses to prove you own them</source>
-        <translation>Подпиши съобщения с твоите SMT адреси за да докажеш че ги притежаваш</translation>
+        <source>Sign messages with your KSH addresses to prove you own them</source>
+        <translation>Подпиши съобщения с твоите KSH адреси за да докажеш че ги притежаваш</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified SMT addresses</source>
-        <translation>Проверете съобщенията, за да сте сигурни че са подписани с определен SMT адрес</translation>
+        <source>Verify messages to ensure they were signed with specified KSH addresses</source>
+        <translation>Проверете съобщенията, за да сте сигурни че са подписани с определен KSH адрес</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -593,8 +593,8 @@
         <translation>&amp;Опции на командния ред</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible SMT command-line options</source>
-        <translation>Покажи %1 помощното съобщение за да получите списък с възможни SMT команди</translation>
+        <source>Show the %1 help message to get a list with possible KSH command-line options</source>
+        <translation>Покажи %1 помощното съобщение за да получите списък с възможни KSH команди</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -655,8 +655,8 @@
         <translation>Отвори &amp;конфигурационен файл на портфейла</translation>
     </message>
     <message>
-        <source>Open a smartiecoin: URI</source>
-        <translation>Отвори smartiecoin: URI</translation>
+        <source>Open a korsh: URI</source>
+        <translation>Отвори korsh: URI</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -745,9 +745,9 @@
         <translation>П&amp;окажи</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Smartiecoin network</source>
+        <source>%n active connection(s) to Korsh network</source>
         <extracomment>A substring of the tooltip.</extracomment>
-        <translation><numerusform>%n активни връзки към SMT мрежата</numerusform><numerusform>%n активни връзки към SMT мрежата</numerusform></translation>
+        <translation><numerusform>%n активни връзки към KSH мрежата</numerusform><numerusform>%n активни връзки към KSH мрежата</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -1298,8 +1298,8 @@
         <translation>Редактиране на адрес за изпращане</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid SMT address.</source>
-        <translation>Въведеният адрес "%1" не е валиден SMT адрес.</translation>
+        <source>The entered address "%1" is not a valid KSH address.</source>
+        <translation>Въведеният адрес "%1" не е валиден KSH адрес.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1547,8 +1547,8 @@ Do you wish to continue?</source>
         <translation>%1 информация</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the SMT in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT and 10 SMT -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 основни понятия&lt;/h3&gt; %1 ви дава истинска финансова независимост чрез скриване произхода на средствата ви. Всички SMT монети в портфейла ви са съставени от различни "входове" които можете да приемете като отделни дискретни монети&lt;br&gt; %1 използва иновативен процес като смесва вашите входове с входовете на други двама души без монетите да напускат изобщо портфейла ви. Имате пълен контрол върху парите си през цялото време. &lt;hr&gt; &lt;b&gt; %1 процесът работи по следния начин:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 започва чрез разделяне на транзакцията ви до стандартни деноминации. Тези деноминации са 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT и 10 SMT --подобно на стандартните пари, които ползваме ежедневно.&lt;/li&gt; &lt;li&gt;Вашия портфейл изпраща запитване към специално конфигурираните софтуерни възли в мрежата, наречени "masternodes." Тези masternodes са информирани, че се интересувате от смесване на определена деноминация. Никаква идентификационна информация не се изпраща към   masternodes, така, че те никога не знаят "кой" сте.&lt;/li&gt; &lt;li&gt;Когато други двама души изпратят подобни съобщения, обозначаващи, че искат да смесят същата деноминация, смесващата сесия започва. Masternode смесват входовете и инструктират портфейлите на тримата потребители да платят ново трансформираните входове обратно към притежателите им. Вашият портфейл плаща деноминацията директно на себе си, но с различен адрес (наричан сменен адрес).  &lt;/li&gt; &lt;li&gt;С цел напълно скриване на доходите ви, вашият портфейл трябва да повтори този процес няколко пъти във всяка деноминация.  Всеки път завършеният процес се нарича "цикъл." Всеки цикъл на %1 прави откриването на първоначалния източник на вашите средства напълно непроследим.&lt;/li&gt; &lt;li&gt;Този смесващ процес се случва като процес на заден фон без никаква намеса от ваша страна. Когато искате да направите транзакция, вашите средства са винаги анонимни. Не е необходимо допълнително изчакване. &lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ВАЖНО:&lt;/b&gt; Вашият портфейл съдържа само 1000 от тези "сменяеми адреси". Всеки път когато се случва смесването до 9 от вашите адреси се ползват.  Това означава, че тези 1000 адреси се миксират в около 100 смесващи събития. Когато 900 се използват, вашия портфейл трябва да създаде повече адреси. Това може да стане само ако имате автоматично архивиране.&lt;br&gt; Следователно, потребителите, на които е изключено автоматичното архивиране, нямат и  %1 включено. &lt;hr&gt;За повече информация вижте &lt;a style="%2" href="%3"&gt;документацията за %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the KSH in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH and 10 KSH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1 основни понятия&lt;/h3&gt; %1 ви дава истинска финансова независимост чрез скриване произхода на средствата ви. Всички KSH монети в портфейла ви са съставени от различни "входове" които можете да приемете като отделни дискретни монети&lt;br&gt; %1 използва иновативен процес като смесва вашите входове с входовете на други двама души без монетите да напускат изобщо портфейла ви. Имате пълен контрол върху парите си през цялото време. &lt;hr&gt; &lt;b&gt; %1 процесът работи по следния начин:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 започва чрез разделяне на транзакцията ви до стандартни деноминации. Тези деноминации са 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH и 10 KSH --подобно на стандартните пари, които ползваме ежедневно.&lt;/li&gt; &lt;li&gt;Вашия портфейл изпраща запитване към специално конфигурираните софтуерни възли в мрежата, наречени "masternodes." Тези masternodes са информирани, че се интересувате от смесване на определена деноминация. Никаква идентификационна информация не се изпраща към   masternodes, така, че те никога не знаят "кой" сте.&lt;/li&gt; &lt;li&gt;Когато други двама души изпратят подобни съобщения, обозначаващи, че искат да смесят същата деноминация, смесващата сесия започва. Masternode смесват входовете и инструктират портфейлите на тримата потребители да платят ново трансформираните входове обратно към притежателите им. Вашият портфейл плаща деноминацията директно на себе си, но с различен адрес (наричан сменен адрес).  &lt;/li&gt; &lt;li&gt;С цел напълно скриване на доходите ви, вашият портфейл трябва да повтори този процес няколко пъти във всяка деноминация.  Всеки път завършеният процес се нарича "цикъл." Всеки цикъл на %1 прави откриването на първоначалния източник на вашите средства напълно непроследим.&lt;/li&gt; &lt;li&gt;Този смесващ процес се случва като процес на заден фон без никаква намеса от ваша страна. Когато искате да направите транзакция, вашите средства са винаги анонимни. Не е необходимо допълнително изчакване. &lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ВАЖНО:&lt;/b&gt; Вашият портфейл съдържа само 1000 от тези "сменяеми адреси". Всеки път когато се случва смесването до 9 от вашите адреси се ползват.  Това означава, че тези 1000 адреси се миксират в около 100 смесващи събития. Когато 900 се използват, вашия портфейл трябва да създаде повече адреси. Това може да стане само ако имате автоматично архивиране.&lt;br&gt; Следователно, потребителите, на които е изключено автоматичното архивиране, нямат и  %1 включено. &lt;hr&gt;За повече информация вижте &lt;a style="%2" href="%3"&gt;документацията за %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1623,8 +1623,8 @@ Do you wish to continue?</source>
         <translation><numerusform>(достатъчно за възстановяване на резервни копия на %n ден)</numerusform><numerusform>(достатъчно за възстановяване на резервни копия на %n дни)</numerusform></translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the SMT block chain.</source>
-        <translation>%1 ще изтегли и съхрани копие на  SMT блок веригата.</translation>
+        <source>%1 will download and store a copy of the KSH block chain.</source>
+        <translation>%1 ще изтегли и съхрани копие на  KSH блок веригата.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1900,12 +1900,12 @@ Do you wish to continue?</source>
         <translation>Форма</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Smartiecoin network, as detailed below.</source>
-        <translation>Скорошните транзакции може да не са видими, поради което салдото на портфейла Ви може да е неправилно. Тази информация ще бъде правилна, след като портфейлът ви е завършил синхронизиране с SMT мрежата, както е описано по-долу.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Korsh network, as detailed below.</source>
+        <translation>Скорошните транзакции може да не са видими, поради което салдото на портфейла Ви може да е неправилно. Тази информация ще бъде правилна, след като портфейлът ви е завършил синхронизиране с KSH мрежата, както е описано по-долу.</translation>
     </message>
     <message>
-        <source>Attempting to spend SMT that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Опита да похарчите SMT, които са  от не визуализирани транзакции няма да бъде приет от мрежата.</translation>
+        <source>Attempting to spend KSH that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Опита да похарчите KSH, които са  от не визуализирани транзакции няма да бъде приет от мрежата.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -2232,8 +2232,8 @@ Do you wish to continue?</source>
         <translation>Максимум</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Автоматично отваря порта за Smartiecoin Core клиента в маршрутизатора. Това работи само когато вашият маршрутизатор поддържа UPnP и той е разрешен.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Автоматично отваря порта за Korsh Core клиента в маршрутизатора. Това работи само когато вашият маршрутизатор поддържа UPnP и той е разрешен.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -2248,8 +2248,8 @@ Do you wish to continue?</source>
         <translation>Разреши входящи връзки</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a SOCKS5 proxy.</source>
-        <translation>Свързване с мрежата на SMT чрез SOCKS5 прокси.</translation>
+        <source>Connect to the Korsh network through a SOCKS5 proxy.</source>
+        <translation>Свързване с мрежата на KSH чрез SOCKS5 прокси.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -2261,9 +2261,9 @@ Do you wish to continue?</source>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/SMT/SMT/</source>
+https://explore.transifex.com/KSH/KSH/</source>
         <translation>Липсва език или преводът е непълен? Помогнете с принос за преводи тук:
-https://explore.transifex.com/SMT/SMT/</translation>
+https://explore.transifex.com/KSH/KSH/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -2314,8 +2314,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Отваряне на входящия порт чрез &amp;UPnP</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Автоматично отвори порта на Smartiecoin Core клиента на рутера. Това работи само когато рутерът ви поддържа NAT-PMP и е активиран. Външният порт може да бъде случаен.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>Автоматично отвори порта на Korsh Core клиента на рутера. Това работи само когато рутерът ви поддържа NAT-PMP и е активиран. Външният порт може да бъде случаен.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -2366,8 +2366,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>&amp;Интерфейс</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a separate SOCKS5 proxy for Tor onion services.</source>
-        <translation>Свържи се към SMT мрежата чрез отделен SOCKS5 прокси за Tor onion услуги.</translation>
+        <source>Connect to the Korsh network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <translation>Свържи се към KSH мрежата чрез отделен SOCKS5 прокси за Tor onion услуги.</translation>
     </message>
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</source>
@@ -2469,8 +2469,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Формуляр</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Smartiecoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Показаната информация може да е остаряла. Вашият портфейл се синхронизира автоматично след изграждането на връзка с SMT мрежата, но този процес все още не е завършен.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Korsh network after a connection is established, but this process has not completed yet.</source>
+        <translation>Показаната информация може да е остаряла. Вашият портфейл се синхронизира автоматично след изграждането на връзка с KSH мрежата, но този процес все още не е завършен.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -2549,8 +2549,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Количество и цикли:</translation>
     </message>
     <message>
-        <source>0 SMT / 0 Rounds</source>
-        <translation>0 SMT / 0 Цикъла</translation>
+        <source>0 KSH / 0 Rounds</source>
+        <translation>0 KSH / 0 Цикъла</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -2832,16 +2832,16 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Грешка в заявката за плащане</translation>
     </message>
     <message>
-        <source>Cannot start smartiecoin: click-to-pay handler</source>
-        <translation>Не може да стартира smartiecoin: кликни за плащане на притежателя</translation>
+        <source>Cannot start korsh: click-to-pay handler</source>
+        <translation>Не може да стартира korsh: кликни за плащане на притежателя</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Обработка на URI</translation>
     </message>
     <message>
-        <source>'smartiecoin://' is not a valid URI. Use 'smartiecoin:' instead.</source>
-        <translation>'smartiecoin://' не е валиден URI. Използвайте 'smartiecoin:' вместо това.</translation>
+        <source>'korsh://' is not a valid URI. Use 'korsh:' instead.</source>
+        <translation>'korsh://' не е валиден URI. Използвайте 'korsh:' вместо това.</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.
@@ -2850,8 +2850,8 @@ Due to discontinued support, you should request the merchant to provide you with
 Поради прекратената поддръжка, трябва да поискате от търговеца да ви предостави BIP21 съвместимо URI или да използвате портфейл, който продължава да поддържа BIP70.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid SMT address or malformed URI parameters.</source>
-        <translation>Грешка при анализ на URI! Това може да е следствие от неправилен SMT адрес или неправилно зададени URI параметри.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid KSH address or malformed URI parameters.</source>
+        <translation>Грешка при анализ на URI! Това може да е следствие от неправилен KSH адрес или неправилно зададени URI параметри.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -3235,8 +3235,8 @@ You will now be redirected to monitor and broadcast your new proposal, you can r
         <translation>Сума</translation>
     </message>
     <message>
-        <source>Enter a SMT address (e.g. %1)</source>
-        <translation>Въведете SMT адрес (напр.%1)</translation>
+        <source>Enter a KSH address (e.g. %1)</source>
+        <translation>Въведете KSH адрес (напр.%1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -3785,8 +3785,8 @@ You will now be redirected to monitor and broadcast your new proposal, you can r
         <translation>Локални адреси</translation>
     </message>
     <message>
-        <source>Network addresses that your SMT node is currently using to communicate with other nodes.</source>
-        <translation>Мрежови адреси, които вашият SMT възел в момента използва за комуникация с други възли.</translation>
+        <source>Network addresses that your KSH node is currently using to communicate with other nodes.</source>
+        <translation>Мрежови адреси, които вашият KSH възел в момента използва за комуникация с други възли.</translation>
     </message>
     <message>
         <source>Number of regular Masternodes</source>
@@ -4195,8 +4195,8 @@ For more information on using this console, type %6.
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Smartiecoin network.</source>
-        <translation>Възможност  да се прикрепи съобщение към заявката за плащане, което да бъде показано при отваряне на заявката. Забележка: съобщението няма да бъде изпратено с плащането по мрежата на SMT.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Korsh network.</source>
+        <translation>Възможност  да се прикрепи съобщение към заявката за плащане, което да бъде показано при отваряне на заявката. Забележка: съобщението няма да бъде изпратено с плащането по мрежата на KSH.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -4207,8 +4207,8 @@ For more information on using this console, type %6.
         <translation>Възможност да се прикрепи наименование към новия адрес за получаване.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Smartiecoin network.</source>
-        <translation>Възможност  да се прикрепи съобщение към заявката за плащане, което да бъде показано при отваряне на заявката. &lt;br&gt;Забележка: съобщението няма да бъде изпратено с плащането по мрежата на SMT.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Korsh network.</source>
+        <translation>Възможност  да се прикрепи съобщение към заявката за плащане, което да бъде показано при отваряне на заявката. &lt;br&gt;Забележка: съобщението няма да бъде изпратено с плащането по мрежата на KSH.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -4499,8 +4499,8 @@ For more information on using this console, type %6.
         <translation>Такса транзакция:</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for SMT transactions than the network can process.</source>
-        <translation>Когато има по-малък обем транзакции от пространството в блоковете, майнърите както и препращащите възли могат да наложат минимална такса. Плащането само на тази минимална такса е напълно добре, но имайте предвид, че това може да доведе до никога непотвърдена транзакция, щом има повече търсене на SMT транзакции, отколкото мрежата може да обработи.</translation>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for KSH transactions than the network can process.</source>
+        <translation>Когато има по-малък обем транзакции от пространството в блоковете, майнърите както и препращащите възли могат да наложат минимална такса. Плащането само на тази минимална такса е напълно добре, но имайте предвид, че това може да доведе до никога непотвърдена транзакция, щом има повече търсене на KSH транзакции, отколкото мрежата може да обработи.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -4804,8 +4804,8 @@ For more information on using this console, type %6.
         <translation><numerusform>Очаква се да започне потвърждение в %n блока.</numerusform><numerusform>Очаква се да започне потвърждение в %n блока.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid SMT address</source>
-        <translation>Внимание: Невалиден SMT адрес</translation>
+        <source>Warning: Invalid KSH address</source>
+        <translation>Внимание: Невалиден KSH адрес</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -4831,8 +4831,8 @@ For more information on using this console, type %6.
         <translation>Плати &amp;На:</translation>
     </message>
     <message>
-        <source>The SMT address to send the payment to</source>
-        <translation>SMT адресът да изпрати плащането към </translation>
+        <source>The KSH address to send the payment to</source>
+        <translation>KSH адресът да изпрати плащането към </translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4871,8 +4871,8 @@ For more information on using this console, type %6.
         <translation>Сумата за изпращане в избраната единица</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of SMT than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Таксата ще бъде приспадната от количеството за изпращане. Получателят ще получи по-малко количество SMT от това, което сте въвели в полето. Ако са избрани няколко получателя, таксата ще бъде разделена  по равно.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of KSH than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>Таксата ще бъде приспадната от количеството за изпращане. Получателят ще получи по-малко количество KSH от това, което сте въвели в полето. Ако са избрани няколко получателя, таксата ще бъде разделена  по равно.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -4887,8 +4887,8 @@ For more information on using this console, type %6.
         <translation>Съобщение:</translation>
     </message>
     <message>
-        <source>A message that was attached to the smartiecoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Smartiecoin network.</source>
-        <translation>Съобщението което беше прикрепено към smartiecoin: URI ще бъде запазено с транзакцията за ваше сведение. Забележка: Това съобщение няма да бъде изпратено през SMT мрежата.</translation>
+        <source>A message that was attached to the korsh: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Korsh network.</source>
+        <translation>Съобщението което беше прикрепено към korsh: URI ще бъде запазено с транзакцията за ваше сведение. Забележка: Това съобщение няма да бъде изпратено през KSH мрежата.</translation>
     </message>
 </context>
 <context>
@@ -4924,12 +4924,12 @@ For more information on using this console, type %6.
         <translation>&amp;Подпиши</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive SMT sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Може да подпишете съобщенията/потвържденията с вашите адреси като доказателство, че сте получили SMT. Бъдете внимателни, не подписвайте съобщения, които биха разкрили лична информация без ваше съгласие.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive KSH sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Може да подпишете съобщенията/потвържденията с вашите адреси като доказателство, че сте получили KSH. Бъдете внимателни, не подписвайте съобщения, които биха разкрили лична информация без ваше съгласие.</translation>
     </message>
     <message>
-        <source>The SMT address to sign the message with</source>
-        <translation>SMT адресът да подпише съобщението</translation>
+        <source>The KSH address to sign the message with</source>
+        <translation>KSH адресът да подпише съобщението</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4960,8 +4960,8 @@ For more information on using this console, type %6.
         <translation>Копиране на текущия подпис в системния клипборд</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this SMT address</source>
-        <translation>Подпиши съобщението за да докажеш че притежаваш този SMT адрес</translation>
+        <source>Sign the message to prove you own this KSH address</source>
+        <translation>Подпиши съобщението за да докажеш че притежаваш този KSH адрес</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -4984,8 +4984,8 @@ For more information on using this console, type %6.
         <translation>Въведете адреса на получателя, съобщението (уверете се, че сте копирали редовете, спациите, табовете и другите точно) и подпишете отдолу, за да удостоверите съобщението. Внимавайте да не вмъкнете излишни символи в подписа от това, което е в самото съобщение, за избегнете риска от злонамерена външна намеса. Имайте предвид, че това само доказва, че подписа е получен с адреса, но не доказва изпращането на всяка транзакция!</translation>
     </message>
     <message>
-        <source>The SMT address the message was signed with</source>
-        <translation>SMT адресът ,с който е подписано съобщението</translation>
+        <source>The KSH address the message was signed with</source>
+        <translation>KSH адресът ,с който е подписано съобщението</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -4996,8 +4996,8 @@ For more information on using this console, type %6.
         <translation>Подписът даден когато съобщението беше подписано</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified SMT address</source>
-        <translation>Проверете съобщението, за да сте сигурни че е подписано с определен SMT адрес</translation>
+        <source>Verify the message to ensure it was signed with the specified KSH address</source>
+        <translation>Проверете съобщението, за да сте сигурни че е подписано с определен KSH адрес</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -5777,7 +5777,7 @@ Go to File &gt; Open Wallet to load a wallet.
     </message>
 </context>
 <context>
-    <name>SMT-core</name>
+    <name>KSH-core</name>
     <message>
         <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <translation>Тази грешка може да се появи, ако този портфейл не беше изключен правилно и беше последно зареден използвайки версия с по-нова версия на Berkeley DB. Ако е така, моля използвайте софтуера, който последно зареди този портфейл</translation>
@@ -6031,8 +6031,8 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>Грешка при зареждане на %s: Портфейл за външен подписващ се зарежда без компилирана поддръжка за външен подписващ</translation>
     </message>
     <message>
-        <source>Error: Dumpfile version is not supported. This version of SMT-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
-        <translation>Грешка: Версията на дъмп файла не се поддържа. Тази версия на SMT-wallet поддържа само дъмп файлове версия 1. Получен е дъмп файл с версия %s</translation>
+        <source>Error: Dumpfile version is not supported. This version of KSH-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <translation>Грешка: Версията на дъмп файла не се поддържа. Тази версия на KSH-wallet поддържа само дъмп файлове версия 1. Получен е дъмп файл с версия %s</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -6743,8 +6743,8 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>Последната опашка беше твърде скоро.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool SMT-wallet to salvage or restoring a backup.</source>
-        <translation>%s повреден. Опитайте използвайки инструмента за портфейл SMT-wallet за спасяване или възстановяване на резервно копие.</translation>
+        <source>%s corrupt. Try using the wallet tool KSH-wallet to salvage or restoring a backup.</source>
+        <translation>%s повреден. Опитайте използвайки инструмента за портфейл KSH-wallet за спасяване или възстановяване на резервно копие.</translation>
     </message>
     <message>
         <source>%s is set very high! Fees this large could be paid on a single transaction.</source>

@@ -320,7 +320,7 @@ static bool ContextualCheckTransaction(const CTransaction& tx, TxValidationState
 {
     bool fDIP0001Active_context = DeploymentActiveAfter(pindexPrev, consensusParams, Consensus::DEPLOYMENT_DIP0001);
     bool fDIP0003Active_context = DeploymentActiveAfter(pindexPrev, consensusParams, Consensus::DEPLOYMENT_DIP0003);
-    const bool fShieldActive = DeploymentActiveAfter(pindexPrev, consensusParams, Consensus::DEPLOYMENT_SMT_SHIELD);
+    const bool fShieldActive = DeploymentActiveAfter(pindexPrev, consensusParams, Consensus::DEPLOYMENT_KSH_SHIELD);
 
     if (tx.IsShieldedTxVersion() && !fShieldActive) {
         return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-txns-shield-not-active");
@@ -838,7 +838,7 @@ bool MemPoolAccept::PreChecks(ATMPArgs& args, Workspace& ws)
             const CTransaction* ptxConflicting = m_pool.GetConflictTx(txin.prevout);
             if (ptxConflicting)
             {
-                // Transaction conflicts with mempool and RBF doesn't exist in Smartiecoin
+                // Transaction conflicts with mempool and RBF doesn't exist in Korsh
                 return state.Invalid(TxValidationResult::TX_CONFLICT, "txn-mempool-conflict");
             }
         }
@@ -1508,23 +1508,23 @@ static std::pair<CAmount, CAmount> GetBlockSubsidyHelper(int nPrevBits, int nPre
 
     // Korsh economics: mainnet/testnet use 50 KSH initial subsidy,
     // halving every nSubsidyHalvingInterval and hard-cap emission at nMaxMoney.
-    // Keep devnet/regtest behavior aligned with Smartiecoin test tooling.
+    // Keep devnet/regtest behavior aligned with Korsh test tooling.
     if (isMainnet || isTestnet) {
-        static constexpr CAmount kBaseSubsidy = 50 * COIN;
-        // SMT v0.1.4: use 1,000,000 halving interval after fork height (was 1,030,596)
-        static constexpr int kNewHalvingInterval = 1000000;
-        static constexpr CAmount kSMTv040MinSubsidy = COIN;
+        static constexpr CAmount kBaseSubsidy = 2 * COIN;
+        // KSH v0.1.4: use 1,000,000 halving interval after fork height (was 1,030,596)
+        static constexpr int kNewHalvingInterval = 2500000;
+        static constexpr CAmount kKSHv040MinSubsidy = COIN;
         const int nNextHeight = nPrevHeight + 1;
-        const bool fSMTv040Active = consensusParams.IsSMTv040Active(nNextHeight);
-        const int nSMTv014Height = consensusParams.nSMTv014Height;
-        const int nHalvingInterval = (fSMTv040Active || nPrevHeight >= nSMTv014Height)
+        const bool fKSHv040Active = consensusParams.IsKSHv040Active(nNextHeight);
+        const int nKSHv014Height = consensusParams.nKSHv014Height;
+        const int nHalvingInterval = (fKSHv040Active || nPrevHeight >= nKSHv014Height)
             ? kNewHalvingInterval
             : consensusParams.nSubsidyHalvingInterval;
         const int nSubsidyShift = nPrevHeight / nHalvingInterval;
 
         CAmount nSubsidy = nSubsidyShift >= 64 ? CAmount{0} : (kBaseSubsidy >> nSubsidyShift);
-        if (fSMTv040Active && nSubsidy < kSMTv040MinSubsidy) {
-            nSubsidy = kSMTv040MinSubsidy;
+        if (fKSHv040Active && nSubsidy < kKSHv040MinSubsidy) {
+            nSubsidy = kKSHv040MinSubsidy;
         }
 
         CAmount nIssued{0};
@@ -1546,7 +1546,7 @@ static std::pair<CAmount, CAmount> GetBlockSubsidyHelper(int nPrevBits, int nPre
 
         CAmount nSuperblockPart{};
         if (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) {
-            // Smartiecoin: always use 10 % treasury regardless of V20 state
+            // Korsh: always use 10 % treasury regardless of V20 state
             nSuperblockPart = nSubsidy / 10;
         }
         return {nSubsidy - nSuperblockPart, nSuperblockPart};
@@ -1628,18 +1628,18 @@ CAmount GetBlockSubsidy(const CBlockIndex* const pindex, const Consensus::Params
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue, bool fV20Active)
 {
-    // SMT v0.3.0: 18/72/10 reward realloc. Treasury stays at 10%, so blockValue is 90%
+    // KSH v0.3.0: 18/72/10 reward realloc. Treasury stays at 10%, so blockValue is 90%
     // of subsidy; MN takes 4/5 of that = 72% of subsidy, miner gets the remaining 18%.
-    const int nSMTv030Height = Params().GetConsensus().nSMTv030Height;
-    if (nHeight >= nSMTv030Height) {
+    const int nKSHv030Height = Params().GetConsensus().nKSHv030Height;
+    if (nHeight >= nKSHv030Height) {
         return blockValue * 4 / 5;
     }
 
-    // SMT v0.1.4: fixed 50/50 split of the distributable reward (after 10% treasury).
+    // KSH v0.1.4: fixed 50/50 split of the distributable reward (after 10% treasury).
     // blockValue already has treasury deducted, so 50% of blockValue = 45% of total subsidy.
-    const int nSMTv014Height = Params().GetConsensus().nSMTv014Height;
-    if (nHeight >= nSMTv014Height) {
-        return blockValue / 2;
+    const int nKSHv014Height = Params().GetConsensus().nKSHv014Height;
+    if (nHeight >= nKSHv014Height) {
+        return blockValue * 3 / 10;
     }
 
     // Pre-v0.1.4: legacy variable MN share schedule
@@ -1926,7 +1926,7 @@ static bool RebuildSaplingTreeToIndex(const CBlockIndex* pindex, const Consensus
     }
 
     std::vector<const CBlockIndex*> indexes;
-    for (const CBlockIndex* cursor = pindex; cursor != nullptr && DeploymentActiveAt(*cursor, consensusParams, Consensus::DEPLOYMENT_SMT_SHIELD); cursor = cursor->pprev) {
+    for (const CBlockIndex* cursor = pindex; cursor != nullptr && DeploymentActiveAt(*cursor, consensusParams, Consensus::DEPLOYMENT_KSH_SHIELD); cursor = cursor->pprev) {
         indexes.push_back(cursor);
     }
     std::reverse(indexes.begin(), indexes.end());
@@ -2171,7 +2171,7 @@ DisconnectResult CChainState::DisconnectBlock(const CBlock& block, const CBlockI
 
     uint256 saplingRootBeforeBlock;
     std::vector<uint256> saplingRootsInBlock;
-    if (DeploymentActiveAt(*pindex, m_params.GetConsensus(), Consensus::DEPLOYMENT_SMT_SHIELD)) {
+    if (DeploymentActiveAt(*pindex, m_params.GetConsensus(), Consensus::DEPLOYMENT_KSH_SHIELD)) {
         SaplingMerkleTree saplingTree;
         if (!RebuildSaplingTreeToIndex(pindex->pprev, m_params.GetConsensus(), saplingTree)) {
             error("DisconnectBlock(): failed to rebuild Sapling note commitment tree");
@@ -2385,7 +2385,7 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Chainst
     unsigned int flags = SCRIPT_VERIFY_NONE;
 
     // Start enforcing P2SH (BIP16)
-    // It always active on Smartiecoin chains
+    // It always active on Korsh chains
     flags |= SCRIPT_VERIFY_P2SH;
 
     // Enforce the DERSIG (BIP66) rule
@@ -2422,7 +2422,7 @@ static int64_t nTimeSubsidy = 0;
 static int64_t nTimeValueValid = 0;
 static int64_t nTimePayeeValid = 0;
 static int64_t nTimeProcessSpecial = 0;
-static int64_t nTimeSmartiecoinSpecific = 0;
+static int64_t nTimeKorshSpecific = 0;
 static int64_t nTimeConnect = 0;
 static int64_t nTimeIndexConnect = 0;
 static int64_t nTimeIndexWrite = 0;
@@ -2562,7 +2562,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
         }
     }
 
-    /// SMT: Check superblock start
+    /// KSH: Check superblock start
 
     // make sure old budget is the real one
     if (pindex->nHeight == m_params.GetConsensus().nSuperblockStartBlock &&
@@ -2571,7 +2571,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
             LogPrintf("ERROR: ConnectBlock(): invalid superblock start\n");
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-sb-start");
     }
-    /// END SMT
+    /// END KSH
 
     // Enforce BIP68 (sequence locks)
     int nLockTimeFlags = 0;
@@ -2609,7 +2609,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     // MUST process special txes before updating UTXO to ensure consistency between mempool and block processing
     std::optional<MNListUpdates> mnlist_updates_opt{std::nullopt};
     if (!m_chain_helper->special_tx->ProcessSpecialTxsInBlock(block, pindex, view, fJustCheck, fScriptChecks, state, mnlist_updates_opt)) {
-        return error("ConnectBlock(SMARTIECOIN): ProcessSpecialTxsInBlock for block %s failed with %s",
+        return error("ConnectBlock(KORSH): ProcessSpecialTxsInBlock for block %s failed with %s",
             pindex->GetBlockHash().ToString(), state.ToString());
     }
 
@@ -2754,7 +2754,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     LogPrint(BCLog::BENCHMARK, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs (%.2fms/blk)]\n", nInputs - 1, MILLI * (nTime4 - nTime2), nInputs <= 1 ? 0 : MILLI * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * MICRO, nTimeVerify * MILLI / nBlocksTotal);
 
 
-    // SMT
+    // KSH
 
     // It's possible that we simply don't have enough data and this could fail
     // (i.e. block itself could be a correct one and we need to store it),
@@ -2762,7 +2762,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     // the peer who sent us this block is missing some data and wasn't able
     // to recognize that block is actually invalid.
 
-    // SMT : CHECK TRANSACTIONS FOR INSTANTSEND
+    // KSH : CHECK TRANSACTIONS FOR INSTANTSEND
 
     if (m_chain_helper->ShouldInstantSendRejectConflicts()) {
         // Require other nodes to comply, send them some data in case they are missing it.
@@ -2773,12 +2773,12 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
             while (auto conflictLockOpt = m_chain_helper->ConflictingISLockIfAny(*tx)) {
                 auto [conflict_islock_hash, conflict_txid] = conflictLockOpt.value();
                 if (has_chainlock) {
-                    LogPrint(BCLog::ALL, "ConnectBlock(SMARTIECOIN): chain-locked transaction %s overrides islock %s\n", tx->GetHash().ToString(), conflict_islock_hash.ToString());
+                    LogPrint(BCLog::ALL, "ConnectBlock(KORSH): chain-locked transaction %s overrides islock %s\n", tx->GetHash().ToString(), conflict_islock_hash.ToString());
                     m_chain_helper->RemoveConflictingISLockByTx(*tx);
                 } else {
                     // The node which relayed this should switch to correct chain.
                     // TODO: relay instantsend data/proof.
-                    LogPrintf("ERROR: ConnectBlock(SMARTIECOIN): transaction %s conflicts with transaction lock %s\n", tx->GetHash().ToString(), conflict_txid.ToString());
+                    LogPrintf("ERROR: ConnectBlock(KORSH): transaction %s conflicts with transaction lock %s\n", tx->GetHash().ToString(), conflict_txid.ToString());
                     return state.Invalid(BlockValidationResult::BLOCK_CHAINLOCK, "conflict-tx-lock");
                 }
             }
@@ -2788,7 +2788,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     int64_t nTime5_1 = GetTimeMicros(); nTimeISFilter += nTime5_1 - nTime4;
     LogPrint(BCLog::BENCHMARK, "      - IS filter: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5_1 - nTime4), nTimeISFilter * MICRO, nTimeISFilter * MILLI / nBlocksTotal);
 
-    // SMT : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
+    // KSH : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
 
     // TODO: resync data (both ways?) and try to reprocess this block later.
     CAmount blockSubsidy = GetBlockSubsidy(pindex, m_params.GetConsensus());
@@ -2803,7 +2803,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
 
     if (!m_chain_helper->mn_payments->IsBlockValueValid(block, pindex->nHeight, blockSubsidy + feeReward, strError, check_superblock)) {
         // NOTE: Do not punish, the node might be missing governance data
-        LogPrintf("ERROR: ConnectBlock(SMARTIECOIN): %s\n", strError);
+        LogPrintf("ERROR: ConnectBlock(KORSH): %s\n", strError);
         return state.Invalid(BlockValidationResult::BLOCK_RESULT_UNSET, "bad-cb-amount");
     }
 
@@ -2812,17 +2812,17 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
 
     if (!m_chain_helper->mn_payments->IsBlockPayeeValid(*block.vtx[0], pindex->pprev, blockSubsidy, feeReward, check_superblock)) {
         // NOTE: Do not punish, the node might be missing governance data
-        LogPrintf("ERROR: ConnectBlock(SMARTIECOIN): couldn't find masternode or superblock payments\n");
+        LogPrintf("ERROR: ConnectBlock(KORSH): couldn't find masternode or superblock payments\n");
         return state.Invalid(BlockValidationResult::BLOCK_RESULT_UNSET, "bad-cb-payee");
     }
 
     int64_t nTime5_4 = GetTimeMicros(); nTimePayeeValid += nTime5_4 - nTime5_3;
     LogPrint(BCLog::BENCHMARK, "      - IsBlockPayeeValid: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5_4 - nTime5_3), nTimePayeeValid * MICRO, nTimePayeeValid * MILLI / nBlocksTotal);
 
-    int64_t nTime5 = GetTimeMicros(); nTimeSmartiecoinSpecific += nTime5 - nTime4;
-    LogPrint(BCLog::BENCHMARK, "    - Smartiecoin specific: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5 - nTime4), nTimeSmartiecoinSpecific * MICRO, nTimeSmartiecoinSpecific * MILLI / nBlocksTotal);
+    int64_t nTime5 = GetTimeMicros(); nTimeKorshSpecific += nTime5 - nTime4;
+    LogPrint(BCLog::BENCHMARK, "    - Korsh specific: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5 - nTime4), nTimeKorshSpecific * MICRO, nTimeKorshSpecific * MILLI / nBlocksTotal);
 
-    // END SMT
+    // END KSH
 
     if (fJustCheck)
         return true;
@@ -4902,7 +4902,7 @@ bool CChainState::RollforwardBlock(const CBlockIndex* pindex, CCoinsViewCache& i
     BlockValidationState state;
     std::optional<MNListUpdates> mnlist_updates_opt{std::nullopt};
     if (!m_chain_helper->special_tx->ProcessSpecialTxsInBlock(block, pindex, inputs, false /*fJustCheck*/, false /*fScriptChecks*/, state, mnlist_updates_opt)) {
-        return error("RollforwardBlock(SMARTIECOIN): ProcessSpecialTxsInBlock for block %s failed with %s",
+        return error("RollforwardBlock(KORSH): ProcessSpecialTxsInBlock for block %s failed with %s",
             pindex->GetBlockHash().ToString(), state.ToString());
     }
 
@@ -4972,22 +4972,22 @@ bool CChainState::RollforwardBlock(const CBlockIndex* pindex, CCoinsViewCache& i
 
     if (fAddressIndex) {
         if (!m_blockman.m_block_tree_db->WriteAddressIndex(addressIndex)) {
-            return error("RollforwardBlock(SMARTIECOIN): Failed to write address index");
+            return error("RollforwardBlock(KORSH): Failed to write address index");
         }
 
         if (!m_blockman.m_block_tree_db->UpdateAddressUnspentIndex(addressUnspentIndex)) {
-            return error("RollforwardBlock(SMARTIECOIN): Failed to write address unspent index");
+            return error("RollforwardBlock(KORSH): Failed to write address unspent index");
         }
     }
 
     if (fSpentIndex) {
         if (!m_blockman.m_block_tree_db->UpdateSpentIndex(spentIndex))
-            return error("RollforwardBlock(SMARTIECOIN): Failed to write transaction index");
+            return error("RollforwardBlock(KORSH): Failed to write transaction index");
     }
 
     if (fTimestampIndex) {
         if (!m_blockman.m_block_tree_db->WriteTimestampIndex(CTimestampIndexKey(pindex->nTime, pindex->GetBlockHash())))
-            return error("RollforwardBlock(SMARTIECOIN): Failed to write timestamp index");
+            return error("RollforwardBlock(KORSH): Failed to write timestamp index");
     }
 
     return true;
@@ -5025,7 +5025,7 @@ bool CChainState::ReplayBlocks()
         assert(pindexFork != nullptr);
         const bool fDIP0003Active = DeploymentActiveAt(*pindexOld, m_params.GetConsensus(), Consensus::DEPLOYMENT_DIP0003);
         if (fDIP0003Active && !m_evoDb.VerifyBestBlock(pindexOld->GetBlockHash())) {
-            return error("ReplayBlocks(SMARTIECOIN): Found EvoDB inconsistency");
+            return error("ReplayBlocks(KORSH): Found EvoDB inconsistency");
         }
     }
 
@@ -6222,11 +6222,11 @@ bool ChainstateManager::IsQuorumTypeEnabled(const Consensus::LLMQType llmqType,
     case Consensus::LLMQType::LLMQ_25_67:
         return pindexPrev->nHeight >= TESTNET_LLMQ_25_67_ACTIVATION_HEIGHT;
 
-    // Smartiecoin small-network quorums: enabled after nSMTSmallQuorumsHeight (block 45,000)
+    // Korsh small-network quorums: enabled after nKSHSmallQuorumsHeight (block 45,000)
     case Consensus::LLMQType::LLMQ_10_60:
-        return pindexPrev->nHeight >= GetConsensus().nSMTSmallQuorumsHeight;
+        return pindexPrev->nHeight >= GetConsensus().nKSHSmallQuorumsHeight;
     case Consensus::LLMQType::LLMQ_10_75:
-        return pindexPrev->nHeight >= GetConsensus().nSMTSmallQuorumsHeight && fDIP0024IsActive;
+        return pindexPrev->nHeight >= GetConsensus().nKSHSmallQuorumsHeight && fDIP0024IsActive;
 
     default:
         throw std::runtime_error(strprintf("%s: Unknown LLMQ type %d", __func__, ToUnderlying(llmqType)));

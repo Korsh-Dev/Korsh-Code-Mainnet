@@ -3,10 +3,10 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += qt/smartiecoin-qt
+bin_PROGRAMS += qt/korsh-qt
 
 if BUILD_BITCOIN_GUI
-  bin_PROGRAMS += smartiecoin-gui
+  bin_PROGRAMS += korsh-gui
 endif
 
 EXTRA_LIBRARIES += qt/libbitcoinqt.a
@@ -118,7 +118,7 @@ QT_MOC = \
   qt/rpcconsole.moc
 
 QT_QRC_CPP = qt/qrc_bitcoin.cpp
-QT_QRC = qt/smartiecoin.qrc
+QT_QRC = qt/korsh.qrc
 QT_QRC_LOCALE_CPP = qt/qrc_dash_locale.cpp
 QT_QRC_LOCALE = qt/dash_locale.qrc
 
@@ -201,7 +201,7 @@ QT_RES_ICONS = \
   qt/res/icons/connect2_16.png \
   qt/res/icons/connect3_16.png \
   qt/res/icons/connect4_16.png \
-  qt/res/icons/smartiecoin.png \
+  qt/res/icons/korsh.png \
   qt/res/icons/editcopy.png \
   qt/res/icons/editpaste.png \
   qt/res/icons/eye.png \
@@ -392,7 +392,7 @@ QT_RES_FONTS = \
 
 QT_RES_ANIMATION = $(wildcard $(srcdir)/qt/res/animation/spinner-*.png)
 
-BITCOIN_QT_RC = qt/res/smartiecoin-qt-res.rc
+BITCOIN_QT_RC = qt/res/korsh-qt-res.rc
 
 BITCOIN_QT_INCLUDES = -DQT_NO_KEYWORDS -DQT_USE_QSTRINGBUILDER
 
@@ -416,9 +416,9 @@ QT_FORMS_H=$(join $(dir $(QT_FORMS_UI)),$(addprefix ui_, $(notdir $(QT_FORMS_UI:
 # Most files will depend on the forms and moc files as includes. Generate them
 # before anything else.
 $(QT_MOC): $(QT_FORMS_H)
-$(qt_libbitcoinqt_a_OBJECTS) $(qt_smartiecoin_qt_OBJECTS) $(smartiecoin_gui_OBJECTS): | $(QT_MOC)
+$(qt_libbitcoinqt_a_OBJECTS) $(qt_korsh_qt_OBJECTS) $(korsh_gui_OBJECTS): | $(QT_MOC)
 
-# smartiecoin-qt and smartiecoin-gui binaries #
+# korsh-qt and korsh-gui binaries #
 bitcoin_qt_cppflags = $(AM_CPPFLAGS) $(BDB_CFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(QR_CFLAGS)
 bitcoin_qt_cxxflags = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
@@ -440,19 +440,19 @@ bitcoin_qt_ldadd += $(LIBBITCOIN_CLI) $(LIBSAPLING) $(LIBBITCOIN_COMMON) $(LIBBI
 bitcoin_qt_ldflags = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 bitcoin_qt_libtoolflags = $(AM_LIBTOOLFLAGS) --tag CXX
 
-qt_smartiecoin_qt_CPPFLAGS = $(bitcoin_qt_cppflags)
-qt_smartiecoin_qt_CXXFLAGS = $(bitcoin_qt_cxxflags)
-qt_smartiecoin_qt_SOURCES = $(bitcoin_qt_sources) init/bitcoin-qt.cpp
-qt_smartiecoin_qt_LDADD = $(bitcoin_qt_ldadd)
-qt_smartiecoin_qt_LDFLAGS = $(bitcoin_qt_ldflags)
-qt_smartiecoin_qt_LIBTOOLFLAGS = $(bitcoin_qt_libtoolflags)
+qt_korsh_qt_CPPFLAGS = $(bitcoin_qt_cppflags)
+qt_korsh_qt_CXXFLAGS = $(bitcoin_qt_cxxflags)
+qt_korsh_qt_SOURCES = $(bitcoin_qt_sources) init/bitcoin-qt.cpp
+qt_korsh_qt_LDADD = $(bitcoin_qt_ldadd)
+qt_korsh_qt_LDFLAGS = $(bitcoin_qt_ldflags)
+qt_korsh_qt_LIBTOOLFLAGS = $(bitcoin_qt_libtoolflags)
 
-smartiecoin_gui_CPPFLAGS = $(bitcoin_qt_cppflags)
-smartiecoin_gui_CXXFLAGS = $(bitcoin_qt_cxxflags)
-smartiecoin_gui_SOURCES = $(bitcoin_qt_sources) init/bitcoin-gui.cpp
-smartiecoin_gui_LDADD = $(bitcoin_qt_ldadd) $(LIBBITCOIN_IPC) $(LIBBITCOIN_UTIL) $(LIBMULTIPROCESS_LIBS)
-smartiecoin_gui_LDFLAGS = $(bitcoin_qt_ldflags)
-smartiecoin_gui_LIBTOOLFLAGS = $(bitcoin_qt_libtoolflags)
+korsh_gui_CPPFLAGS = $(bitcoin_qt_cppflags)
+korsh_gui_CXXFLAGS = $(bitcoin_qt_cxxflags)
+korsh_gui_SOURCES = $(bitcoin_qt_sources) init/bitcoin-gui.cpp
+korsh_gui_LDADD = $(bitcoin_qt_ldadd) $(LIBBITCOIN_IPC) $(LIBBITCOIN_UTIL) $(LIBMULTIPROCESS_LIBS)
+korsh_gui_LDFLAGS = $(bitcoin_qt_ldflags)
+korsh_gui_LIBTOOLFLAGS = $(bitcoin_qt_libtoolflags)
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
@@ -481,16 +481,16 @@ $(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
 
 $(QT_QRC_CPP): $(QT_QRC) $(QT_FORMS_H) $(QT_RES_ICONS) $(QT_RES_IMAGES) $(QT_RES_CSS) $(QT_RES_FONTS) $(QT_RES_ANIMATION)
 	@test -f $(RCC) || (echo "rcc $(RCC) not found, but is required for generating qrc cpp files"; exit 1)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name smartiecoin --format-version 1 $< > $@
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name korsh --format-version 1 $< > $@
 
 CLEAN_QT = $(nodist_qt_libbitcoinqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_dash_locale.qrc qt/res/css/colors/*
 
 CLEANFILES += $(CLEAN_QT)
 
-smartiecoin_qt_clean: FORCE
-	rm -f $(CLEAN_QT) $(qt_libbitcoinqt_a_OBJECTS) $(qt_smartiecoin_qt_OBJECTS) qt/smartiecoin-qt$(EXEEXT) $(LIBBITCOINQT)
+korsh_qt_clean: FORCE
+	rm -f $(CLEAN_QT) $(qt_libbitcoinqt_a_OBJECTS) $(qt_korsh_qt_OBJECTS) qt/korsh-qt$(EXEEXT) $(LIBBITCOINQT)
 
-smartiecoin_qt : qt/smartiecoin-qt$(EXEEXT)
+korsh_qt : qt/korsh-qt$(EXEEXT)
 
 ui_%.h: %.ui
 	@test -f $(UIC) || (echo "uic $(UIC) not found, but is required for generating ui headers"; exit 1)

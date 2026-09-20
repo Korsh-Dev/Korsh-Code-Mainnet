@@ -1,6 +1,6 @@
 [Protocol]
-exec=smartiecoin-qt '%u'
-protocol=smartiecoin
+exec=korsh-qt '%u'
+protocol=korsh
 input=none
 output=none
 helper=true

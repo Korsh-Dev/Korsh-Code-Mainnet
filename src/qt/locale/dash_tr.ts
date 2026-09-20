@@ -66,12 +66,12 @@
         <translation>S&amp;eçiniz</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Bunlar ödemeleri göndermek için kullanacağınız SMT adreslerinizdir. SMT yollamadan önce tutarı ve alıcının alım adresini her zaman kontrol ediniz.</translation>
+        <source>These are your KSH addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Bunlar ödemeleri göndermek için kullanacağınız KSH adreslerinizdir. KSH yollamadan önce tutarı ve alıcının alım adresini her zaman kontrol ediniz.</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Bunlar, ödeme almak için SMT adreslerinizdir. Yeni adresler oluşturmak için alma sekmesindeki 'Yeni alıcı adresi oluştur' düğmesini kullanın.</translation>
+        <source>These are your KSH addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Bunlar, ödeme almak için KSH adreslerinizdir. Yeni adresler oluşturmak için alma sekmesindeki 'Yeni alıcı adresi oluştur' düğmesini kullanın.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -225,7 +225,7 @@
         <translation>Cüzdan şifrelemesini onayla</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR SMT&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR KSH&lt;/b&gt;!</source>
         <translation>Uyarı: Eğer cüzdanınızı şifreler ve parolanızı unutursanız &lt;b&gt;TÜM DASHİNİZİ KAYBEDERSİNİZ&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -365,16 +365,16 @@
         <translation>&amp;Gönder</translation>
     </message>
     <message>
-        <source>Send coins to a SMT address</source>
-        <translation>Bir SMT adresine coin gönder</translation>
+        <source>Send coins to a KSH address</source>
+        <translation>Bir KSH adresine coin gönder</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Al</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and smartiecoin: URIs)</source>
-        <translation>Ödeme talep et (QR kodu ve SMT URI'si oluşturur)</translation>
+        <source>Request payments (generates QR codes and korsh: URIs)</source>
+        <translation>Ödeme talep et (QR kodu ve KSH URI'si oluşturur)</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -489,8 +489,8 @@
         <translation>%1 &amp;Hakkında</translation>
     </message>
     <message>
-        <source>Send %1 funds to a SMT address</source>
-        <translation>%1 Koinleri SMT adresine</translation>
+        <source>Send %1 funds to a KSH address</source>
+        <translation>%1 Koinleri KSH adresine</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -525,12 +525,12 @@
         <translation>Cüzdanı &amp;Kilitle</translation>
     </message>
     <message>
-        <source>Sign messages with your SMT addresses to prove you own them</source>
-        <translation>İletileri adreslerin size ait olduğunu ispatlamak için SMT adresleri ile imzala</translation>
+        <source>Sign messages with your KSH addresses to prove you own them</source>
+        <translation>İletileri adreslerin size ait olduğunu ispatlamak için KSH adresleri ile imzala</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified SMT addresses</source>
-        <translation>Belirtilen SMT adresleri ile imzalandıklarından emin olmak için iletileri kontrol et</translation>
+        <source>Verify messages to ensure they were signed with specified KSH addresses</source>
+        <translation>Belirtilen KSH adresleri ile imzalandıklarından emin olmak için iletileri kontrol et</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -593,8 +593,8 @@
         <translation>&amp;Komut satırı seçenekleri</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible SMT command-line options</source>
-        <translation>Olası SMT komut satırı seçeneklerinin listesini görmek için %1 yardım mesajını göster</translation>
+        <source>Show the %1 help message to get a list with possible KSH command-line options</source>
+        <translation>Olası KSH komut satırı seçeneklerinin listesini görmek için %1 yardım mesajını göster</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -655,8 +655,8 @@
         <translation>&amp;Cüzdan yapılandırma dosyasını aç</translation>
     </message>
     <message>
-        <source>Open a smartiecoin: URI</source>
-        <translation>Bir smartiecoin: URI aç</translation>
+        <source>Open a korsh: URI</source>
+        <translation>Bir korsh: URI aç</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -745,9 +745,9 @@
         <translation>&amp;Göster</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Smartiecoin network</source>
+        <source>%n active connection(s) to Korsh network</source>
         <extracomment>A substring of the tooltip.</extracomment>
-        <translation><numerusform>SMT ağına %n aktif bağlantı</numerusform><numerusform>SMT ağına %n aktif bağlantı</numerusform></translation>
+        <translation><numerusform>KSH ağına %n aktif bağlantı</numerusform><numerusform>KSH ağına %n aktif bağlantı</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -1298,8 +1298,8 @@
         <translation>Gönderi adresini düzenle</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid SMT address.</source>
-        <translation>Girilen %1 adresi, geçerli bir SMT adresi değildir.</translation>
+        <source>The entered address "%1" is not a valid KSH address.</source>
+        <translation>Girilen %1 adresi, geçerli bir KSH adresi değildir.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1547,8 +1547,8 @@ Devam etmek istiyor musunuz?</translation>
         <translation>%1 Bilgi</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the SMT in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT and 10 SMT -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 Temel Bilgiler&lt;/h3&gt; %1 size paranızın gerçek kaynağını gizleyerek tam bir gizlilik imkanı sağlar. Cüzdanınızdaki SMT farklı "girdiler"den oluşur, bunu ayrı gizli paralar olarak düşünebilirsiniz.&lt;br&gt; %1 sizin girdilerinizi başka iki kişinin girdileri ile karıştırmak için yenilikçi bir işlem kullanır ve bu sırada paranın cüzdanınızdan çıkmasına gerek kalmaz. Her an paranızın kontrolü sizdedir.&lt;hr&gt; &lt;b&gt;%1 işlemi şöyle işler:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 işlem girdilerinizi standart birimlere bölerek başlar. Bu birimler 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT ve 10 SMT'dir -- her gün kullandığınız kağıt para gibi düşünebilirsiniz.&lt;/li&gt; &lt;li&gt;Sonra cüzdanınız ağdaki özel ayarlanmış yazılım düğümlerine talepler gönderir, bunşara "ana düğümler" denir. Bu ana düğümlere sizin belli bir miktar birimi karıştırmak istediğiniz bilgisi gider. Ana düğümlere kimliğinizi açık edecek bir bilgi gönderilmez, bu yüzden "kim" olduğunuzu bilmezler.&lt;/li&gt; &lt;li&gt;Aynı birimleri karıştırmak istediğini belirten iki başka kişi daha benzer mesajlar gönderince, karıştırma işlemi başlar. Ana düğüm giridleri karıştırır ve üç kullanıcının da cüzdanına şimdi dönüştürülmüş olan girdiyi kendilerne ödemelerini emreder. Cüzdanınız bu birimleri doğrudan kendisine öder ama farklı bir adres kullanır (buna değişim adresi denir).&lt;/li&gt; &lt;li&gt;Paranızı tamamen gizlemek için cüzdanınız bu işlemi her birim için birkaç defa tekrar etmelidir. Her işlem tamamlandığına buna bir "tur" denir. Her bir %1 turu paranızın kaynağının bulunmasını üstel olarak zorlaştırır.&lt;/li&gt; &lt;li&gt;Bu karışım işlemi arkaplanda sizin tarafınızdan bir müdahale olmadan gerçekleşir. Bir işlem yapmak istediğinizde bakiyeniz zaten karışmış olacaktır. Ek bir beklemeye gerek kalmaz.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ÖNEMLİ:&lt;/b&gt; Cüzdanınızda bu "değişim adreslerinden" sadece 1000 tane vardır. Her bir karışım işleminde bu adreslerden 9 taneye kadar kullanılır. Bu da 1000 adresin yaklaşık 100 karışım işlemine yeteceği anlamına gelir. 900 tanesi kullanıldığı zaman, cüzdanınızın daha fazla adres oluşturması gerekir. Yalnız bunu ancak otomatik yedekleme etkinse yapabilir.&lt;br&gt; Sonuç olarak yedeklemeyi kapatan kullanıcılar aynı zamanda %1 de kapatmış olurlar. &lt;hr&gt;Daha fazla bilgi için lütfen &lt;a style="%2" href="%3"&gt;%1 dökümantasyonuna&lt;/a&gt; göz atın.         </translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the KSH in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH and 10 KSH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1 Temel Bilgiler&lt;/h3&gt; %1 size paranızın gerçek kaynağını gizleyerek tam bir gizlilik imkanı sağlar. Cüzdanınızdaki KSH farklı "girdiler"den oluşur, bunu ayrı gizli paralar olarak düşünebilirsiniz.&lt;br&gt; %1 sizin girdilerinizi başka iki kişinin girdileri ile karıştırmak için yenilikçi bir işlem kullanır ve bu sırada paranın cüzdanınızdan çıkmasına gerek kalmaz. Her an paranızın kontrolü sizdedir.&lt;hr&gt; &lt;b&gt;%1 işlemi şöyle işler:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 işlem girdilerinizi standart birimlere bölerek başlar. Bu birimler 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH ve 10 KSH'dir -- her gün kullandığınız kağıt para gibi düşünebilirsiniz.&lt;/li&gt; &lt;li&gt;Sonra cüzdanınız ağdaki özel ayarlanmış yazılım düğümlerine talepler gönderir, bunşara "ana düğümler" denir. Bu ana düğümlere sizin belli bir miktar birimi karıştırmak istediğiniz bilgisi gider. Ana düğümlere kimliğinizi açık edecek bir bilgi gönderilmez, bu yüzden "kim" olduğunuzu bilmezler.&lt;/li&gt; &lt;li&gt;Aynı birimleri karıştırmak istediğini belirten iki başka kişi daha benzer mesajlar gönderince, karıştırma işlemi başlar. Ana düğüm giridleri karıştırır ve üç kullanıcının da cüzdanına şimdi dönüştürülmüş olan girdiyi kendilerne ödemelerini emreder. Cüzdanınız bu birimleri doğrudan kendisine öder ama farklı bir adres kullanır (buna değişim adresi denir).&lt;/li&gt; &lt;li&gt;Paranızı tamamen gizlemek için cüzdanınız bu işlemi her birim için birkaç defa tekrar etmelidir. Her işlem tamamlandığına buna bir "tur" denir. Her bir %1 turu paranızın kaynağının bulunmasını üstel olarak zorlaştırır.&lt;/li&gt; &lt;li&gt;Bu karışım işlemi arkaplanda sizin tarafınızdan bir müdahale olmadan gerçekleşir. Bir işlem yapmak istediğinizde bakiyeniz zaten karışmış olacaktır. Ek bir beklemeye gerek kalmaz.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ÖNEMLİ:&lt;/b&gt; Cüzdanınızda bu "değişim adreslerinden" sadece 1000 tane vardır. Her bir karışım işleminde bu adreslerden 9 taneye kadar kullanılır. Bu da 1000 adresin yaklaşık 100 karışım işlemine yeteceği anlamına gelir. 900 tanesi kullanıldığı zaman, cüzdanınızın daha fazla adres oluşturması gerekir. Yalnız bunu ancak otomatik yedekleme etkinse yapabilir.&lt;br&gt; Sonuç olarak yedeklemeyi kapatan kullanıcılar aynı zamanda %1 de kapatmış olurlar. &lt;hr&gt;Daha fazla bilgi için lütfen &lt;a style="%2" href="%3"&gt;%1 dökümantasyonuna&lt;/a&gt; göz atın.         </translation>
     </message>
 </context>
 <context>
@@ -1623,8 +1623,8 @@ Devam etmek istiyor musunuz?</translation>
         <translation><numerusform>(%n gün önceki yedekleri geri yüklemek için yeterli)</numerusform><numerusform>(%n gün önceki yedekleri geri yüklemek için yeterli)</numerusform></translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the SMT block chain.</source>
-        <translation>%1 lik SMT blok zinciri nin bir kopyasını indirecek ve depolayacak.</translation>
+        <source>%1 will download and store a copy of the KSH block chain.</source>
+        <translation>%1 lik KSH blok zinciri nin bir kopyasını indirecek ve depolayacak.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1900,12 +1900,12 @@ Devam etmek istiyor musunuz?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Smartiecoin network, as detailed below.</source>
-        <translation>Son işlemler henüz görünmeyebilir ve bu nedenle cüzdanınızın bakiyesi yanlış olabilir. Bu bilgiler, aşağıda detaylandırıldığı gibi, cüzdanınız SMT ağı ile senkronizasyonunu tamamladığında doğru olacaktır. </translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Korsh network, as detailed below.</source>
+        <translation>Son işlemler henüz görünmeyebilir ve bu nedenle cüzdanınızın bakiyesi yanlış olabilir. Bu bilgiler, aşağıda detaylandırıldığı gibi, cüzdanınız KSH ağı ile senkronizasyonunu tamamladığında doğru olacaktır. </translation>
     </message>
     <message>
-        <source>Attempting to spend SMT that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Daha görüntülenmemiş işlemler tarafından etkilenen SMT'i harcama teşebbüsü ağ tarafından kabul edilmez.</translation>
+        <source>Attempting to spend KSH that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Daha görüntülenmemiş işlemler tarafından etkilenen KSH'i harcama teşebbüsü ağ tarafından kabul edilmez.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -2232,8 +2232,8 @@ Devam etmek istiyor musunuz?</translation>
         <translation>Maksimum</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Router'da otomatik olarak Smartiecoin Core istemcisi portu aç. Bu sadece router'ınız UPnP destekliyorsa ve etkinse çalışır.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Router'da otomatik olarak Korsh Core istemcisi portu aç. Bu sadece router'ınız UPnP destekliyorsa ve etkinse çalışır.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -2248,8 +2248,8 @@ Devam etmek istiyor musunuz?</translation>
         <translation>Gelen bağlantılara izin ver</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a SOCKS5 proxy.</source>
-        <translation>SMT ağına bir SOCKS5 vekil sunucusu aracılığıyla bağlan.</translation>
+        <source>Connect to the Korsh network through a SOCKS5 proxy.</source>
+        <translation>KSH ağına bir SOCKS5 vekil sunucusu aracılığıyla bağlan.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -2261,9 +2261,9 @@ Devam etmek istiyor musunuz?</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/SMT/SMT/</source>
+https://explore.transifex.com/KSH/KSH/</source>
         <translation>Dil eksik veya çeviri tamamlanmamış mı? Çevirilere katkıda bulunmak için buraya bakın:
-https://explore.transifex.com/SMT/SMT/</translation>
+https://explore.transifex.com/KSH/KSH/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -2314,8 +2314,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Portları &amp;UPnP kullanarak haritala</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Yönlendiricide Smartiecoin Core istemci portunu otomatik olarak açın. Bu yalnızca yönlendiriciniz NAT-PMP'yi desteklediğinde ve etkinleştirildiğinde çalışır. Harici port rastgele olabilir.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>Yönlendiricide Korsh Core istemci portunu otomatik olarak açın. Bu yalnızca yönlendiriciniz NAT-PMP'yi desteklediğinde ve etkinleştirildiğinde çalışır. Harici port rastgele olabilir.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -2366,8 +2366,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>&amp;Görünüm</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a separate SOCKS5 proxy for Tor onion services.</source>
-        <translation>Tor onion servisleri için ayrı bir SOCKS5 proxy üzerinden SMT ağına bağlanın.</translation>
+        <source>Connect to the Korsh network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <translation>Tor onion servisleri için ayrı bir SOCKS5 proxy üzerinden KSH ağına bağlanın.</translation>
     </message>
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</source>
@@ -2469,8 +2469,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Smartiecoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Görüntülenen bilgiler güncel olmayabilir. Bağlantı kurulduğunda cüzdanınız otomatik olarak SMT ağı ile senkronize olur ancak bu işlem henüz tamamlanmamıştır.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Korsh network after a connection is established, but this process has not completed yet.</source>
+        <translation>Görüntülenen bilgiler güncel olmayabilir. Bağlantı kurulduğunda cüzdanınız otomatik olarak KSH ağı ile senkronize olur ancak bu işlem henüz tamamlanmamıştır.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -2549,8 +2549,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Tutar ve Turlar:</translation>
     </message>
     <message>
-        <source>0 SMT / 0 Rounds</source>
-        <translation>0 SMT / 0 Tur</translation>
+        <source>0 KSH / 0 Rounds</source>
+        <translation>0 KSH / 0 Tur</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -2832,16 +2832,16 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Ödeme talebi hatası</translation>
     </message>
     <message>
-        <source>Cannot start smartiecoin: click-to-pay handler</source>
-        <translation>SMT başlatılamadı: tıkla-ve-öde yöneticisi</translation>
+        <source>Cannot start korsh: click-to-pay handler</source>
+        <translation>KSH başlatılamadı: tıkla-ve-öde yöneticisi</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI yönetimi</translation>
     </message>
     <message>
-        <source>'smartiecoin://' is not a valid URI. Use 'smartiecoin:' instead.</source>
-        <translation>'smartiecoin://' geçerli bir URI değil. Bunun yerine 'smartiecoin:' kullanın.</translation>
+        <source>'korsh://' is not a valid URI. Use 'korsh:' instead.</source>
+        <translation>'korsh://' geçerli bir URI değil. Bunun yerine 'korsh:' kullanın.</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.
@@ -2850,8 +2850,8 @@ Due to discontinued support, you should request the merchant to provide you with
 Desteğin sonlandırılması nedeniyle, satıcıdan size BIP21 uyumlu bir URI sağlamasını istemelisiniz veya BIP70'i desteklemeye devam eden bir cüzdan kullanmalısınız.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid SMT address or malformed URI parameters.</source>
-        <translation>URI ayrıştırılamıyor! Bunun nedeni geçersiz bir SMT adresi veya hatalı biçimlendirilmiş URI değişkenleri olabilir.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid KSH address or malformed URI parameters.</source>
+        <translation>URI ayrıştırılamıyor! Bunun nedeni geçersiz bir KSH adresi veya hatalı biçimlendirilmiş URI değişkenleri olabilir.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -3235,8 +3235,8 @@ You will now be redirected to monitor and broadcast your new proposal, you can r
         <translation>Tutar</translation>
     </message>
     <message>
-        <source>Enter a SMT address (e.g. %1)</source>
-        <translation>Bir SMT adresi giriniz (mesela %1)</translation>
+        <source>Enter a KSH address (e.g. %1)</source>
+        <translation>Bir KSH adresi giriniz (mesela %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -3785,8 +3785,8 @@ You will now be redirected to monitor and broadcast your new proposal, you can r
         <translation>Yerel Adresler</translation>
     </message>
     <message>
-        <source>Network addresses that your SMT node is currently using to communicate with other nodes.</source>
-        <translation>SMT düğümünüzün diğer düğümlerle iletişim kurmak için şu anda kullandığı ağ adresleri.</translation>
+        <source>Network addresses that your KSH node is currently using to communicate with other nodes.</source>
+        <translation>KSH düğümünüzün diğer düğümlerle iletişim kurmak için şu anda kullandığı ağ adresleri.</translation>
     </message>
     <message>
         <source>Number of regular Masternodes</source>
@@ -4195,8 +4195,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Smartiecoin network.</source>
-        <translation>Talep açıldığında gösterilecek, isteğinize dayalı, ödeme talebi ile ilişkilendirilecek bir ileti. Not: Bu ileti ödeme ile birlikte SMT ağı üzerinden gönderilmeyecektir.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Korsh network.</source>
+        <translation>Talep açıldığında gösterilecek, isteğinize dayalı, ödeme talebi ile ilişkilendirilecek bir ileti. Not: Bu ileti ödeme ile birlikte KSH ağı üzerinden gönderilmeyecektir.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -4207,8 +4207,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Yeni alım adresi ile ilişkili, seçiminize dayalı etiket.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Smartiecoin network.</source>
-        <translation>Ödeme talebine eklenecek isteğe bağlı bir mesaj, talep açıldığında gösterilecektir.&lt;br&gt;Not: Mesaj ödeme ile birlikte SMT ağı üzerinden gönderilmez.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Korsh network.</source>
+        <translation>Ödeme talebine eklenecek isteğe bağlı bir mesaj, talep açıldığında gösterilecektir.&lt;br&gt;Not: Mesaj ödeme ile birlikte KSH ağı üzerinden gönderilmez.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -4499,8 +4499,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>İşlem ücreti:</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for SMT transactions than the network can process.</source>
-        <translation>Blokların boşluğundan daha az işlem hacmi olduğunda, madenciler ve aktarıcı düğümler minimum bir ücret uygulayabilir. Sadece bu minimum ücreti ödemek sorun değildir, ancak ağın işleyebileceğinden daha fazla SMT işlemi talebi olduğunda bunun asla onaylanmayan bir işlemle sonuçlanabileceğini unutmayın.</translation>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for KSH transactions than the network can process.</source>
+        <translation>Blokların boşluğundan daha az işlem hacmi olduğunda, madenciler ve aktarıcı düğümler minimum bir ücret uygulayabilir. Sadece bu minimum ücreti ödemek sorun değildir, ancak ağın işleyebileceğinden daha fazla KSH işlemi talebi olduğunda bunun asla onaylanmayan bir işlemle sonuçlanabileceğini unutmayın.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -4804,8 +4804,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation><numerusform>%n blok içinde onaylamanın başlayacağı tahmin ediliyor.</numerusform><numerusform>%n blok içinde onaylamanın başlayacağı tahmin ediliyor.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid SMT address</source>
-        <translation>UYARI: Geçersiz SMT adresi</translation>
+        <source>Warning: Invalid KSH address</source>
+        <translation>UYARI: Geçersiz KSH adresi</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -4831,8 +4831,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>&amp;Şu adrese öde:</translation>
     </message>
     <message>
-        <source>The SMT address to send the payment to</source>
-        <translation>Ödemenin yollanacağı SMT adresi</translation>
+        <source>The KSH address to send the payment to</source>
+        <translation>Ödemenin yollanacağı KSH adresi</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4871,8 +4871,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Seçilen birimde gönderilecek miktar</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of SMT than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Ücret gönderilen tutardan düşülecek. Alıcı sizin tutar alanına girdiğinizden daha düşük miktarda SMT alacak. Eğer birden fazla alıcı seçilirse, ücret eşit bölünür.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of KSH than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>Ücret gönderilen tutardan düşülecek. Alıcı sizin tutar alanına girdiğinizden daha düşük miktarda KSH alacak. Eğer birden fazla alıcı seçilirse, ücret eşit bölünür.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -4887,8 +4887,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Mesaj:</translation>
     </message>
     <message>
-        <source>A message that was attached to the smartiecoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Smartiecoin network.</source>
-        <translation>Referans için smartiecoin: URI'siyle iliştirilmiş işlemle birlikte depolanacak bir ileti. Not: Bu mesaj SMT ağı üzerinden gönderilmeyecektir.</translation>
+        <source>A message that was attached to the korsh: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Korsh network.</source>
+        <translation>Referans için korsh: URI'siyle iliştirilmiş işlemle birlikte depolanacak bir ileti. Not: Bu mesaj KSH ağı üzerinden gönderilmeyecektir.</translation>
     </message>
 </context>
 <context>
@@ -4924,12 +4924,12 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Mesaj &amp;imzala</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive SMT sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Onlara gönderilen SMT'i alabildiğinizi ispatlamak için mesajları/anlaşmaları adresleriniz ile imzalayabilirsiniz. Muallak ya da rastgele bir şeyi imzalamamaya dikkat edin çünkü kimlik avı saldırıları ile sizi kimliğinizi açık etmek için dolandırabilirler. Sadece anlaştığınız tam ayrıntılı beyanları imzalayın.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive KSH sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Onlara gönderilen KSH'i alabildiğinizi ispatlamak için mesajları/anlaşmaları adresleriniz ile imzalayabilirsiniz. Muallak ya da rastgele bir şeyi imzalamamaya dikkat edin çünkü kimlik avı saldırıları ile sizi kimliğinizi açık etmek için dolandırabilirler. Sadece anlaştığınız tam ayrıntılı beyanları imzalayın.</translation>
     </message>
     <message>
-        <source>The SMT address to sign the message with</source>
-        <translation>İletinin imzalanmasında kullanılacak SMT adresi</translation>
+        <source>The KSH address to sign the message with</source>
+        <translation>İletinin imzalanmasında kullanılacak KSH adresi</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4960,8 +4960,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Güncel imzayı sistem panosuna kopyala</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this SMT address</source>
-        <translation>Bu SMT adresine sahip olduğunuzu ispatlamak için mesajı imzala</translation>
+        <source>Sign the message to prove you own this KSH address</source>
+        <translation>Bu KSH adresine sahip olduğunuzu ispatlamak için mesajı imzala</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -4984,8 +4984,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Alıcının adresini, iletiyi (satır sonları, boşluklar, sekmeler vs. karakterleri tam olarak kopyaladığınızdan emin olunuz) ve imzayı aşağıya giriniz. Bir ortadaki adam saldırısı tarafından kandırılmaya engel olmak için imzadan, imzalı iletinin içeriğini aşan bir anlam çıkarmamaya dikkat ediniz. Bunun sadece imzalayan tarafın adres ile alım yapabildiğini ispatladığını ve herhangi bir işlemin gönderi tarafını kanıtlayamayacağını unutmayınız!</translation>
     </message>
     <message>
-        <source>The SMT address the message was signed with</source>
-        <translation>İletinin imzalanmasında kullanılan SMT adresi</translation>
+        <source>The KSH address the message was signed with</source>
+        <translation>İletinin imzalanmasında kullanılan KSH adresi</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -4996,8 +4996,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Mesaj imzalandığında verilen imza</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified SMT address</source>
-        <translation>Belirtilen SMT adresi ile imzalandığını doğrulamak için iletiyi kontrol et</translation>
+        <source>Verify the message to ensure it was signed with the specified KSH address</source>
+        <translation>Belirtilen KSH adresi ile imzalandığını doğrulamak için iletiyi kontrol et</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -5777,7 +5777,7 @@ Bir cüzdan yüklemek için Dosya &gt; Cüzdan Aç'a gidin.
     </message>
 </context>
 <context>
-    <name>SMT-core</name>
+    <name>KSH-core</name>
     <message>
         <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <translation>Bu hata, bu cüzdan düzgün bir şekilde kapatılmamışsa ve en son Berkeley DB'nin daha yeni bir sürümüne sahip bir yapı kullanılarak yüklenmişse oluşabilir. Eğer öyleyse, lütfen bu cüzdanın en son yüklendiği yazılımı kullanın.</translation>
@@ -6031,8 +6031,8 @@ Bir cüzdan yüklemek için Dosya &gt; Cüzdan Aç'a gidin.
         <translation>%s yüklenirken hata: Harici imzalayıcı cüzdanı, derlenmiş harici imzalayıcı desteği olmadan yükleniyor</translation>
     </message>
     <message>
-        <source>Error: Dumpfile version is not supported. This version of SMT-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
-        <translation>Hata: Döküm dosyası sürümü desteklenmiyor. Bu SMT-wallet sürümü yalnızca sürüm 1 döküm dosyalarını destekler. Sürüm %s döküm dosyası alındı</translation>
+        <source>Error: Dumpfile version is not supported. This version of KSH-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <translation>Hata: Döküm dosyası sürümü desteklenmiyor. Bu KSH-wallet sürümü yalnızca sürüm 1 döküm dosyalarını destekler. Sürüm %s döküm dosyası alındı</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -6743,8 +6743,8 @@ Bir cüzdan yüklemek için Dosya &gt; Cüzdan Aç'a gidin.
         <translation>Son sıra çok yakın zamanda oluşturuldu.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool SMT-wallet to salvage or restoring a backup.</source>
-        <translation>%s bozuk. Bir yedeği kurtarmak veya geri yüklemek için cüzdan aracı SMT-wallet'ı kullanmayı deneyin.</translation>
+        <source>%s corrupt. Try using the wallet tool KSH-wallet to salvage or restoring a backup.</source>
+        <translation>%s bozuk. Bir yedeği kurtarmak veya geri yüklemek için cüzdan aracı KSH-wallet'ı kullanmayı deneyin.</translation>
     </message>
     <message>
         <source>%s is set very high! Fees this large could be paid on a single transaction.</source>

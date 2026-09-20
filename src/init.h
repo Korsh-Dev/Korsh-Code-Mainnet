@@ -32,7 +32,7 @@ void InitLogging(const ArgsManager& args);
 //!Parameter interaction: change current parameters depending on various rules
 void InitParameterInteraction(ArgsManager& args);
 
-/** Initialize Smartiecoin Core: Basic context setup.
+/** Initialize Korsh Core: Basic context setup.
  *  @note This can be done before daemonization. Do not call Shutdown() if this function fails.
  *  @pre Parameters should be parsed and config file should be read.
  */
@@ -50,7 +50,7 @@ bool AppInitParameterInteraction(const ArgsManager& args);
  */
 bool AppInitSanityChecks();
 /**
- * Lock Smartiecoin Core data directory.
+ * Lock Korsh Core data directory.
  * @note This should only be done after daemonization. Do not call Shutdown() if this function fails.
  * @pre Parameters should be parsed and config file should be read, AppInitSanityChecks should have been called.
  */
@@ -60,7 +60,7 @@ bool AppInitLockDataDirectory();
  */
 bool AppInitInterfaces(node::NodeContext& node);
 /**
- * Smartiecoin Core main initialization.
+ * Korsh Core main initialization.
  * @note This should only be done after daemonization. Call Shutdown() if this function fails.
  * @pre Parameters should be parsed and config file should be read, AppInitLockDataDirectory should have been called.
  */

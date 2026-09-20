@@ -67,7 +67,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(interfaces::Nod
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 if (wtx.txout_address_is_mine[i])
                 {
-                    // Received by Smartiecoin Address
+                    // Received by Korsh Address
                     sub.type = TransactionRecord::RecvWithAddress;
                     sub.strAddress = EncodeDestination(wtx.txout_address[i]);
                     sub.txDest = wtx.txout_address[i];
@@ -146,7 +146,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(interfaces::Nod
                 CTxDestination address;
                 if (ExtractDestination(wtx.tx->vout[0].scriptPubKey, address))
                 {
-                    // Sent to Smartiecoin Address
+                    // Sent to Korsh Address
                     sub.strAddress = EncodeDestination(address);
                     sub.txDest = address;
                     sub.updateLabel(wallet);
@@ -238,7 +238,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(interfaces::Nod
 
                 if (!std::get_if<CNoDestination>(&wtx.txout_address[nOut]))
                 {
-                    // Sent to Smartiecoin Address
+                    // Sent to Korsh Address
                     sub.type = TransactionRecord::SendToAddress;
                     sub.strAddress = EncodeDestination(wtx.txout_address[nOut]);
                     sub.txDest = wtx.txout_address[nOut];

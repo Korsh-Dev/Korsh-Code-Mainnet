@@ -49,8 +49,8 @@ static const int DSQ_INV_VERSION = 70234;
 //! Maximum header count for HEADRES2 message was increased from 2000 to 8000 in this version
 static const int INCREASE_MAX_HEADERS2_VERSION = 70235;
 
-//! BIP324 v2 transport with Smartiecoin short IDs (128-167) introduced
-static const int BIP324_SMT_BASELINE_VERSION = 70235;
+//! BIP324 v2 transport with Korsh short IDs (128-167) introduced
+static const int BIP324_KSH_BASELINE_VERSION = 70235;
 
 //! Behavior of QRINFO is changed in this protocol version
 static const int EFFICIENT_QRINFO_VERSION = 70236;

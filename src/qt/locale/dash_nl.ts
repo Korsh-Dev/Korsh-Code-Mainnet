@@ -55,23 +55,23 @@
     </message>
     <message>
         <source>Choose the address to send coins to</source>
-        <translation>Kies het adres om SMT naar over te maken</translation>
+        <translation>Kies het adres om KSH naar over te maken</translation>
     </message>
     <message>
         <source>Choose the address to receive coins with</source>
-        <translation>Kies het adres om SMT mee te ontvangen</translation>
+        <translation>Kies het adres om KSH mee te ontvangen</translation>
     </message>
     <message>
         <source>C&amp;hoose</source>
         <translation>K&amp;iezen</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Dit zijn uw SMT adressen om betalingen mee uit te voeren. Controleer altijd het bedrag en ontvangstadres voordat u uw SMT verzendt.</translation>
+        <source>These are your KSH addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Dit zijn uw KSH adressen om betalingen mee uit te voeren. Controleer altijd het bedrag en ontvangstadres voordat u uw KSH verzendt.</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Dit zijn je SMT adressen voor het ontvangen van betalingen. Gebruik de knop 'Nieuw ontvangstadres maken' in het tabblad Ontvangen om nieuwe adressen aan te maken.</translation>
+        <source>These are your KSH addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Dit zijn je KSH adressen voor het ontvangen van betalingen. Gebruik de knop 'Nieuw ontvangstadres maken' in het tabblad Ontvangen om nieuwe adressen aan te maken.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -225,8 +225,8 @@
         <translation>Bevestig de versleuteling van uw portemonnee</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR SMT&lt;/b&gt;!</source>
-        <translation>Waarschuwing: Als u uw portemonnee versleuteld en uw wachtwoord kwijt raakt zult u &lt;b&gt;AL UW SMT KWIJTRAKEN!&lt;/b&gt;</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR KSH&lt;/b&gt;!</source>
+        <translation>Waarschuwing: Als u uw portemonnee versleuteld en uw wachtwoord kwijt raakt zult u &lt;b&gt;AL UW KSH KWIJTRAKEN!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -365,16 +365,16 @@
         <translation>&amp;Verzenden</translation>
     </message>
     <message>
-        <source>Send coins to a SMT address</source>
-        <translation>Verstuur SMT naar een Dashadres</translation>
+        <source>Send coins to a KSH address</source>
+        <translation>Verstuur KSH naar een Dashadres</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Ontvangen</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and smartiecoin: URIs)</source>
-        <translation>Vraag betaling aan (genereert QR-codes en smartiecoin: URI's)</translation>
+        <source>Request payments (generates QR codes and korsh: URIs)</source>
+        <translation>Vraag betaling aan (genereert QR-codes en korsh: URI's)</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -489,8 +489,8 @@
         <translation>&amp;Over %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a SMT address</source>
-        <translation>Stuur %1 vergoeding naar een SMT-adres</translation>
+        <source>Send %1 funds to a KSH address</source>
+        <translation>Stuur %1 vergoeding naar een KSH-adres</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -525,11 +525,11 @@
         <translation>&amp;Portemonnee vergrendelen</translation>
     </message>
     <message>
-        <source>Sign messages with your SMT addresses to prove you own them</source>
+        <source>Sign messages with your KSH addresses to prove you own them</source>
         <translation>Onderteken berichten met uw Dashadressen om te bewijzen dat u deze adressen bezit.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified SMT addresses</source>
+        <source>Verify messages to ensure they were signed with specified KSH addresses</source>
         <translation>Verifieer handtekeningen om zeker te zijn dat de berichten zijn ondertekend met de gespecificeerde Dashadressen.</translation>
     </message>
     <message>
@@ -593,8 +593,8 @@
         <translation>&amp;Command-line opties</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible SMT command-line options</source>
-        <translation>Toon het %1 hulpbericht om een lijst te krijgen met mogelijke SMT commandoregelopties</translation>
+        <source>Show the %1 help message to get a list with possible KSH command-line options</source>
+        <translation>Toon het %1 hulpbericht om een lijst te krijgen met mogelijke KSH commandoregelopties</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -655,8 +655,8 @@
         <translation>Open &amp;portemonnee configuratiebestand</translation>
     </message>
     <message>
-        <source>Open a smartiecoin: URI</source>
-        <translation>Open een smartiecoin: URI</translation>
+        <source>Open a korsh: URI</source>
+        <translation>Open een korsh: URI</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -745,9 +745,9 @@
         <translation>T&amp;onen</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Smartiecoin network</source>
+        <source>%n active connection(s) to Korsh network</source>
         <extracomment>A substring of the tooltip.</extracomment>
-        <translation><numerusform>%n actieve verbinding met het SMT netwerk</numerusform><numerusform>%n actieve verbindingen met het SMT netwerk</numerusform></translation>
+        <translation><numerusform>%n actieve verbinding met het KSH netwerk</numerusform><numerusform>%n actieve verbindingen met het KSH netwerk</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -1298,8 +1298,8 @@
         <translation>Bewerk verzendadres</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid SMT address.</source>
-        <translation>Het ingevoerde adres "%1" is geen geldig SMT adres.</translation>
+        <source>The entered address "%1" is not a valid KSH address.</source>
+        <translation>Het ingevoerde adres "%1" is geen geldig KSH adres.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1547,8 +1547,8 @@ Wilt u doorgaan?</translation>
         <translation>%1 Informatie</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the SMT in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT and 10 SMT -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 geeft u een echte financiële privacy door de oorsprong van uw geld te verschuilen. Alle SMT in uw portefeuille bestaat uit verschillende "inputs" die u kunt beschouwen als afzonderlijke, discrete munten.&lt;br&gt; %1 maakt gebruik van een innovatief proces om uw invoer te mengen met de invoer van twee andere mensen, zonder dat uw munten ooit uw portemonnee verlaten . U behoudt de controle over uw geld te allen tijde. &lt;hr&gt; &lt;b&gt;Het %1-proces werkt als volgt: &lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begint door uw transactie-inputs in de standaard denominaties te breken. Deze denominaties zijn 0,001 SMT, 0,01 SMT, 0,1 SMT, 1 SMT en 10 SMT - zoals het papiergeld dat u elke dag gebruikt.&lt;/li&gt; &lt;li&gt;Uw portemonnee stuurt dan verzoeken naar speciaal geconfigureerde software nodes op het netwerk, genaamd "masternodes." Deze masternodes worden dan op de hoogte gesteld dat u geïnteresseerd bent in het mengen van een bepaalde denominaties. Er wordt geen identificeerbare informatie naar de masternodes gestuurd, zodat ze nooit weten wie u bent.&lt;/li&gt; &lt;li&gt;Wanneer twee andere mensen dezelfde berichten sturen, die aanduiden dat ze dezelfde denominaties willen vermengen, begint een mengsessie. De masternode mengt alle invoeren en instrueert de portefeuilles van alle drie de gebruikers om de nu getransformeerde invoer aan zichzelf terug te betalen. Uw portemonnee betaalt die denominaties rechtstreeks naar zichzelf, maar met een ander adres (een wijzigingadres genoemd).&lt;/li&gt; &lt;li&gt;Om uw geld volledig te verschuilen, moet uw portemonnee dit proces een aantal keren herhalen voor alle denominaties. Elke keer dat het proces wordt voltooid, heet dit een 'ronde'. Elke ronde van %1 maakt het exponentieel moeilijker om te bepalen waar uw geld van afkomstig is.&lt;/li&gt; &lt;li&gt;Dit mengproces gebeurt op de achtergrond zonder enige interventie van uw kant. Wanneer u een transactie wenst uit te voeren, is uw saldo al geanonimiseerd. Er is geen extra wachttijd nodig.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;BELANGRIJK:&lt;/b&gt; Uw portemonnee bevat slechts 1000 van deze "wijzigingsadressen". Elke keer dat er een mengsessie plaatsvindt, worden maximaal 9 van uw adressen opgebruikt. Dit betekent dat deze 1000 adressen voor ongeveer 100 mengsessies volstaat. Wanneer er 900 zijn verbruikt, moet uw portemonnee meer adressen aanmaken. Dit kan alleen maar als u automatische back-ups hebt ingeschakeld.&lt;br&gt; Daarom zodra gebruikers die back-ups hebben uitgeschakeld, ook %1 is uitgeschakeld. &lt;hr&gt;Voor meer informatie zie de &lt;a style="%2" href="%3"&gt;%1 documentatie&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the KSH in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH and 10 KSH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 geeft u een echte financiële privacy door de oorsprong van uw geld te verschuilen. Alle KSH in uw portefeuille bestaat uit verschillende "inputs" die u kunt beschouwen als afzonderlijke, discrete munten.&lt;br&gt; %1 maakt gebruik van een innovatief proces om uw invoer te mengen met de invoer van twee andere mensen, zonder dat uw munten ooit uw portemonnee verlaten . U behoudt de controle over uw geld te allen tijde. &lt;hr&gt; &lt;b&gt;Het %1-proces werkt als volgt: &lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begint door uw transactie-inputs in de standaard denominaties te breken. Deze denominaties zijn 0,001 KSH, 0,01 KSH, 0,1 KSH, 1 KSH en 10 KSH - zoals het papiergeld dat u elke dag gebruikt.&lt;/li&gt; &lt;li&gt;Uw portemonnee stuurt dan verzoeken naar speciaal geconfigureerde software nodes op het netwerk, genaamd "masternodes." Deze masternodes worden dan op de hoogte gesteld dat u geïnteresseerd bent in het mengen van een bepaalde denominaties. Er wordt geen identificeerbare informatie naar de masternodes gestuurd, zodat ze nooit weten wie u bent.&lt;/li&gt; &lt;li&gt;Wanneer twee andere mensen dezelfde berichten sturen, die aanduiden dat ze dezelfde denominaties willen vermengen, begint een mengsessie. De masternode mengt alle invoeren en instrueert de portefeuilles van alle drie de gebruikers om de nu getransformeerde invoer aan zichzelf terug te betalen. Uw portemonnee betaalt die denominaties rechtstreeks naar zichzelf, maar met een ander adres (een wijzigingadres genoemd).&lt;/li&gt; &lt;li&gt;Om uw geld volledig te verschuilen, moet uw portemonnee dit proces een aantal keren herhalen voor alle denominaties. Elke keer dat het proces wordt voltooid, heet dit een 'ronde'. Elke ronde van %1 maakt het exponentieel moeilijker om te bepalen waar uw geld van afkomstig is.&lt;/li&gt; &lt;li&gt;Dit mengproces gebeurt op de achtergrond zonder enige interventie van uw kant. Wanneer u een transactie wenst uit te voeren, is uw saldo al geanonimiseerd. Er is geen extra wachttijd nodig.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;BELANGRIJK:&lt;/b&gt; Uw portemonnee bevat slechts 1000 van deze "wijzigingsadressen". Elke keer dat er een mengsessie plaatsvindt, worden maximaal 9 van uw adressen opgebruikt. Dit betekent dat deze 1000 adressen voor ongeveer 100 mengsessies volstaat. Wanneer er 900 zijn verbruikt, moet uw portemonnee meer adressen aanmaken. Dit kan alleen maar als u automatische back-ups hebt ingeschakeld.&lt;br&gt; Daarom zodra gebruikers die back-ups hebben uitgeschakeld, ook %1 is uitgeschakeld. &lt;hr&gt;Voor meer informatie zie de &lt;a style="%2" href="%3"&gt;%1 documentatie&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1623,8 +1623,8 @@ Wilt u doorgaan?</translation>
         <translation><numerusform>(voldoende om back-ups van %n dag oud te herstellen)</numerusform><numerusform>(voldoende om back-ups van %n dagen oud te herstellen)</numerusform></translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the SMT block chain.</source>
-        <translation>%1 zal een kopie van de blokketen van SMT downloaden en opslaan.</translation>
+        <source>%1 will download and store a copy of the KSH block chain.</source>
+        <translation>%1 zal een kopie van de blokketen van KSH downloaden en opslaan.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1900,12 +1900,12 @@ Wilt u doorgaan?</translation>
         <translation>Vorm</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Smartiecoin network, as detailed below.</source>
-        <translation>Recente transacties zijn mogelijk nog niet zichtbaar. De balans van de portemonnee is daarom mogelijk niet correct. Deze informatie is correct van zodra de synchronisatie met het SMT-netwerk werd voltooid, zoals onderaan beschreven.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Korsh network, as detailed below.</source>
+        <translation>Recente transacties zijn mogelijk nog niet zichtbaar. De balans van de portemonnee is daarom mogelijk niet correct. Deze informatie is correct van zodra de synchronisatie met het KSH-netwerk werd voltooid, zoals onderaan beschreven.</translation>
     </message>
     <message>
-        <source>Attempting to spend SMT that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Pogingen om SMT uit te geven die betrokken zijn bij nog-niet-weergegeven transacties zullen niet worden geaccepteerd door het netwerk</translation>
+        <source>Attempting to spend KSH that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Pogingen om KSH uit te geven die betrokken zijn bij nog-niet-weergegeven transacties zullen niet worden geaccepteerd door het netwerk</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -2232,8 +2232,8 @@ Wilt u doorgaan?</translation>
         <translation>Maximum</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Open automatisch de SMT client poort op de router. Dit werkt alleen als uw router UPnP ondersteunt en dit is ingeschakeld.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Open automatisch de KSH client poort op de router. Dit werkt alleen als uw router UPnP ondersteunt en dit is ingeschakeld.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -2248,8 +2248,8 @@ Wilt u doorgaan?</translation>
         <translation>Sta inkomen&amp;de verbindingen toe</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a SOCKS5 proxy.</source>
-        <translation>Verbind met het SMT netwerk via een SOCKS proxy.</translation>
+        <source>Connect to the Korsh network through a SOCKS5 proxy.</source>
+        <translation>Verbind met het KSH netwerk via een SOCKS proxy.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -2261,9 +2261,9 @@ Wilt u doorgaan?</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/SMT/SMT/</source>
+https://explore.transifex.com/KSH/KSH/</source>
         <translation>Taal ontbreekt of vertaling incompleet? Help mee met het bijdragen van vertalingen hier:
-https://explore.transifex.com/SMT/SMT/</translation>
+https://explore.transifex.com/KSH/KSH/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -2314,8 +2314,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Portmapping via &amp;UPnP</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Open automatisch de Smartiecoin Core poort op de router. Dit werkt alleen wanneer je router NAT-PMP ondersteunt en ingeschakeld is. De externe poort kan willekeurig zijn.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>Open automatisch de Korsh Core poort op de router. Dit werkt alleen wanneer je router NAT-PMP ondersteunt en ingeschakeld is. De externe poort kan willekeurig zijn.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -2366,8 +2366,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>&amp;Interface</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a separate SOCKS5 proxy for Tor onion services.</source>
-        <translation>Verbind met het SMT netwerk via een aparte SOCKS5 proxy voor Tor Onion diensten.</translation>
+        <source>Connect to the Korsh network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <translation>Verbind met het KSH netwerk via een aparte SOCKS5 proxy voor Tor Onion diensten.</translation>
     </message>
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</source>
@@ -2469,8 +2469,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Vorm</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Smartiecoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>De weergegeven informatie kan achterhaald zijn. De beurs synchroniseert automatisch met het SMT netwerk nadat de verbinding is gelegd, maar dit proces is nog niet beeindigd.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Korsh network after a connection is established, but this process has not completed yet.</source>
+        <translation>De weergegeven informatie kan achterhaald zijn. De beurs synchroniseert automatisch met het KSH netwerk nadat de verbinding is gelegd, maar dit proces is nog niet beeindigd.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -2549,8 +2549,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Bedrag en Rondes:</translation>
     </message>
     <message>
-        <source>0 SMT / 0 Rounds</source>
-        <translation>0 SMT / 0 Rondes</translation>
+        <source>0 KSH / 0 Rounds</source>
+        <translation>0 KSH / 0 Rondes</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -2833,16 +2833,16 @@ Om te mixen moeten andere gebruikers exact dezelfde denominaties inbrengen.</tra
         <translation>Fout bij betalingsverzoek</translation>
     </message>
     <message>
-        <source>Cannot start smartiecoin: click-to-pay handler</source>
-        <translation>Kan SMT niet starten: click-to-pay handler</translation>
+        <source>Cannot start korsh: click-to-pay handler</source>
+        <translation>Kan KSH niet starten: click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI-afhandeling</translation>
     </message>
     <message>
-        <source>'smartiecoin://' is not a valid URI. Use 'smartiecoin:' instead.</source>
-        <translation>'smartiecoin://' is geen geldige URI. Gebruik in plaats daarvan 'smartiecoin:'.</translation>
+        <source>'korsh://' is not a valid URI. Use 'korsh:' instead.</source>
+        <translation>'korsh://' is geen geldige URI. Gebruik in plaats daarvan 'korsh:'.</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.
@@ -2850,8 +2850,8 @@ Due to discontinued support, you should request the merchant to provide you with
         <translation>Kan de betalingsverzoek niet verwerken omdat BIP70 niet langer wordt ondersteund. Door het stopzetten van de ondersteuning, moet je de verkoper vragen om je een BIP21-compatibele URI te verstrekken of een portemonnee te gebruiken die BIP70 nog steeds ondersteunt.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid SMT address or malformed URI parameters.</source>
-        <translation>URI kan niet verwerkt worden! Dit kan het gevolg zijn van een ongeldig SMT adres of misvormde URI parameters.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid KSH address or malformed URI parameters.</source>
+        <translation>URI kan niet verwerkt worden! Dit kan het gevolg zijn van een ongeldig KSH adres of misvormde URI parameters.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -3235,7 +3235,7 @@ U wordt nu doorgestuurd om uw nieuwe voorstel te monitoren en uit te zenden. U k
         <translation>Bedrag</translation>
     </message>
     <message>
-        <source>Enter a SMT address (e.g. %1)</source>
+        <source>Enter a KSH address (e.g. %1)</source>
         <translation>Voer een Dashadres in (bijv. %1)</translation>
     </message>
     <message>
@@ -3785,8 +3785,8 @@ U wordt nu doorgestuurd om uw nieuwe voorstel te monitoren en uit te zenden. U k
         <translation>Lokale adressen</translation>
     </message>
     <message>
-        <source>Network addresses that your SMT node is currently using to communicate with other nodes.</source>
-        <translation>Netwerkadressen die uw SMT-node momenteel gebruikt om met andere nodes te communiceren.</translation>
+        <source>Network addresses that your KSH node is currently using to communicate with other nodes.</source>
+        <translation>Netwerkadressen die uw KSH-node momenteel gebruikt om met andere nodes te communiceren.</translation>
     </message>
     <message>
         <source>Number of regular Masternodes</source>
@@ -4195,8 +4195,8 @@ Voor meer informatie over het gebruik van deze console, typ %6.
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Smartiecoin network.</source>
-        <translation>Een optioneel bericht om aan het betalingsverzoek toe te voegen, die zal worden getoond wanneer het verzoek wordt geopend. Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Korsh network.</source>
+        <translation>Een optioneel bericht om aan het betalingsverzoek toe te voegen, die zal worden getoond wanneer het verzoek wordt geopend. Nota: Het bericht zal niet verzonden worden met de betaling over het KSH netwerk.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -4207,9 +4207,9 @@ Voor meer informatie over het gebruik van deze console, typ %6.
         <translation>Een optioneel label om te associëren met het nieuwe ontvangende adres</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Smartiecoin network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Korsh network.</source>
         <translation>Een optioneel bericht om aan het betalingsverzoek toe te voegen, die zal worden getoond wanneer het verzoek wordt geopend. &lt;br&gt;
-Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk.</translation>
+Nota: Het bericht zal niet verzonden worden met de betaling over het KSH netwerk.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -4500,7 +4500,7 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>Transactiekosten</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for SMT transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for KSH transactions than the network can process.</source>
         <translation>Wanneer er minder transactievolume is dan ruimte in de blocks, kunnen miners en relay nodes een minimumvergoeding afdwingen. Alleen deze minimumvergoeding betalen is prima, maar wees ervan bewust dat dit kan leiden tot een transactie die nooit wordt bevestigd zodra er meer vraag is naar transacties dan het netwerk kan verwerken.</translation>
     </message>
     <message>
@@ -4805,8 +4805,8 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation><numerusform>Schatting is dat bevestiging begint binnen %n blok.</numerusform><numerusform>Schatting is dat bevestiging begint binnen %n blocks.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid SMT address</source>
-        <translation>WAARSCHUWING: Ongeldig SMT adres</translation>
+        <source>Warning: Invalid KSH address</source>
+        <translation>WAARSCHUWING: Ongeldig KSH adres</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -4832,7 +4832,7 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>Betaal &amp;Aan:</translation>
     </message>
     <message>
-        <source>The SMT address to send the payment to</source>
+        <source>The KSH address to send the payment to</source>
         <translation>Het Dashadres om betaling aan te versturen</translation>
     </message>
     <message>
@@ -4872,8 +4872,8 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>Het te verzenden bedrag in de geselecteerde eenheid</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of SMT than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>De vergoeding zal worden afgetrokken van het bedrag dat wordt verzonden. De ontvanger zal een lagere hoeveelheid SMT ontvangt dan u in het veld bedrag invoert. Als meerdere ontvangers zijn geselecteerd, wordt de vergoeding gelijk verdeeld.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of KSH than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>De vergoeding zal worden afgetrokken van het bedrag dat wordt verzonden. De ontvanger zal een lagere hoeveelheid KSH ontvangt dan u in het veld bedrag invoert. Als meerdere ontvangers zijn geselecteerd, wordt de vergoeding gelijk verdeeld.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -4888,8 +4888,8 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>Bericht:</translation>
     </message>
     <message>
-        <source>A message that was attached to the smartiecoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Smartiecoin network.</source>
-        <translation>Een boodschap die was bijgevoegd aan de smartiecoin: URI die met de transactie voor uw referentie wordt opgeslagen. Opmerking: Dit bericht zal niet over het SMT netwerk worden verzonden.</translation>
+        <source>A message that was attached to the korsh: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Korsh network.</source>
+        <translation>Een boodschap die was bijgevoegd aan de korsh: URI die met de transactie voor uw referentie wordt opgeslagen. Opmerking: Dit bericht zal niet over het KSH netwerk worden verzonden.</translation>
     </message>
 </context>
 <context>
@@ -4925,11 +4925,11 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>O&amp;nderteken Bericht</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive SMT sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive KSH sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>U kunt berichten/overeenkomsten ondertekenen met een van uw adressen om te bewijzen dat u dit adres bezit. Pas op dat u geen onduidelijke of willekeurige dingen ondertekent, want phishingaanvallen zouden u kunnen misleiden om zo uw identiteit te stelen. Onderteken alleen berichten waarmee u het volledig eens bent.</translation>
     </message>
     <message>
-        <source>The SMT address to sign the message with</source>
+        <source>The KSH address to sign the message with</source>
         <translation>Het Dashadres om bericht mee te ondertekenen</translation>
     </message>
     <message>
@@ -4961,8 +4961,8 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>Kopieer de huidige handtekening naar het systeemklembord</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this SMT address</source>
-        <translation>Teken het bericht om te bewijzen dat u dit SMT adres bezit</translation>
+        <source>Sign the message to prove you own this KSH address</source>
+        <translation>Teken het bericht om te bewijzen dat u dit KSH adres bezit</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -4985,7 +4985,7 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>Voer het adres van de ontvanger in, bericht (zorg ervoor dat de regeleinden, spaties, tabs etc. precies kloppen) en onderteken onderaan om het bericht te verifiëren. Wees voorzicht om niet meer in de ondertekening te lezen dan in het getekende bericht zelf, om te voorkomen dat je wordt aangevallen met een man-in-the-middle attack. Houd er mee rekening dat dit alleen de ondertekende partij bewijst met het ontvangen adres, er kan niet bewezen worden dat er een transactie heeft plaatsgevonden!</translation>
     </message>
     <message>
-        <source>The SMT address the message was signed with</source>
+        <source>The KSH address the message was signed with</source>
         <translation>Het Dashadres waarmee het bericht ondertekend is</translation>
     </message>
     <message>
@@ -4997,8 +4997,8 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het SMT netwerk
         <translation>De handtekening die is gegeven toen het bericht werd ondertekend</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified SMT address</source>
-        <translation>Verifieer het bericht om zeker te zijn dat het getekend werd met het opgegeven SMT adres</translation>
+        <source>Verify the message to ensure it was signed with the specified KSH address</source>
+        <translation>Verifieer het bericht om zeker te zijn dat het getekend werd met het opgegeven KSH adres</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -5778,7 +5778,7 @@ Ga naar Bestand &gt; Open portemonnee om een wallet te openen.
     </message>
 </context>
 <context>
-    <name>SMT-core</name>
+    <name>KSH-core</name>
     <message>
         <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <translation>Deze fout kan optreden als deze portemonnee niet correct is afgesloten of voor het laatst is geladen met een nieuwere buildversie  van Berkeley DB. Als dit het geval is, gebruik dan de software waarmee deze portemonnee voor het laatst is geladen</translation>
@@ -6032,8 +6032,8 @@ Ga naar Bestand &gt; Open portemonnee om een wallet te openen.
         <translation>Fout bij het laden van %s: portemonnee met externe ondertekenaar wordt geladen zonder dat ondersteuning voor externe ondertekenaars is gecompileerd</translation>
     </message>
     <message>
-        <source>Error: Dumpfile version is not supported. This version of SMT-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
-        <translation>Fout: Dumpbestandsversie wordt niet ondersteund. Deze versie van SMT-wallet ondersteunt alleen versie 1-dumpbestanden. Dumpbestand met versie %s ontvangen</translation>
+        <source>Error: Dumpfile version is not supported. This version of KSH-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <translation>Fout: Dumpbestandsversie wordt niet ondersteund. Deze versie van KSH-wallet ondersteunt alleen versie 1-dumpbestanden. Dumpbestand met versie %s ontvangen</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -6744,7 +6744,7 @@ Ga naar Bestand &gt; Open portemonnee om een wallet te openen.
         <translation>Vorige wachtrij is te recent gecreëerd.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool SMT-wallet to salvage or restoring a backup.</source>
+        <source>%s corrupt. Try using the wallet tool KSH-wallet to salvage or restoring a backup.</source>
         <translation>%s corrupt. Probeer de portemonnee tool te gebruiken om een back-up te redden of te herstellen.</translation>
     </message>
     <message>

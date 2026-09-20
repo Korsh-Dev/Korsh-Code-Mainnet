@@ -20,7 +20,7 @@ class UniValue;
 
 namespace interfaces {
 namespace CoinJoin {
-//! Interface for the wallet constrained src/coinjoin part of a smartiecoin node (dashd process).
+//! Interface for the wallet constrained src/coinjoin part of a korsh node (dashd process).
 class Client
 {
 public:

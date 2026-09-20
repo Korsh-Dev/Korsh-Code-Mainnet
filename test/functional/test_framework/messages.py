@@ -43,7 +43,7 @@ MAX_BLOOM_HASH_FUNCS = 50
 COIN = 100000000  # 1 smt in satoshis
 MAX_MONEY = 100000000 * COIN
 
-BIP125_SEQUENCE_NUMBER = 0xfffffffd  # Sequence number that is BIP 125 opt-in and BIP 68-opt-out -- not used in SMT
+BIP125_SEQUENCE_NUMBER = 0xfffffffd  # Sequence number that is BIP 125 opt-in and BIP 68-opt-out -- not used in KSH
 SEQUENCE_FINAL = 0xffffffff  # Sequence number that disables nLockTime if set for every input of a tx
 
 MAX_PROTOCOL_MESSAGE_LENGTH = 3 * 1024 * 1024  # Maximum length of incoming protocol messages
@@ -110,7 +110,7 @@ def _resolve_pow_util_path():
         return _POW_UTIL_PATH
 
     env_candidates = [
-        os.environ.get("SMARTIECOINUTIL"),
+        os.environ.get("KORSHUTIL"),
         os.environ.get("DASHUTIL"),
         os.environ.get("BITCOINUTIL"),
     ]
@@ -120,7 +120,7 @@ def _resolve_pow_util_path():
             _POW_UTIL_LOOKED_UP = True
             return _POW_UTIL_PATH
 
-    for binary_name in ("smartiecoin-util", "smartiecoin-util", "bitcoin-util"):
+    for binary_name in ("korsh-util", "korsh-util", "bitcoin-util"):
         resolved = shutil.which(binary_name)
         if resolved:
             _POW_UTIL_PATH = resolved

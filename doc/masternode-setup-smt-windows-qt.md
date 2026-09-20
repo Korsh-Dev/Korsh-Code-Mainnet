@@ -1,4 +1,4 @@
-# Smartiecoin Masternode on Windows (Qt-first, very simple)
+# Korsh Masternode on Windows (Qt-first, very simple)
 
 If your Qt build includes **Masternodes -> MN Setup Wizard**, use that flow first.
 It is the easiest and most user-friendly path.
@@ -16,13 +16,13 @@ Required commands:
 
 ## Quick network values
 
-- Regular MN collateral: `15000 SMT`
-- Evo MN collateral: `75000 SMT`
+- Regular MN collateral: `15000 KSH`
+- Evo MN collateral: `75000 KSH`
 - Mainnet port: `8383`
 
 ## Step 1. Requirements
 
-- Smartiecoin Qt `v0.0.5` fully synced.
+- Korsh Qt `v0.0.5` fully synced.
 - Enough balance for collateral + fee.
 - Stable public IP and port `8383` open.
 
@@ -67,7 +67,7 @@ Save both values.
 
 Open:
 
-`%APPDATA%\SmartiecoinCore\smartiecoin.conf`
+`%APPDATA%\KorshCore\korsh.conf`
 
 Use this template (replace IP and BLS secret):
 
@@ -82,7 +82,7 @@ masternodeblsprivkey=YOUR_BLS_SECRET
 disablewallet=0
 ```
 
-Save and restart Smartiecoin Qt.
+Save and restart Korsh Qt.
 
 ## Step 6. Command 2 (full registration)
 
@@ -118,5 +118,5 @@ If status is healthy, your MN is registered.
 
 1. Create 5 addresses in Receive.
 2. Run `bls generate`.
-3. Put `secret` in `smartiecoin.conf` and restart Qt.
+3. Put `secret` in `korsh.conf` and restart Qt.
 4. Run `protx register_fund ...`.

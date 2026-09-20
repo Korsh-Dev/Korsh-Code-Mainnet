@@ -50,7 +50,7 @@ enum NumConnections {
 
 class CGovernanceObject;
 
-/** Model for Smartiecoin network client. */
+/** Model for Korsh network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT

@@ -15,7 +15,7 @@
 
 extern "C" int yespower_hash(const char* input, char* output);
 
-/* ----------- Smartiecoin PoW (YesPower) ------------------------------- */
+/* ----------- Korsh PoW (YesPower) ------------------------------- */
 template <typename T1>
 inline uint256 HashX11(const T1 pbegin, const T1 pend)
 {

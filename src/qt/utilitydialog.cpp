@@ -60,10 +60,10 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, HelpMode helpMode) :
 
         QString linkStyle = GUIUtil::getThemedStyleQString(GUIUtil::ThemedStyle::TS_COMMAND);
         QString smtFooter = "<br><br>"
-            "<b>" + tr("Smartiecoin resources") + "</b><br>"
-            + tr("Website") + ": <a style=\"" + linkStyle + "\" href=\"https://smartiecoin.com\">smartiecoin.com</a><br>"
-            + tr("Source code") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/SmartiesCoin/Smartiecoin\">github.com/SmartiesCoin/Smartiecoin</a><br>"
-            + tr("Block explorer") + ": <a style=\"" + linkStyle + "\" href=\"https://explorer.smartiecoin.com\">explorer.smartiecoin.com</a>";
+            "<b>" + tr("Korsh resources") + "</b><br>"
+            + tr("Website") + ": <a style=\"" + linkStyle + "\" href=\"https://korsh.com\">korsh.com</a><br>"
+            + tr("Source code") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/SmartiesCoin/Korsh\">github.com/SmartiesCoin/Korsh</a><br>"
+            + tr("Block explorer") + ": <a style=\"" + linkStyle + "\" href=\"https://explorer.korsh.com\">explorer.korsh.com</a>";
 
         text = version + "\n" + QString::fromStdString(FormatParagraph(licenseInfo));
         ui->aboutMessage->setText(version + "<br><br>" + licenseInfoHTML + smtFooter);
@@ -71,8 +71,8 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, HelpMode helpMode) :
         ui->helpMessage->setVisible(false);
     } else if (helpMode == cmdline) {
         setWindowTitle(tr("Command-line options"));
-        QString header = "Usage: smartiecoin-qt [command-line options] [URI]\n\n"
-                         "Optional URI is a Smartiecoin address in BIP21 URI format.\n";
+        QString header = "Usage: korsh-qt [command-line options] [URI]\n\n"
+                         "Optional URI is a Korsh address in BIP21 URI format.\n";
         QTextCursor cursor(ui->helpMessage->document());
         cursor.insertText(version);
         cursor.insertBlock();
@@ -125,13 +125,13 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, HelpMode helpMode) :
         ui->aboutMessage->setText(tr("\
 <h3>%1 Basics</h3> \
 %1 gives you true financial privacy by obscuring the origins of your funds. \
-All the Smartiecoin in your wallet is comprised of different \"inputs\" which you can think of as separate, discrete coins.<br> \
+All the Korsh in your wallet is comprised of different \"inputs\" which you can think of as separate, discrete coins.<br> \
 %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. \
 You retain control of your money at all times.<hr> \
 <b>The %1 process works like this:</b>\
 <ol type=\"1\"> \
 <li>%1 begins by breaking your transaction inputs down into standard denominations. \
-These denominations are 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT and 10 SMT -- sort of like the paper money you use every day.</li> \
+These denominations are 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH and 10 KSH -- sort of like the paper money you use every day.</li> \
 <li>Your wallet then sends requests to specially configured software nodes on the network, called \"masternodes.\" \
 These masternodes are informed then that you are interested in mixing a certain denomination. \
 No identifiable information is sent to the masternodes, so they never know \"who\" you are.</li> \
@@ -151,7 +151,7 @@ For more information, see the <a style=\"%2\" href=\"%3\">%1 documentation</a>."
         )
         .arg(strCoinJoinName)
         .arg(GUIUtil::getThemedStyleQString(GUIUtil::ThemedStyle::TS_COMMAND))
-        .arg("https://github.com/SmartiesCoin/Smartiecoin")
+        .arg("https://github.com/SmartiesCoin/Korsh")
         );
         ui->aboutMessage->setWordWrap(true);
         ui->helpMessage->setVisible(false);

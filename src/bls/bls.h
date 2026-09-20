@@ -12,7 +12,7 @@
 #include <util/strencodings.h>
 #include <util/ranges.h>
 
-// bls-smartiecoin uses relic, which may define DEBUG and ERROR, which leads to many warnings in some build setups
+// bls-korsh uses relic, which may define DEBUG and ERROR, which leads to many warnings in some build setups
 #undef ERROR
 #undef DEBUG
 #include <dashbls/bls.hpp>

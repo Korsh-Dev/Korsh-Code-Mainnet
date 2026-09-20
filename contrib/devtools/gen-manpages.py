@@ -9,11 +9,11 @@ import tempfile
 
 BINARIES = [
 'src/dashd',
-'src/smartiecoin-cli',
-'src/smartiecoin-tx',
-'src/smartiecoin-wallet',
-'src/smartiecoin-util',
-'src/qt/smartiecoin-qt',
+'src/korsh-cli',
+'src/korsh-tx',
+'src/korsh-wallet',
+'src/korsh-util',
+'src/qt/korsh-qt',
 ]
 
 # Paths to external utilities.

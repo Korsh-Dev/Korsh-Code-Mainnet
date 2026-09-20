@@ -90,11 +90,11 @@ example:
 BUILDDIR=$PWD/build contrib/devtools/gen-manpages.py
 ```
 
-gen-smartiecoin-conf.sh
+gen-korsh-conf.sh
 ===================
 
-Generates a smartiecoin.conf file in `contrib/debian/examples/` by parsing the output from `smartiecoind --help`. This script is run during the
-release process to include a smartiecoin.conf with the release binaries and can also be run by users to generate a file locally.
+Generates a korsh.conf file in `contrib/debian/examples/` by parsing the output from `korshd --help`. This script is run during the
+release process to include a korsh.conf with the release binaries and can also be run by users to generate a file locally.
 When generating a file as part of the release process, make sure to commit the changes after running the script.
 
 With in-tree builds this tool can be run from any directory within the
@@ -102,7 +102,7 @@ repository. To use this tool with out-of-tree builds set `BUILDDIR`. For
 example:
 
 ```bash
-BUILDDIR=$PWD/build contrib/devtools/gen-smartiecoin-conf.sh
+BUILDDIR=$PWD/build contrib/devtools/gen-korsh-conf.sh
 ```
 
 github-merge.py
@@ -115,7 +115,7 @@ For example:
   ./github-merge.py 3077
 
 (in any git repository) will help you merge pull request #3077 for the
-SmartiesCoin/Smartiecoin repository.
+SmartiesCoin/Korsh repository.
 
 What it does:
 * Fetch master and the pull request.
@@ -133,9 +133,9 @@ couldn't mess with the sources.
 
 Setup
 ---------
-Configuring the github-merge tool for the Smartiecoin Core repository is done in the following way:
+Configuring the github-merge tool for the Korsh Core repository is done in the following way:
 
-    git config githubmerge.repository SmartiesCoin/Smartiecoin
+    git config githubmerge.repository SmartiesCoin/Korsh
     git config githubmerge.testcmd "make -j4 check" (adapt to whatever you want to use for testing)
     git config --global user.signingkey mykeyid
 
@@ -168,7 +168,7 @@ for further details.
 optimize-pngs.py
 ================
 
-A script to optimize png files in the smartiecoin
+A script to optimize png files in the korsh
 repository (requires pngcrush).
 
 update-translations.py

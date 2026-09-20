@@ -9,7 +9,7 @@ export LC_ALL=C.UTF-8
 
 set -e
 
-source ./ci/smartiecoin/matrix.sh
+source ./ci/korsh/matrix.sh
 
 if [ "$RUN_UNIT_TESTS" != "true" ] && [ "$RUN_UNIT_TESTS_SEQUENTIAL" != "true" ]; then
   echo "Skipping unit tests"
