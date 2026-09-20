@@ -387,7 +387,9 @@ BOOST_AUTO_TEST_CASE(util_ParseMoney)
     BOOST_CHECK_EQUAL(ParseMoney("0.00000001 ").value(), COIN/100000000);
     BOOST_CHECK_EQUAL(ParseMoney(" 0.00000001").value(), COIN/100000000);
 
-    BOOST_CHECK_EQUAL(ParseMoney("100000000.00").value(), MAX_MONEY);
+    BOOST_CHECK_EQUAL(ParseMoney("10000000.00").value(), MAX_MONEY);
+    // Parsing amounts above the Korsh 10M KSH supply cap must fail
+    BOOST_CHECK(!ParseMoney("10000000.00000001"));
 
     // Parsing amount that cannot be represented should fail
     BOOST_CHECK(!ParseMoney("100000000.00000001"));

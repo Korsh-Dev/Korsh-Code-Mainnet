@@ -1635,8 +1635,8 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue, bool fV20Active)
         return blockValue * 4 / 5;
     }
 
-    // KSH v0.1.4: fixed 70/30 split of the distributable reward (after 10% treasury):
-    // masternodes take 3/10 of blockValue (= 27% of the block subsidy), miners keep the rest.
+    // KSH v0.1.4: fixed 70/30 split (miner/masternodes). Masternodes take 3/10 of
+    // blockValue; Korsh mainnet has no treasury, so that is 30% of the block subsidy.
     const int nKSHv014Height = Params().GetConsensus().nKSHv014Height;
     if (nHeight >= nKSHv014Height) {
         return blockValue * 3 / 10;
