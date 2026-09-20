@@ -1083,6 +1083,15 @@ void InitLogging(const ArgsManager& args)
     init::LogPackageVersion();
 }
 
+#if defined(__linux__)
+extern "C" {
+extern const unsigned char smartiecoin_sapling_spend_params_start[];
+extern const unsigned char smartiecoin_sapling_spend_params_end[];
+extern const unsigned char smartiecoin_sapling_output_params_start[];
+extern const unsigned char smartiecoin_sapling_output_params_end[];
+}
+#endif
+
 namespace { // Variables internal to initialization process only
 
 int nMaxConnections;
@@ -1140,12 +1149,7 @@ static bool ExtractEmbeddedSaplingParams(const ArgsManager& args, fs::path& para
     return true;
 }
 #elif defined(__linux__)
-extern "C" {
-extern const unsigned char smartiecoin_sapling_spend_params_start[];
-extern const unsigned char smartiecoin_sapling_spend_params_end[];
-extern const unsigned char smartiecoin_sapling_output_params_start[];
-extern const unsigned char smartiecoin_sapling_output_params_end[];
-}
+
 
 static bool WriteSaplingParamBytes(const unsigned char* begin, const unsigned char* end, const fs::path& path)
 {
