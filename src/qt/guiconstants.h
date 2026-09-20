@@ -45,7 +45,7 @@ static const int TOOLTIP_WRAP_THRESHOLD = 80;
 static constexpr int STATUSBAR_ICON_CYCLE_MS{3600};
 
 #define QAPP_ORG_NAME "Korsh"
-#define QAPP_ORG_DOMAIN "smartiescoin.com"
+#define QAPP_ORG_DOMAIN "korsh.org"
 #define QAPP_APP_NAME_DEFAULT "Korsh-Qt"
 #define QAPP_APP_NAME_TESTNET "Korsh-Qt-testnet"
 #define QAPP_APP_NAME_DEVNET "Korsh-Qt-%s"
