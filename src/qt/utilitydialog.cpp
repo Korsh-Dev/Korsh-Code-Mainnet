@@ -59,14 +59,14 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, HelpMode helpMode) :
         ui->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
         QString linkStyle = GUIUtil::getThemedStyleQString(GUIUtil::ThemedStyle::TS_COMMAND);
-        QString smtFooter = "<br><br>"
+        QString korshFooter = "<br><br>"
             "<b>" + tr("Korsh resources") + "</b><br>"
-            + tr("Website") + ": <a style=\"" + linkStyle + "\" href=\"https://korsh.com\">korsh.com</a><br>"
-            + tr("Source code") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/SmartiesCoin/Korsh\">github.com/SmartiesCoin/Korsh</a><br>"
-            + tr("Block explorer") + ": <a style=\"" + linkStyle + "\" href=\"https://explorer.korsh.com\">explorer.korsh.com</a>";
+            + tr("Website") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/ELPilotPR/Korsh-Core\">Korsh Core</a><br>"
+            + tr("Source code") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/ELPilotPR/Korsh-Core\">github.com/ELPilotPR/Korsh-Core</a><br>"
+            + tr("Block explorer") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/ELPilotPR/Korsh-Core\">Korsh Core</a>";
 
         text = version + "\n" + QString::fromStdString(FormatParagraph(licenseInfo));
-        ui->aboutMessage->setText(version + "<br><br>" + licenseInfoHTML + smtFooter);
+        ui->aboutMessage->setText(version + "<br><br>" + licenseInfoHTML + korshFooter);
         ui->aboutMessage->setWordWrap(true);
         ui->helpMessage->setVisible(false);
     } else if (helpMode == cmdline) {
