@@ -61,7 +61,7 @@ sudo apt install -y build-essential libtool autotools-dev automake pkg-config \
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/MrGasparin/Korsh-Mainnet.git
+git clone https://github.com/KorshDev/Korsh-Mainnet.git
 cd Korsh-Mainnet
 ```
 
