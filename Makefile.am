@@ -76,9 +76,6 @@ COVERAGE_INFO = $(COV_TOOL_WRAPPER) baseline.info \
   baseline_filtered.info functional_test.info functional_test_filtered.info \
   test_dash_coverage.info test_dash.info fuzz.info fuzz_filtered.info fuzz_coverage.info
 
-dist-hook:
-	-$(GIT) archive --format=tar HEAD -- src/clientversion.cpp | $(AMTAR) -C $(top_distdir) -xf -
-
 if TARGET_WINDOWS
 $(BITCOIN_WIN_INSTALLER): all-recursive
 	$(MKDIR_P) $(top_builddir)/release

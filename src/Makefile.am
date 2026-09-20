@@ -339,6 +339,7 @@ BITCOIN_CORE_H = \
   node/interface_ui.h \
   node/utxo_snapshot.h \
   noui.h \
+  optional.h \
   outputtype.h \
   policy/feerate.h \
   policy/fees.h \
