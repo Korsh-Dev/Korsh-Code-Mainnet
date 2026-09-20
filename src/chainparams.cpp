@@ -260,31 +260,31 @@ public:
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock("In honor of my uncle Satoshi Nakamoto", 1789866060, 402962, 0x1e3fffff, 1, 10 * COIN);
+        genesis = CreateGenesisBlock("In honor of my uncle Satoshi Nakamoto", 1789885960, 504853, 0x1e3fffff, 1, 2 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000216e9ac922735ea501c032ad1d8e8bc1a3f84c1f798790c1d38233e07010"));
-        assert(genesis.hashMerkleRoot == uint256S("0x7063d1c6460801869eeef0b328c04ad5012a018f1268c0bec25dde15e7046bcd"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00003e467fd9e7841b9e7d107c9173b09b00387ac807515f6d47c971018baaa0"));
+        assert(genesis.hashMerkleRoot == uint256S("0x1dd60dd52dda0fd4b6912baca209aa327ae8b4825a23415b0a4356585897d073"));
+        consensus.BIP34Hash = consensus.hashGenesisBlock;
 
         // Note that of those which support the service bits prefix, most only support a subset of
         // possible options.
         // This is fine at runtime as we'll fall back to using them as an addrfetch if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
+        // No centralized bootstrap node is trusted by consensus. Nodes discover
+        // peers through DNS seeds supplied by the operator or explicit -addnode
+        // entries; this list is intentionally empty until Korsh seed infrastructure
+        // is deployed and verified.
         vSeeds.clear();
-        vSeeds.emplace_back("207.180.230.125");
-        vSeeds.emplace_back("explorer.korsh.com");
-        vSeeds.emplace_back("rpc.korsh.com");
-        vSeeds.emplace_back("korsh.com");
-        vSeeds.emplace_back("smartiescoin.com");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,63);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,82);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
-        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "smtsapling";
-        bech32HRPs[SAPLING_EXTENDED_FVK] = "smtview";
-        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "smtsecret";
+        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "kshsapling";
+        bech32HRPs[SAPLING_EXTENDED_FVK] = "kshview";
+        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "kshsecret";
 
         nExtCoinType = 5;
 
@@ -329,7 +329,7 @@ public:
         };
 
         chainTxData = ChainTxData{
-                1789866060,
+                1789885960,
                 1,
                 0.0,
         };
@@ -443,9 +443,9 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         // Testnet Korsh BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
-        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "tsmtsapling";
-        bech32HRPs[SAPLING_EXTENDED_FVK] = "tsmtview";
-        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "tsmtsecret";
+        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "tkshsapling";
+        bech32HRPs[SAPLING_EXTENDED_FVK] = "tkshview";
+        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "tkshsecret";
 
         // Testnet Korsh BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
@@ -609,9 +609,9 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         // Testnet Korsh BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
-        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "dsmtsapling";
-        bech32HRPs[SAPLING_EXTENDED_FVK] = "dsmtview";
-        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "dsmtsecret";
+        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "dkshsapling";
+        bech32HRPs[SAPLING_EXTENDED_FVK] = "dkshview";
+        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "dkshsecret";
 
         // Testnet Korsh BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
@@ -896,9 +896,9 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         // Regtest Korsh BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
-        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "rsmtsapling";
-        bech32HRPs[SAPLING_EXTENDED_FVK] = "rsmtview";
-        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "rsmtsecret";
+        bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "rkshsapling";
+        bech32HRPs[SAPLING_EXTENDED_FVK] = "rkshview";
+        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "rkshsecret";
 
         // Regtest Korsh BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;

@@ -607,7 +607,7 @@ bool MasternodeSetupWizard::registerMasternode(QString& txid, QString& registere
 void MasternodeSetupWizard::updateTypeUi()
 {
     const bool evo{currentType() == MnType::Evo};
-    m_collateral_label->setText(evo ? tr("75000 KSH") : tr("15000 KSH"));
+    m_collateral_label->setText(evo ? tr("7500 KSH") : tr("1500 KSH"));
     m_evo_group->setVisible(evo);
 
     // Auto-generate a random Platform Node ID when switching to Evo
@@ -627,7 +627,7 @@ void MasternodeSetupWizard::updateSummary()
     const bool evo{currentType() == MnType::Evo};
 
     lines << tr("Type: %1").arg(evo ? tr("Evo") : tr("Regular"));
-    lines << tr("Collateral: %1").arg(evo ? tr("75000 KSH") : tr("15000 KSH"));
+    lines << tr("Collateral: %1").arg(evo ? tr("7500 KSH") : tr("1500 KSH"));
     lines << tr("Core service: %1").arg(serviceAddress());
     lines << tr("Collateral address: %1").arg(m_collateral_address->text().trimmed());
     lines << tr("Owner address: %1").arg(m_owner_address->text().trimmed());
