@@ -34,8 +34,4 @@ END
 
 301 RCDATA "../params/sapling-spend.params"
 302 RCDATA "../params/sapling-output.params"
-401 RCDATA "wallet/bdb_recovery/win64/db_dump62.exe"
-402 RCDATA "wallet/bdb_recovery/win64/db_load48.exe"
-403 RCDATA "wallet/bdb_recovery/win64/libdb-6.2.dll"
-404 RCDATA "wallet/bdb_recovery/win64/libwinpthread-1.dll"
-405 RCDATA "wallet/bdb_recovery/win64/db_load62.exe"
+// Berkeley DB recovery tools are not bundled in the source tree.
