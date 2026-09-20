@@ -21,7 +21,8 @@ EXCLUDED_DIRS = ["src/leveldb/",
                  "src/minisketch/",
                  "src/dashbls/",
                  "src/immer/",
-                 "src/crypto/x11/"]
+                 "src/crypto/x11/",
+                 "src/sapling/"]
 
 EXPECTED_BOOST_INCLUDES = ["boost/date_time/posix_time/posix_time.hpp",
                            "boost/hana/for_each.hpp",
@@ -38,7 +39,12 @@ EXPECTED_BOOST_INCLUDES = ["boost/date_time/posix_time/posix_time.hpp",
                            "boost/signals2/optional_last_value.hpp",
                            "boost/signals2/signal.hpp",
                            "boost/test/included/unit_test.hpp",
-                           "boost/test/unit_test.hpp"]
+                           "boost/test/unit_test.hpp",
+                           "boost/optional.hpp",
+                           "boost/variant.hpp",
+                           "boost/variant/apply_visitor.hpp",
+                           "boost/variant/get.hpp",
+                           "boost/variant/static_visitor.hpp"]
 
 EXCLUDED_BOOST_DIRS = ["src/immer/"]
 

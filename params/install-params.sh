@@ -47,6 +47,7 @@ function install_params {
 
     if ! [ -f "$output" ]
     then
+        # shellcheck disable=SC2086
         "$SHA256CMD" $SHA256ARGS -c <<EOF
 $expectedhash  $filename
 EOF

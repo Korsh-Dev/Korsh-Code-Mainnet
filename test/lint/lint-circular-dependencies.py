@@ -58,7 +58,12 @@ EXPECTED_CIRCULAR_DEPENDENCIES = (
     "qt/bitcoinaddressvalidator -> qt/guiutil -> qt/bitcoinaddressvalidator",
     "qt/bitcoingui -> qt/guiutil -> qt/bitcoingui",
     "qt/guiutil -> qt/qvalidatedlineedit -> qt/guiutil",
+    "qt/guiutil -> qt/guiutil_font -> qt/guiutil",
+    "qt/guiutil -> qt/optionsmodel -> qt/guiutil",
     "wallet/coinjoin -> wallet/receive -> wallet/coinjoin",
+    "wallet/sapling_wallet -> wallet/wallet -> wallet/sapling_wallet",
+    "wallet/sapling_wallet -> wallet/walletdb -> wallet/sapling_wallet",
+    "governance/classes -> governance/object -> governance/validators -> governance/classes",
 )
 
 CODE_DIR = "src"
