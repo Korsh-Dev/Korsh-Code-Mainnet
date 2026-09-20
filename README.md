@@ -33,7 +33,23 @@ Korsh is a fork of Smartiecoin Core; Smartiecoin attribution is retained in sour
 
 ## Genesis Block Details
 
-The genesis block must be regenerated after the final consensus parameters are locked. The previous inherited genesis values are obsolete because Korsh now uses a 2 KSH initial subsidy, a 2,500,000-block halving interval, 70/30 reward distribution, and a new mainnet identity. The launch genesis will be mined with the current launch timestamp and recorded here together with its nonce, target, hash, and merkle root.
+The Korsh mainnet genesis block was mined with the final launch parameters:
+
+```text
+Timestamp Phrase: "In honor of my uncle Satoshi Nakamoto"
+Unix Timestamp (nTime): 1789885960 (September 20, 2026)
+Nonce (nNonce): 504853
+Difficulty (nBits): 0x1e3fffff
+Genesis Reward: 2 KSH
+
+Genesis Hash:
+00003e467fd9e7841b9e7d107c9173b09b00387ac807515f6d47c971018baaa0
+
+Merkle Root:
+1dd60dd52dda0fd4b6912baca209aa327ae8b4825a23415b0a4356585897d073
+```
+
+The node verifies this genesis at startup and reports it as mainnet block 0.
 
 ---
 

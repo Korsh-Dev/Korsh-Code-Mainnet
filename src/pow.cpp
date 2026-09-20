@@ -81,7 +81,7 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params, int64_t nTargetSpacing) {
     /* current difficulty formula, korsh - DarkGravity v3, written by Evan Duffield - evan@korsh.org */
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
-    int64_t nPastBlocks = 24;
+    int64_t nPastBlocks = 20;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
     if (!pindexLast || pindexLast->nHeight < nPastBlocks) {
@@ -177,6 +177,11 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // this is only active on devnets
     if (pindexLast->nHeight < params.nMinimumDifficultyBlocks) {
         return bnPowLimit.GetCompact();
+    }
+
+    // Korsh mainnet retargets only at each 20-block boundary.
+    if (params.nPowTargetTimespan == 20 * 60 && nNextHeight % 20 != 0) {
+        return pindexLast->nBits;
     }
 
     if (pindexLast->nHeight + 1 < params.nPowKGWHeight) {
