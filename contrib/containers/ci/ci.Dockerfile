@@ -26,6 +26,8 @@ RUN set -ex; \
     libtool \
     m4 \
     pkg-config \
+    rustc \
+    cargo \
     wine-stable \
     wine64 \
     zip \
