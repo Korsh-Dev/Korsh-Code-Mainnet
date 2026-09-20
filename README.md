@@ -1,97 +1,139 @@
-Smartiecoin Core staging tree
-===========================
+# Korsh Core [KSH]
 
-| `master` | `develop` |
-| -------- | --------- |
-| [![Build Status](https://github.com/SmartiesCoin/Smartiecoin/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/SmartiesCoin/Smartiecoin/tree/master) | [![Build Status](https://github.com/SmartiesCoin/Smartiecoin/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/SmartiesCoin/Smartiecoin/tree/develop) |
+[![Release](https://img.shields.io/badge/release-v0.0.1-blue.svg)](https://github.com/MrGasparin/Korsh-Mainnet/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Smartiecoin Core connects to the Smartiecoin peer-to-peer network to download and fully
-validate blocks and transactions. It also includes a wallet and graphical user
-interface, which can be optionally built.
+**Korsh Core** is the reference implementation of Korsh (KSH), a decentralized, peer-to-peer cryptocurrency focused on security, fast settlement, ASIC-resistant CPU mining, and community governance.
 
-Further information about Smartiecoin Core is available in the [doc folder](/doc).
+---
 
-What is Smartiecoin?
--------------
+## Network Specifications
 
-Smartiecoin is a digital currency that enables instant, private payments to anyone,
-anywhere in the world. Smartiecoin uses peer-to-peer technology to operate with
-no central authority: managing transactions and issuing money are carried out
-collectively by the network. Smartiecoin Core is the name of the open
-source software which enables the use of this currency.
+| Parameter | Specification |
+| :--- | :--- |
+| **Coin Name** | Korsh |
+| **Ticker** | **KSH** |
+| **PoW Algorithm** | **Yespower** (CPU-friendly, ASIC/GPU resistant) |
+| **Block Time** | 60 seconds (1 minute) |
+| **Initial Block Subsidy** | 50 KSH |
+| **Halving Interval** | 1,000,000 blocks |
+| **Maximum Supply Cap** | 10,000,000 KSH |
+| **Default P2P Port** | `8383` |
+| **Default Platform P2P Port** | `29256` |
+| **RPC Default Port** | `8382` |
 
+---
 
-For more information read the original Smartiecoin whitepaper.
+## Genesis Block Details
 
-License
--------
+The Korsh Mainnet genesis block was established with the following cryptographic parameters:
 
-Smartiecoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
-information or see https://opensource.org/licenses/MIT.
+```
+Timestamp Phrase: "In honor of my uncle Satoshi Nakamoto"
+Unix Timestamp (nTime): 1789866060
+Nonce (nNonce): 402962
+Difficulty (nBits): 0x1e3fffff
+Genesis Reward: 10 KSH
 
-Development Process
--------------------
+Genesis Hash:
+0x0000216e9ac922735ea501c032ad1d8e8bc1a3f84c1f798790c1d38233e07010
 
-The `master` branch is meant to be stable. Development is normally done in separate branches.
-[Tags](https://github.com/SmartiesCoin/Smartiecoin/tags) are created to indicate new official,
-stable release versions of Smartiecoin Core.
+Merkle Root:
+0x7063d1c6460801869eeef0b328c04ad5012a018f1268c0bec25dde15e7046bcd
+```
 
-The `develop` branch is regularly built (see doc/build-*.md for instructions) and tested, but is not guaranteed to be
-completely stable.
+---
 
-The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)
-and useful hints for developers can be found in [doc/developer-notes.md](doc/developer-notes.md).
+## Building from Source
 
-Build / Compile from Source
----------------------------
+### 1. Prerequisites (Ubuntu / Debian / WSL2)
 
-The `./configure`, `make`, and `cmake` steps, as well as build dependencies, are in [./doc/](/doc) as well:
+Install the required build tools and libraries:
 
-- **Linux**: [./doc/build-unix.md](/doc/build-unix.md) \
-  Ubuntu, Debian, Fedora, Arch, and others
-- **macOS**: [./doc/build-osx.md](/doc/build-osx.md)
-- **Windows**: [./doc/build-windows.md](/doc/build-windows.md)
-- **OpenBSD**: [./doc/build-openbsd.md](/doc/build-openbsd.md)
-- **FreeBSD**: [./doc/build-freebsd.md](/doc/build-freebsd.md)
-- **NetBSD**: [./doc/build-netbsd.md](/doc/build-netbsd.md)
+```bash
+sudo apt update
+sudo apt install -y build-essential libtool autotools-dev automake pkg-config \
+    bsdmainutils python3 libssl-dev libevent-dev libboost-all-dev \
+    libdb5.3++-dev libdb5.3-dev libsqlite3-dev libzmq3-dev \
+    libgmp-dev libsodium-dev cargo rustc dos2unix
+```
 
-Testing
--------
+### 2. Clone the Repository
 
-Testing and code review is the bottleneck for development; we get more pull
-requests than we can review and test on short notice. Please be patient and help out by testing
-other people's pull requests, and remember this is a security-critical project where any mistake might cost people
-lots of money.
+```bash
+git clone https://github.com/MrGasparin/Korsh-Mainnet.git
+cd Korsh-Mainnet
+```
 
-### Automated Testing
+### 3. Configure and Compile
 
-Developers are strongly encouraged to write [unit tests](src/test/README.md) for new code, and to
-submit new unit tests for old code. Unit tests can be compiled and run
-(assuming they weren't disabled in configure) with: `make check`. Further details on running
-and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
+```bash
+# Generate configuration scripts
+./autogen.sh
 
-There are also [regression and integration tests](/test), written
-in Python.
-These tests can be run (if the [test dependencies](/test) are installed) with: `test/functional/test_runner.py`
+# Configure build (headless daemon without GUI/tests for maximum speed)
+./configure --without-gui --disable-tests --disable-bench --with-incompatible-bdb --disable-man
 
-The CI (Continuous Integration) systems make sure that every pull request is built for Windows, Linux, and macOS,
-and that unit/sanity tests are run automatically.
+# Build binaries using all CPU cores
+make -j$(nproc)
+```
 
-### Manual Quality Assurance (QA) Testing
+The compiled binaries will be located in `src/`:
+* `korshd` / `smartiecoind` — Headless full node daemon
+* `korsh-cli` / `smartiecoin-cli` — RPC command-line tool
+* `korsh-tx` / `smartiecoin-tx` — Transaction creation tool
 
-Changes should be tested by somebody other than the developer who wrote the
-code. This is especially important for large or high-risk changes. It is useful
-to add a test plan to the pull request description if testing the changes is
-not straightforward.
+---
 
-Translations
-------------
+## Running a Korsh Node
 
-Changes to translations as well as new translations can be submitted to
-[Smartiecoin Core's Transifex page](https://explore.transifex.com/smartiecoin/smartiecoin/).
+### Basic Configuration (`korsh.conf`)
 
-Translations are periodically pulled from Transifex and merged into the git repository. See the
-[translation process](doc/translation_process.md) for details on how this works.
+Create your data directory configuration file at `~/.korsh/korsh.conf`:
 
-**Important**: We do not accept translation changes as GitHub pull requests because the next
-pull from Transifex would automatically overwrite them again.
+```ini
+# Network settings
+server=1
+daemon=1
+listen=1
+maxconnections=64
+
+# RPC settings
+rpcuser=your_rpc_username
+rpcpassword=your_secure_password
+rpcport=8382
+rpcallowip=127.0.0.1
+```
+
+### Start the Daemon
+
+```bash
+./src/korshd -daemon
+```
+
+### Query Node Information
+
+```bash
+./src/korsh-cli getblockchaininfo
+./src/korsh-cli getnetworkinfo
+```
+
+---
+
+## Mining Korsh (Yespower)
+
+Korsh uses the **Yespower** proof-of-work algorithm, specifically optimized for fair CPU mining and resistant to centralized ASIC hardware.
+
+You can solo mine directly with the node or point any Yespower-compatible CPU miner (such as `cpuminer-opt`) to your node's RPC or stratum pool.
+
+To start built-in generation from the CLI:
+
+```bash
+./src/korsh-cli setgenerate true -1
+```
+
+---
+
+## License
+
+Korsh Core is released under the terms of the **MIT license**. See [COPYING](COPYING) for more information or visit [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
