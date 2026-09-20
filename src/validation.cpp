@@ -1635,8 +1635,8 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue, bool fV20Active)
         return blockValue * 4 / 5;
     }
 
-    // KSH v0.1.4: fixed 50/50 split of the distributable reward (after 10% treasury).
-    // blockValue already has treasury deducted, so 50% of blockValue = 45% of total subsidy.
+    // KSH v0.1.4: fixed 70/30 split of the distributable reward (after 10% treasury):
+    // masternodes take 3/10 of blockValue (= 27% of the block subsidy), miners keep the rest.
     const int nKSHv014Height = Params().GetConsensus().nKSHv014Height;
     if (nHeight >= nKSHv014Height) {
         return blockValue * 3 / 10;

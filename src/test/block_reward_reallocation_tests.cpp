@@ -151,10 +151,11 @@ BOOST_FIXTURE_TEST_CASE(korsh_reward_reallocation_rules, TestingSetup)
     const auto& consensus = chainParams->GetConsensus();
 
     // Korsh keeps the post-treasury block value as the input to
-    // GetMasternodePayment(). v0.1.4 splits that value 50/50.
+    // GetMasternodePayment(). v0.1.4 splits that value 70/30 (miner/masternodes),
+    // so masternodes take 3/10 of the distributable reward.
     const CAmount post_treasury_block_value = 45 * COIN;
     BOOST_CHECK_EQUAL(GetMasternodePayment(consensus.nKSHv014Height, post_treasury_block_value, /*fV20Active=*/true),
-                      post_treasury_block_value / 2);
+                      post_treasury_block_value * 3 / 10);
 
     // v0.3.0 replaces the legacy Dash BRR/MN_RR schedule with 18/72/10:
     // 80% of the post-treasury value goes to masternodes, i.e. 72% of base subsidy.
@@ -163,7 +164,7 @@ BOOST_FIXTURE_TEST_CASE(korsh_reward_reallocation_rules, TestingSetup)
 }
 
 // Korsh replaces the legacy Dash BRR / MN_RR schedules with the fixed
-// 50/50 split introduced in v0.1.4 (active on regtest since height 1) and the
+// 70/30 split introduced in v0.1.4 (active on regtest since height 1) and the
 // 18/72/10 realloc in v0.3.0. The hardcoded expected values below were written
 // against the Dash schedule and no longer match the Korsh reward code,
 // and the asserts also didn't account for feeReward inclusion. Disabled with

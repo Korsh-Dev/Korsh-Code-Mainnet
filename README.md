@@ -23,7 +23,7 @@ Korsh is a fork of Smartiecoin Core; Smartiecoin attribution is retained in sour
 | **Estimated Emission Schedule** | 5,000,000 KSH in era 1; 7,500,000 KSH in era 2; 8,750,000 KSH in era 3; asymptotically approaches 10,000,000 KSH |
 | **Regular Masternode Collateral** | **1,500 KSH** |
 | **Evo Masternode Collateral** | **7,500 KSH**, disabled initially and reserved for future activation by block height |
-| **Masternode Payments** | 30% of the block subsidy; regular masternodes remain enabled |
+| **Masternode Payments** | 30% of the distributable reward (block subsidy after the 10% treasury); regular masternodes remain enabled |
 | **Difficulty Retarget** | Targeted every 20 blocks using a 20-minute timespan |
 | **Optional Services** | Quorums, InstantSend, ChainLocks, Dash Platform, governance, superblocks and Evo masternodes disabled initially; retained for future height-based activation |
 | **Default P2P Port** | `8383` |
