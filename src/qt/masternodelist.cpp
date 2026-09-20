@@ -172,8 +172,8 @@ MasternodeSetupWizard::MasternodeSetupWizard(QWidget* parent, WalletModel* walle
     auto* details_layout = new QVBoxLayout(details_page);
     auto* details_form = new QFormLayout();
     m_mn_type = new QComboBox(details_page);
-    m_mn_type->addItem(tr("Regular (15,000 KSH)"), static_cast<int>(MnType::Regular));
-    m_mn_type->addItem(tr("Evo (75,000 KSH)"), static_cast<int>(MnType::Evo));
+    m_mn_type->addItem(tr("Regular (1,500 KSH)"), static_cast<int>(MnType::Regular));
+    m_mn_type->addItem(tr("Evo (7,500 KSH)"), static_cast<int>(MnType::Evo));
     details_form->addRow(tr("Masternode type"), m_mn_type);
     m_collateral_label = new QLabel(details_page);
     details_form->addRow(tr("Required collateral"), m_collateral_label);
