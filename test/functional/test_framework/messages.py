@@ -29,6 +29,7 @@ import struct
 import subprocess
 import time
 import unittest
+from typing import Dict, Optional, Tuple
 
 from test_framework.crypto.siphash import siphash256
 from test_framework.util import assert_equal
@@ -100,8 +101,8 @@ def hash256(s):
 
 _POW_UTIL_PATH = None
 _POW_UTIL_LOOKED_UP = False
-_POW_HASH_CACHE = {}
-_POW_GRIND_CACHE = {}
+_POW_HASH_CACHE: Dict[bytes, bytes] = {}
+_POW_GRIND_CACHE: Dict[bytes, Optional[bytes]] = {}
 
 
 def _resolve_pow_util_path():

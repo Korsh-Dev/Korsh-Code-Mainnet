@@ -52,9 +52,11 @@ KNOWN_VIOLATIONS = [
     "src/test/util_tests.cpp",
     "src/util/strencodings.cpp:.*strtoll",
     "src/util/system.cpp:.*fprintf",
+    "src/wallet/bdb.cpp:.*__imp__snprintf",
+    "src/wallet/bdb.cpp:.*__imp__vsnprintf",
     "src/wallet/bdb.cpp:.*DbEnv::strerror",  # False positive
     "src/util/syserror.cpp:.*strerror",      # Outside this function use `SysErrorString`
-]
+    "src/sapling/sapling_transaction.h:.*std::to_string",]
 
 REGEXP_EXTERNAL_DEPENDENCIES_EXCLUSIONS = [
     "src/crypto/ctaes/",
