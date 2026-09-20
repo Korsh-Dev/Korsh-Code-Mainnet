@@ -185,7 +185,9 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
       dnl Qt metadata when using MSYS2.
       AC_MSG_CHECKING([for QWindowsIntegrationPlugin (-lqwindows)])
       CHECK_STATIC_PLUGINS_TEMP_LIBS="$LIBS"
-      WINDOWS_QPA_PLUGIN_LIBS="-lqwindows${qt_lib_suffix} -ldwmapi -lwinspool -lshlwapi -lwtsapi32 -limm32"
+      dnl The Windows QPA plugin references the Vulkan support archive, so it
+      dnl has to follow -lqwindows in the link line for static Qt builds.
+      WINDOWS_QPA_PLUGIN_LIBS="-lqwindows${qt_lib_suffix} -l${qt_lib_prefix}VulkanSupport${qt_lib_suffix} -ldwmapi -lwinspool -lshlwapi -lwtsapi32 -limm32"
       LIBS="$WINDOWS_QPA_PLUGIN_LIBS $QT_LIBS $LIBS"
       AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <QtPlugin>
