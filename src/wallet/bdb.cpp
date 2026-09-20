@@ -35,16 +35,6 @@
 #endif
 #endif
 
-#if defined(WIN32) && DB_VERSION_MAJOR >= 6
-// Some static Berkeley DB 6.2 MinGW builds reference these CRT functions through
-// import pointers. Define the pointers in the executable so the wallet stays
-// self-contained instead of requiring an extra MSVC runtime DLL beside it.
-extern "C" {
-int (*__imp__snprintf)(char*, size_t, const char*, ...) = snprintf;
-int (*__imp__vsnprintf)(char*, size_t, const char*, va_list) = vsnprintf;
-}
-#endif
-
 namespace wallet {
 namespace {
 Span<const std::byte> SpanFromDbt(const BerkeleyBatch::SafeDbt& dbt)
