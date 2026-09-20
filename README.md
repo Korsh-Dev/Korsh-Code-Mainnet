@@ -1,6 +1,6 @@
 # Korsh Core [KSH]
 
-[![Release](https://img.shields.io/badge/release-v0.0.1-blue.svg)](https://github.com/MrGasparin/Korsh-Mainnet/releases)
+[![Release](https://img.shields.io/badge/release-v0.0.1-blue.svg)](https://github.com/ELPilotPR/Korsh-Core/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Korsh Core** is the reference implementation of Korsh (KSH), a decentralized, peer-to-peer cryptocurrency focused on security, fast settlement, ASIC-resistant CPU mining, and community governance.
@@ -17,11 +17,15 @@ Korsh is a fork of Smartiecoin Core; Smartiecoin attribution is retained in sour
 | **Ticker** | **KSH** |
 | **Consensus Model** | **Proof-of-Work (YesPower CPU) with deterministic masternodes; quorums and Dash Platform disabled** |
 | **Block Time** | 60 seconds (1 minute) |
-| **Initial Block Subsidy** | **50 KSH** (50% miner / 50% masternode; no treasury while superblocks are disabled) |
-| **Halving Interval** | 1,000,000 blocks |
+| **Initial Block Subsidy** | **2 KSH** (70% miner / 30% masternodes) |
+| **Halving Interval** | 2,500,000 blocks |
 | **Maximum Supply Cap** | 10,000,000 KSH |
-| **Masternode Activation** | Block 2; payment schedule available from block 2 |
-| **Quorums / Dash Platform** | Disabled on mainnet; reserved for future height activation |
+| **Estimated Emission Schedule** | 5,000,000 KSH in era 1; 7,500,000 KSH in era 2; 8,750,000 KSH in era 3; asymptotically approaches 10,000,000 KSH |
+| **Regular Masternode Collateral** | **1,500 KSH** |
+| **Evo Masternode Collateral** | **7,500 KSH**, disabled initially and reserved for future activation by block height |
+| **Masternode Payments** | 30% of the block subsidy; regular masternodes remain enabled |
+| **Difficulty Retarget** | Targeted every 20 blocks using a 20-minute timespan |
+| **Optional Services** | Quorums, InstantSend, ChainLocks, Dash Platform, governance, superblocks and Evo masternodes disabled initially; retained for future height-based activation |
 | **Default P2P Port** | `8383` |
 | **RPC Default Port** | `8382` |
 
@@ -29,21 +33,7 @@ Korsh is a fork of Smartiecoin Core; Smartiecoin attribution is retained in sour
 
 ## Genesis Block Details
 
-The Korsh Mainnet genesis block was established with the following cryptographic parameters:
-
-```
-Timestamp Phrase: "In honor of my uncle Satoshi Nakamoto"
-Unix Timestamp (nTime): 1789866060
-Nonce (nNonce): 402962
-Difficulty (nBits): 0x1e3fffff
-Genesis Reward: 10 KSH
-
-Genesis Hash:
-0x0000216e9ac922735ea501c032ad1d8e8bc1a3f84c1f798790c1d38233e07010
-
-Merkle Root:
-0x7063d1c6460801869eeef0b328c04ad5012a018f1268c0bec25dde15e7046bcd
-```
+The genesis block must be regenerated after the final consensus parameters are locked. The previous inherited genesis values are obsolete because Korsh now uses a 2 KSH initial subsidy, a 2,500,000-block halving interval, 70/30 reward distribution, and a new mainnet identity. The launch genesis will be mined with the current launch timestamp and recorded here together with its nonce, target, hash, and merkle root.
 
 ---
 
@@ -64,8 +54,8 @@ sudo apt install -y build-essential libtool autotools-dev automake pkg-config \
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/KorshDev/Korsh-Mainnet.git
-cd Korsh-Mainnet
+git clone https://github.com/ELPilotPR/Korsh-Core.git
+cd Korsh-Core
 ```
 
 ### 3. Configure and Compile
