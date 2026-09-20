@@ -207,7 +207,7 @@ public:
         consensus.V19Height = 999999999;
         consensus.V20Height = 999999999;
         consensus.MN_RRHeight = 999999999;
-        consensus.nKSHv014Height = 999999999;
+        consensus.nKSHv014Height = 1; // Korsh 70/30 reward split active from the first block
         consensus.nKorshEvoActivationHeight = 999999999;
         consensus.nKSHv030Height = 999999999;
         consensus.nKSHShieldHeight = 999999999;
