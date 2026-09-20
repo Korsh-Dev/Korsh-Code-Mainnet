@@ -13,13 +13,12 @@
 | :--- | :--- |
 | **Coin Name** | Korsh |
 | **Ticker** | **KSH** |
-| **PoW Algorithm** | **Yespower** (CPU-friendly, ASIC/GPU resistant) |
+| **Consensus Model** | **Pure Proof-of-Work (Yespower CPU, No Masternodes / No Quorums)** |
 | **Block Time** | 60 seconds (1 minute) |
-| **Initial Block Subsidy** | 50 KSH |
+| **Initial Block Subsidy** | **50 KSH** (100% directly to CPU miner) |
 | **Halving Interval** | 1,000,000 blocks |
 | **Maximum Supply Cap** | 10,000,000 KSH |
 | **Default P2P Port** | `8383` |
-| **Default Platform P2P Port** | `29256` |
 | **RPC Default Port** | `8382` |
 
 ---

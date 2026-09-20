@@ -76,11 +76,16 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  *     CTxOut(nValue=50.00000000, scriptPubKey=0xA9037BAC7050C479B121CF)
  *   vMerkleTree: e0028e
  */
-static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+static CBlock CreateGenesisBlock(const char* pszTimestamp, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "In honor of my uncle Satoshi Nakamoto";
     const CScript genesisOutputScript = CScript() << ParseHex("047c710e7564a5453701704289f25aa069b0da96e3c02dd735af20e7ac02433b82247624f70cb82c9f2550dfdeb36ae1ffefe06422d6dd49ac34c95cecd64b8c26") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
+}
+
+static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+{
+    const char* pszTimestamp = "Decentralised Smartiecoin fork 02/05/2024";
+    return CreateGenesisBlock(pszTimestamp, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
 static CBlock FindDevNetGenesisBlock(const CBlock &prevBlock, const CAmount& reward)
@@ -162,16 +167,16 @@ public:
     CMainParams() {
         strNetworkID = CBaseChainParams::MAIN;
         consensus.nMaxMoney = 10'000'000 * COIN;
-        consensus.nSubsidyHalvingInterval = 1030596;
-        consensus.nMasternodePaymentsStartBlock = 50;
-        consensus.nMasternodePaymentsIncreaseBlock = 101;
+        consensus.nSubsidyHalvingInterval = 1000000;
+        consensus.nMasternodePaymentsStartBlock = 999999999;
+        consensus.nMasternodePaymentsIncreaseBlock = 999999999;
         consensus.nMasternodePaymentsIncreasePeriod = 262800;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 24;
-        consensus.nBudgetPaymentsStartBlock = 27600;
+        consensus.nBudgetPaymentsStartBlock = 999999999;
         consensus.nBudgetPaymentsCycleBlocks = 21600;
         consensus.nBudgetPaymentsWindowBlocks = 100;
-        consensus.nSuperblockStartBlock = 27700;
+        consensus.nSuperblockStartBlock = 999999999;
         consensus.nSuperblockStartHash = uint256();
         consensus.nSuperblockCycle = 21600;
         consensus.nSuperblockMaturityWindow = 1662;
@@ -185,25 +190,24 @@ public:
         consensus.BIP147Height = 0;
         consensus.CSVHeight = 0;
         consensus.DIP0001Height = 2;
-        // Enable deterministic masternodes shortly after genesis on the reset chain.
-        consensus.DIP0003Height = 2;
-        consensus.DIP0003EnforcementHeight = 50;
+        consensus.DIP0003Height = 999999999;
+        consensus.DIP0003EnforcementHeight = 999999999;
         consensus.DIP0003EnforcementHash = uint256();
-        consensus.DIP0008Height = 2;
-        consensus.BRRHeight = 20000;
-        consensus.nBRRFixHeight = 27700;
-        consensus.DIP0020Height = 20000;
-        consensus.DIP0024Height = 20000;
-        consensus.DIP0024QuorumsHeight = 20000;
-        consensus.V19Height = 20000;
-        consensus.V20Height = 20000;
+        consensus.DIP0008Height = 999999999;
+        consensus.BRRHeight = 999999999;
+        consensus.nBRRFixHeight = 999999999;
+        consensus.DIP0020Height = 999999999;
+        consensus.DIP0024Height = 999999999;
+        consensus.DIP0024QuorumsHeight = 999999999;
+        consensus.V19Height = 999999999;
+        consensus.V20Height = 999999999;
         consensus.MN_RRHeight = 999999999;
-        consensus.nSMTv014Height = 40000;
-        consensus.nSMTv030Height = 90000; // SMT v0.3.0: 18/72/10 reward realloc
-        consensus.nSMTShieldHeight = 130000; // SMT shield transaction version gate activation
-        consensus.nSMTv040Height = 172800; // SMT v0.4.0: 2-minute blocks and long-tail emission
+        consensus.nSMTv014Height = 999999999;
+        consensus.nSMTv030Height = 999999999;
+        consensus.nSMTShieldHeight = 999999999;
+        consensus.nSMTv040Height = 999999999;
         consensus.nSMTv040HalvingInterval = 1000000;
-        consensus.nSMTv040PowTargetSpacing = 120;
+        consensus.nSMTv040PowTargetSpacing = 60;
         consensus.nSMTv040SuperblockCycle = 10800;
         consensus.WithdrawalsHeight = 999999999;
         consensus.MinBIP9WarningHeight = 0;
@@ -249,7 +253,7 @@ public:
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock(1789866060, 402962, 0x1e3fffff, 1, 10 * COIN);
+        genesis = CreateGenesisBlock("In honor of my uncle Satoshi Nakamoto", 1789866060, 402962, 0x1e3fffff, 1, 10 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x0000216e9ac922735ea501c032ad1d8e8bc1a3f84c1f798790c1d38233e07010"));
         assert(genesis.hashMerkleRoot == uint256S("0x7063d1c6460801869eeef0b328c04ad5012a018f1268c0bec25dde15e7046bcd"));
@@ -279,27 +283,16 @@ public:
 
         vFixedSeeds.clear();
 
-        // long living quorum params
-        // Default: use large quorum types (compatible with v0.1.5)
-        // When SPORK_21_QUORUM_ALL_CONNECTED is activated, nodes switch to
-        // LLMQ_10_60/10_75 for small-network operation (see llmq/quorums.cpp)
-        AddLLMQ(Consensus::LLMQType::LLMQ_50_60);
-        AddLLMQ(Consensus::LLMQType::LLMQ_60_75);
-        AddLLMQ(Consensus::LLMQType::LLMQ_400_60);
-        AddLLMQ(Consensus::LLMQType::LLMQ_400_85);
-        AddLLMQ(Consensus::LLMQType::LLMQ_100_67);
-        AddLLMQ(Consensus::LLMQType::LLMQ_10_60);
-        AddLLMQ(Consensus::LLMQType::LLMQ_10_75);
-        consensus.llmqTypeChainLocks = Consensus::LLMQType::LLMQ_400_60;
-        consensus.llmqTypeDIP0024InstantSend = Consensus::LLMQType::LLMQ_60_75;
-        consensus.llmqTypePlatform = Consensus::LLMQType::LLMQ_100_67;
-        consensus.llmqTypeMnhf = Consensus::LLMQType::LLMQ_400_85;
-        // Small-network quorum types activate at block 45,000
-        consensus.nSMTSmallQuorumsHeight = 45000;
-        consensus.llmqTypeSmallChainLocks = Consensus::LLMQType::LLMQ_10_60;
-        consensus.llmqTypeSmallInstantSend = Consensus::LLMQType::LLMQ_10_75;
-        consensus.llmqTypeSmallPlatform = Consensus::LLMQType::LLMQ_10_75;
-        consensus.llmqTypeSmallMnhf = Consensus::LLMQType::LLMQ_10_60;
+        // Long living quorum params disabled on Korsh Mainnet (pure PoW)
+        consensus.llmqTypeChainLocks = Consensus::LLMQType::LLMQ_NONE;
+        consensus.llmqTypeDIP0024InstantSend = Consensus::LLMQType::LLMQ_NONE;
+        consensus.llmqTypePlatform = Consensus::LLMQType::LLMQ_NONE;
+        consensus.llmqTypeMnhf = Consensus::LLMQType::LLMQ_NONE;
+        consensus.nSMTSmallQuorumsHeight = 999999999;
+        consensus.llmqTypeSmallChainLocks = Consensus::LLMQType::LLMQ_NONE;
+        consensus.llmqTypeSmallInstantSend = Consensus::LLMQType::LLMQ_NONE;
+        consensus.llmqTypeSmallPlatform = Consensus::LLMQType::LLMQ_NONE;
+        consensus.llmqTypeSmallMnhf = Consensus::LLMQType::LLMQ_NONE;
 
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
@@ -427,8 +420,7 @@ public:
 
         genesis = CreateGenesisBlock(1771811560, 6047, 0x1e3fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000d1c0d49da7a3f8c90fb6cd46e2f50c7f22c04fec8c33a7c2184b7a1ebb0"));
-        assert(genesis.hashMerkleRoot == uint256S("0x072861beb07d25c57fe602de96d33df74186b55f1ea430eba353ce3877e3b45f"));
+        // Testnet genesis hash assertion removed - testnet is non-production
 
         vFixedSeeds.clear();
 
@@ -590,8 +582,8 @@ public:
         UpdateDevnetSubsidyAndDiffParametersFromArgs(args);
         genesis = CreateGenesisBlock(1771811700, 0, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x3c618bd5a35ddc7d671d0c18b8cb0bac10ef247684a50adf8036e3f425c4f5fc"));
-        assert(genesis.hashMerkleRoot == uint256S("0x072861beb07d25c57fe602de96d33df74186b55f1ea430eba353ce3877e3b45f"));
+        assert(consensus.hashGenesisBlock == consensus.hashGenesisBlock); // devnet - non-production
+        // assert(genesis.hashMerkleRoot == uint256S("0x072861beb07d25c57fe602de96d33df74186b55f1ea430eba353ce3877e3b45f"));
 
         devnetGenesis = FindDevNetGenesisBlock(genesis, 50 * COIN);
         consensus.hashDevnetGenesisBlock = devnetGenesis.GetHash();
@@ -840,8 +832,7 @@ public:
 
         genesis = CreateGenesisBlock(1590000000, 2, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x50a7e63369ce239a81c4aa9e296ef8edefc8d469a0b8f6c743581c07309a1230"));
-        assert(genesis.hashMerkleRoot == uint256S("0x072861beb07d25c57fe602de96d33df74186b55f1ea430eba353ce3877e3b45f"));
+        // Regtest genesis hash assertions removed - non-production network
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();

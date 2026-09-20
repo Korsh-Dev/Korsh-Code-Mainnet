@@ -259,14 +259,9 @@ bool CSporkManager::IsSporkActive(SporkId nSporkID) const
 
 SporkValue CSporkManager::GetSporkValue(SporkId nSporkID) const
 {
-    // Harden all sporks on Mainnet
+    // Harden all sporks on Mainnet (all features disabled for pure PoW)
     if (!Params().IsTestChain()) {
-        switch (nSporkID) {
-            case SPORK_21_QUORUM_ALL_CONNECTED:
-                return 1;
-            default:
-                return 0;
-        }
+        return 4070908800ULL;
     }
 
     LOCK(cs);
