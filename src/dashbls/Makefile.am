@@ -6,7 +6,7 @@
 print-%: FORCE
 	@echo '$*'='$($*)'
 
-ACLOCAL_AMFLAGS = -I build-aux/m4
+# ACLOCAL_AMFLAGS = -I build-aux/m4
 .PHONY: deploy FORCE
 
 AM_LDFLAGS    = $(HARDENED_LDFLAGS) $(CORE_LDFLAGS) $(GMP_LDFLAGS)
