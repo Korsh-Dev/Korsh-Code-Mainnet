@@ -53,6 +53,9 @@ jobs:
             mingw-w64-x86_64-miniupnpc
             mingw-w64-x86_64-libnatpmp
             mingw-w64-x86_64-qt5-static
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-harfbuzz
+            mingw-w64-x86_64-zstd
 
       - name: Show toolchain
         run: |
