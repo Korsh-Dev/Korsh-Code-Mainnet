@@ -29,7 +29,7 @@ import struct
 import subprocess
 import time
 import unittest
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional
 
 from test_framework.crypto.siphash import siphash256
 from test_framework.util import assert_equal

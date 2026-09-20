@@ -998,9 +998,10 @@ void MasternodeList::updateFilteredCount()
         }
     }
     const int filtered = m_proxy_model->rowCount();
+    const QString filter_suffix = filtered != total ? QString{" "} + tr("(showing %1)").arg(filtered) : QString();
     ui->countLabel->setText(
         tr("Total: %1 | Evo: %2 | Regular: %3").arg(total).arg(evoCount).arg(regularCount) +
-        (filtered != total ? tr(" (showing %1)").arg(filtered) : QString()));
+        filter_suffix);
 }
 
 void MasternodeList::on_filterText_textChanged(const QString& strFilterIn)
