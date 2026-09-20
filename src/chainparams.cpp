@@ -18,6 +18,7 @@
 #include <arith_uint256.h>
 
 #include <assert.h>
+#include <iostream>
 
 static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
@@ -77,7 +78,7 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Decentralised Smartiecoin fork 02/05/2024";
+    const char* pszTimestamp = "In honor of my uncle Satoshi Nakamoto";
     const CScript genesisOutputScript = CScript() << ParseHex("047c710e7564a5453701704289f25aa069b0da96e3c02dd735af20e7ac02433b82247624f70cb82c9f2550dfdeb36ae1ffefe06422d6dd49ac34c95cecd64b8c26") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -178,7 +179,7 @@ public:
         consensus.nGovernanceFilterElements = 15000;
         consensus.nMasternodeMinimumConfirmations = 15;
         consensus.BIP34Height = 0;
-        consensus.BIP34Hash = uint256S("0x00003aa43e9605a58b926822c0e9dfdc0e43d2b6691ec58fc763f72a25e03655");
+        consensus.BIP34Hash = uint256S("0x0000216e9ac922735ea501c032ad1d8e8bc1a3f84c1f798790c1d38233e07010");
         consensus.BIP65Height = 0;
         consensus.BIP66Height = 0;
         consensus.BIP147Height = 0;
@@ -248,10 +249,10 @@ public:
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock(1771811462, 275448, 0x1e3fffff, 1, 10 * COIN);
+        genesis = CreateGenesisBlock(1789866060, 402962, 0x1e3fffff, 1, 10 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00003aa43e9605a58b926822c0e9dfdc0e43d2b6691ec58fc763f72a25e03655"));
-        assert(genesis.hashMerkleRoot == uint256S("0x233980ab7b1153d283b0d20e9a7901fe4a5e1d9355f6b67b5d42d60a9d8a8caf"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000216e9ac922735ea501c032ad1d8e8bc1a3f84c1f798790c1d38233e07010"));
+        assert(genesis.hashMerkleRoot == uint256S("0x7063d1c6460801869eeef0b328c04ad5012a018f1268c0bec25dde15e7046bcd"));
 
         // Note that of those which support the service bits prefix, most only support a subset of
         // possible options.
@@ -328,7 +329,7 @@ public:
         };
 
         chainTxData = ChainTxData{
-                1771811462,
+                1789866060,
                 1,
                 0.0,
         };
