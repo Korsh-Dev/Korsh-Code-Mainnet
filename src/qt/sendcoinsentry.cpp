@@ -30,7 +30,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) :
 
     setButtonIcons();
 
-    // normal smartiecoin address field
+    // normal korsh address field
     GUIUtil::setupAddressWidget(ui->payTo, this, true);
 
     GUIUtil::setFont({ui->payToLabel,
@@ -106,7 +106,7 @@ void SendCoinsEntry::clear()
     ui->messageTextLabel->hide();
     ui->messageLabel->hide();
 
-    // update the display unit, to not use the default ("SMT")
+    // update the display unit, to not use the default ("KSH")
     updateDisplayUnit();
 }
 

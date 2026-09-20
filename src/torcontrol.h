@@ -46,7 +46,7 @@ public:
 };
 
 /** Low-level handling for Tor control connection.
- * Speaks the SMTP-like protocol as defined in torspec/control-spec.txt
+ * Speaks the KSHP-like protocol as defined in torspec/control-spec.txt
  */
 class TorControlConnection
 {

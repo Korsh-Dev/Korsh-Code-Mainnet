@@ -12,8 +12,8 @@
 class ArgsManager;
 
 /**
- * CBaseChainParams defines the base parameters (shared between smartiecoin-cli and dashd)
- * of a given instance of the Smartiecoin system.
+ * CBaseChainParams defines the base parameters (shared between korsh-cli and dashd)
+ * of a given instance of the Korsh system.
  */
 class CBaseChainParams
 {

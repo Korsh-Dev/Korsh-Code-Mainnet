@@ -24,8 +24,8 @@ BOOST_FIXTURE_TEST_SUITE(llmq_chainlock_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(wait_for_islock_timeout_is_60s)
 {
-    // Regression guard: Smartiecoin uses 60 s (one 60-s block of propagation
-    // slack). Dash upstream defaults to 10 min, which on Smartiecoin's small
+    // Regression guard: Korsh uses 60 s (one 60-s block of propagation
+    // slack). Dash upstream defaults to 10 min, which on Korsh's small
     // MN set caused every tx to sit in the mempool for ~10 blocks because IS
     // locks rarely form. Bumping this back to 10 min would reintroduce that
     // bug, so the value is pinned by this test.

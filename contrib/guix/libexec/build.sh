@@ -267,7 +267,7 @@ mkdir -p "$DISTSRC"
     sed -i.old 's/-lstdc++ //g' {./,src/dashbls/,src/secp256k1/}{config.status,libtool}
 
 
-    # Build Smartiecoin Core
+    # Build Korsh Core
     make --jobs="$JOBS" ${V:+V=1}
 
     # Make macos-specific debug symbols
@@ -291,12 +291,12 @@ mkdir -p "$DISTSRC"
             ;;
     esac
 
-    # Setup the directory where our Smartiecoin Core build for HOST will be
+    # Setup the directory where our Korsh Core build for HOST will be
     # installed. This directory will also later serve as the input for our
     # binary tarballs.
     INSTALLPATH="${PWD}/installed/${DISTNAME}"
     mkdir -p "${INSTALLPATH}"
-    # Install built Smartiecoin Core to $INSTALLPATH
+    # Install built Korsh Core to $INSTALLPATH
     make install DESTDIR="${INSTALLPATH}" ${V:+V=1}
 
     case "$HOST" in
@@ -411,9 +411,9 @@ mkdir -p "$DISTSRC"
                 ;;
         esac
 
-        # copy over the example smartiecoin.conf file. if contrib/devtools/gen-smartiecoin-conf.sh
+        # copy over the example korsh.conf file. if contrib/devtools/gen-korsh-conf.sh
         # has not been run before buildling, this file will be a stub
-        cp "${DISTSRC}/contrib/debian/examples/smartiecoin.conf" "${DISTNAME}/"
+        cp "${DISTSRC}/contrib/debian/examples/korsh.conf" "${DISTNAME}/"
 
         cp -r "${DISTSRC}/share/rpcauth" "${DISTNAME}/share/"
 

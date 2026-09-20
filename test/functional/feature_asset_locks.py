@@ -241,7 +241,7 @@ class AssetLocksTest(DashTestFramework):
 
     # This functional test intentionally setup only 2 MN and only 2 Evo nodes
     # to ensure that corner case of quorum with minimum amount of nodes as possible
-    # does not cause any issues in Smartiecoin Core
+    # does not cause any issues in Korsh Core
     def mine_quorum_2_nodes(self):
         self.mine_quorum(llmq_type_name='llmq_test_platform', expected_members=2, expected_connections=1, expected_contributions=2, expected_commitments=2, llmq_type=106)
 

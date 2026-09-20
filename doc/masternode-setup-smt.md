@@ -1,18 +1,18 @@
-# Smartiecoin Masternode Guide (Simple / Old-School Style)
+# Korsh Masternode Guide (Simple / Old-School Style)
 
 This is the short version most miners want: send collateral to yourself, register, done.
 
 Windows users:
 
 - Use this guide: `doc/masternode-setup-smt-windows.md`
-- Direct link: https://github.com/SmartiesCoin/Smartiecoin/blob/main/doc/masternode-setup-smt-windows.md
+- Direct link: https://github.com/SmartiesCoin/Korsh/blob/main/doc/masternode-setup-smt-windows.md
 - Qt-first guide (minimal commands): `doc/masternode-setup-smt-windows-qt.md`
-- Direct link: https://github.com/SmartiesCoin/Smartiecoin/blob/main/doc/masternode-setup-smt-windows-qt.md
+- Direct link: https://github.com/SmartiesCoin/Korsh/blob/main/doc/masternode-setup-smt-windows-qt.md
 
 Network values:
 
-- Regular MN collateral: `15,000 SMT`
-- Evo collateral: `75,000 SMT`
+- Regular MN collateral: `15,000 KSH`
+- Evo collateral: `75,000 KSH`
 - Mainnet port: `8383`
 - Collateral confirmations: `15`
 
@@ -20,11 +20,11 @@ Network values:
 
 - You **can** run MN + wallet in the same node process (single-wallet mode).
 - You **do not need** a VPS if your machine is reachable from internet (`8383/tcp` open + stable public IP).
-- Smartiecoin uses deterministic masternodes (ProTx), so one registration tx is still required.
+- Korsh uses deterministic masternodes (ProTx), so one registration tx is still required.
 
 ## 2. Minimal Config (Single Wallet)
 
-Put this in `smartiecoin.conf` on the machine that will run the masternode:
+Put this in `korsh.conf` on the machine that will run the masternode:
 
 ```ini
 server=1
@@ -47,7 +47,7 @@ Then restart node/wallet.
 Use wallet CLI:
 
 ```bash
-CLI=smartiecoin-cli
+CLI=korsh-cli
 WALLET=main
 ```
 
@@ -71,7 +71,7 @@ PAYOUT_ADDR=$($CLI -rpcwallet=$WALLET getnewaddress "mn_payout")
 FEE_ADDR=$($CLI -rpcwallet=$WALLET getnewaddress "mn_fee")
 ```
 
-Put `OPERATOR_SECRET` into `smartiecoin.conf` as `masternodeblsprivkey=...` and restart once.
+Put `OPERATOR_SECRET` into `korsh.conf` as `masternodeblsprivkey=...` and restart once.
 
 ### Step B: Send collateral to yourself
 
@@ -134,11 +134,11 @@ Evo is still available in `v0.0.5`:
 - `protx register_evo`
 - `protx register_fund_evo`
 
-Evo collateral is `75,000 SMT`.
+Evo collateral is `75,000 KSH`.
 
 ## 6. Top 5 Mistakes
 
-- Collateral is not exactly `15000 SMT`.
+- Collateral is not exactly `15000 KSH`.
 - Less than `15` confirmations.
 - `masternodeblsprivkey` does not match operator public key used in ProTx.
 - Port `8383` is closed.

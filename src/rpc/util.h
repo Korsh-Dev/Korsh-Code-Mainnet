@@ -38,7 +38,7 @@ static constexpr bool DEFAULT_RPC_DOC_CHECK{
 extern const std::string UNIX_EPOCH_TIME;
 
 /**
- * Example Smartiecoin addresses for the RPCExamples help documentation. They are intentionally
+ * Example Korsh addresses for the RPCExamples help documentation. They are intentionally
  * invalid to prevent accidental transactions by users.
  */
 extern const std::string EXAMPLE_ADDRESS[2];

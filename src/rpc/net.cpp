@@ -492,7 +492,7 @@ static RPCHelpMan getaddednodeinfo()
                             {
                                 {RPCResult::Type::OBJ, "", "",
                                 {
-                                    {RPCResult::Type::STR, "address", "The Smartiecoin server IP and port we're connected to"},
+                                    {RPCResult::Type::STR, "address", "The Korsh server IP and port we're connected to"},
                                     {RPCResult::Type::STR, "connected", "connection, inbound or outbound"},
                                 }},
                             }},

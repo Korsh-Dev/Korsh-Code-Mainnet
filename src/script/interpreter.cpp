@@ -1476,21 +1476,21 @@ uint256 GetOutputsSHA256(const T& txTo)
     return ss.GetSHA256();
 }
 
-static constexpr unsigned char SMT_PREVOUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+static constexpr unsigned char KSH_PREVOUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'S','M','T','P','r','e','v','o','u','t','H','a','s','h','0','1'};
-static constexpr unsigned char SMT_SEQUENCE_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+static constexpr unsigned char KSH_SEQUENCE_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'S','M','T','S','e','q','u','e','n','c','e','H','a','s','h','1'};
-static constexpr unsigned char SMT_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+static constexpr unsigned char KSH_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'S','M','T','O','u','t','p','u','t','s','H','a','s','h','0','1'};
-static constexpr unsigned char SMT_SHIELDED_SPENDS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+static constexpr unsigned char KSH_SHIELDED_SPENDS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'S','M','T','S','S','p','e','n','d','s','H','a','s','h','0','1'};
-static constexpr unsigned char SMT_SHIELDED_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+static constexpr unsigned char KSH_SHIELDED_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'S','M','T','S','O','u','t','p','u','t','H','a','s','h','0','1'};
 
 template <class T>
 uint256 GetPrevoutHash(const T& txTo)
 {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, SMT_PREVOUTS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, KSH_PREVOUTS_HASH_PERSONALIZATION);
     for (const auto& txin : txTo.vin) {
         ss << txin.prevout;
     }
@@ -1500,7 +1500,7 @@ uint256 GetPrevoutHash(const T& txTo)
 template <class T>
 uint256 GetSequenceHash(const T& txTo)
 {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, SMT_SEQUENCE_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, KSH_SEQUENCE_HASH_PERSONALIZATION);
     for (const auto& txin : txTo.vin) {
         ss << txin.nSequence;
     }
@@ -1510,7 +1510,7 @@ uint256 GetSequenceHash(const T& txTo)
 template <class T>
 uint256 GetOutputsHash(const T& txTo)
 {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, SMT_OUTPUTS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, KSH_OUTPUTS_HASH_PERSONALIZATION);
     for (const auto& txout : txTo.vout) {
         ss << txout;
     }
@@ -1520,7 +1520,7 @@ uint256 GetOutputsHash(const T& txTo)
 template <class T>
 uint256 GetShieldedSpendsHash(const T& txTo)
 {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, SMT_SHIELDED_SPENDS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, KSH_SHIELDED_SPENDS_HASH_PERSONALIZATION);
     for (const auto& spend : txTo.sapData.vShieldedSpend) {
         ss << spend.cv;
         ss << spend.anchor;
@@ -1534,7 +1534,7 @@ uint256 GetShieldedSpendsHash(const T& txTo)
 template <class T>
 uint256 GetShieldedOutputsHash(const T& txTo)
 {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, SMT_SHIELDED_OUTPUTS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, KSH_SHIELDED_OUTPUTS_HASH_PERSONALIZATION);
     for (const auto& output : txTo.sapData.vShieldedOutput) {
         ss << output;
     }
@@ -1610,7 +1610,7 @@ uint256 SignatureHash(const CScript& scriptCode, const T& txTo, unsigned int nIn
         if ((nHashType & 0x1f) != SIGHASH_SINGLE && (nHashType & 0x1f) != SIGHASH_NONE) {
             hashOutputs = cache ? cache->hashOutputs : GetOutputsHash(txTo);
         } else if ((nHashType & 0x1f) == SIGHASH_SINGLE && nIn < txTo.vout.size()) {
-            CBLAKE2bWriter ss(SER_GETHASH, 0, SMT_OUTPUTS_HASH_PERSONALIZATION);
+            CBLAKE2bWriter ss(SER_GETHASH, 0, KSH_OUTPUTS_HASH_PERSONALIZATION);
             ss << txTo.vout[nIn];
             hashOutputs = ss.GetHash();
         }
@@ -1625,7 +1625,7 @@ uint256 SignatureHash(const CScript& scriptCode, const T& txTo, unsigned int nIn
         }
 
         unsigned char personalization[crypto_generichash_blake2b_PERSONALBYTES] = {};
-        std::memcpy(personalization, "SMTSigHash", 10);
+        std::memcpy(personalization, "KSHSigHash", 10);
         WriteLE32(personalization + 12, 0);
 
         CBLAKE2bWriter ss(SER_GETHASH, 0, personalization);

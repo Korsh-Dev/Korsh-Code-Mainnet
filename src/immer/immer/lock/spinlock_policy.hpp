@@ -15,9 +15,9 @@
 #if defined(_MSC_VER) && _MSC_VER >= 1310 &&                                   \
     (defined(_M_IX86) || defined(_M_X64)) && !defined(__c2__)
 extern "C" void _mm_pause();
-#define IMMER_SMT_PAUSE _mm_pause()
+#define IMMER_KSH_PAUSE _mm_pause()
 #elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
-#define IMMER_SMT_PAUSE __asm__ __volatile__("rep; nop" : : : "memory")
+#define IMMER_KSH_PAUSE __asm__ __volatile__("rep; nop" : : : "memory")
 #endif
 
 namespace immer {
@@ -36,9 +36,9 @@ struct spinlock_policy
         for (auto k = 0u; !try_lock(); ++k) {
             if (k < 4)
                 continue;
-#ifdef IMMER_SMT_PAUSE
+#ifdef IMMER_KSH_PAUSE
             else if (k < 16)
-                IMMER_SMT_PAUSE;
+                IMMER_KSH_PAUSE;
 #endif
             else
                 std::this_thread::yield();

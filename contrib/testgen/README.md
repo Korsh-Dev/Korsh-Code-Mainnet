@@ -1,6 +1,6 @@
 ### TestGen ###
 
-Utilities to generate test vectors for the data-driven Smartiecoin tests.
+Utilities to generate test vectors for the data-driven Korsh tests.
 
 To use inside a scripted-diff (or just execute directly):
 

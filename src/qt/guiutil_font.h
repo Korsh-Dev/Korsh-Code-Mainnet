@@ -140,7 +140,7 @@ bool weightFromArg(int nArg, QFont::Weight& weight);
 /** Convert QFont::Weight to an arg value (0-8) */
 int weightToArg(const QFont::Weight weight);
 
-/** Load smartiecoin specific application fonts */
+/** Load korsh specific application fonts */
 bool loadFonts();
 
 /** Check if the fonts have been loaded successfully */

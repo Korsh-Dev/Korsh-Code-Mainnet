@@ -1,9 +1,9 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-#DEB_MAKE_CHECK_TARGET = test_SMT
-#build/smartiecoind::
-#	$(if $(filter nocheck,$(DEB_BUILD_OPTIONS)),,src/test_SMT)
+#DEB_MAKE_CHECK_TARGET = test_KSH
+#build/korshd::
+#	$(if $(filter nocheck,$(DEB_BUILD_OPTIONS)),,src/test_KSH)
 
 %:
 	dh --with bash-completion $@

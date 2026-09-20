@@ -1,31 +1,31 @@
-# /etc/conf.d/smartiecoind: config file for /etc/init.d/smartiecoind
+# /etc/conf.d/korshd: config file for /etc/init.d/korshd
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/smartiecoin/smartiecoin.conf"
+#BITCOIND_CONFIGFILE="/etc/korsh/korsh.conf"
 
 # What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/smartiecoin"
+#BITCOIND_PIDDIR="/var/run/korsh"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/smartiecoind.pid"
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/korshd.pid"
 
-# Where to write smartiecoind data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/smartiecoin"
+# Where to write korshd data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/korsh"
 
-# User and group to own smartiecoind process
-#BITCOIND_USER="smartiecoin"
-#BITCOIND_GROUP="smartiecoin"
+# User and group to own korshd process
+#BITCOIND_USER="korsh"
+#BITCOIND_GROUP="korsh"
 
-# Path to smartiecoind executable
-#BITCOIND_BIN="/usr/bin/smartiecoind"
+# Path to korshd executable
+#BITCOIND_BIN="/usr/bin/korshd"
 
-# Nice value to run smartiecoind under
+# Nice value to run korshd under
 #BITCOIND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)
 #BITCOIND_OPTS=""
 
-# The timeout in seconds OpenRC will wait for smartiecoind to terminate
+# The timeout in seconds OpenRC will wait for korshd to terminate
 # after a SIGTERM has been raised.
 # Note that this will be mapped as argument to start-stop-daemon's
 # '--retry' option, which means you can specify a retry schedule

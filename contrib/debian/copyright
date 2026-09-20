@@ -1,14 +1,14 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Smartiecoin Core
-Upstream-Contact: smartiecoin@gmail.com
-Source: https://github.com/SmartiesCoin/Smartiecoin
+Upstream-Name: Korsh Core
+Upstream-Contact: korsh@gmail.com
+Source: https://github.com/SmartiesCoin/Korsh
 
 Files: *
 Copyright: 2009-2026, Upstream Open-Source Contributors,
-           2019-2026, Smartiecoin Core Developers
+           2019-2026, Korsh Core Developers
 License: Expat
 Comment: The upstream open-source contributors encompass all contributors to the
-         project listed in release notes or git history. The Smartiecoin Core
+         project listed in release notes or git history. The Korsh Core
          Developers encompasses all contributors to the project, listed in the
          release notes or the git log.
 

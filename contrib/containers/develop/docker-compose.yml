@@ -19,7 +19,7 @@ services:
     volumes:
       - type: bind
         source: ../../..
-        target: /src/smartiecoin
+        target: /src/korsh
 
 # Sharing your ccache
 #
@@ -34,7 +34,7 @@ services:
 # NOTE: Only the first line is a continuation of the services.container.volumes
 #       definition
 
-#      - cache:/home/smartiecoin/.ccache
+#      - cache:/home/korsh/.ccache
 #
 # volumes:
 #    cache:

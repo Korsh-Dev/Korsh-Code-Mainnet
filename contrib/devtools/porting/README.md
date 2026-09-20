@@ -4,7 +4,7 @@ This directory contains helper tooling for structured upstream porting work.
 
 ## `generate_gap_report.py`
 
-Compares the Smartiecoin tree against an upstream Bitcoin Core checkout and
+Compares the Korsh tree against an upstream Bitcoin Core checkout and
 produces:
 
 - A markdown report with high-level deltas.

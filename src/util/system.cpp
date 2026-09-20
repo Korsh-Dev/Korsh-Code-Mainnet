@@ -75,7 +75,7 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-//Smartiecoin only features
+//Korsh only features
 const std::string gCoinJoinName = "PrivateSend";
 
 /**
@@ -87,7 +87,7 @@ const std::string gCoinJoinName = "PrivateSend";
 */
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "smartiecoin.conf";
+const char * const BITCOIN_CONF_FILENAME = "korsh.conf";
 const char * const BITCOIN_SETTINGS_FILENAME = "settings.json";
 
 ArgsManager gArgs;
@@ -317,7 +317,7 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
 
     for (int i = 1; i < argc; i++) {
         std::string key(argv[i]);
-        if (key == "-") break; //smartiecoin-tx using stdin
+        if (key == "-") break; //korsh-tx using stdin
 
 #ifdef MAC_OSX
         // At the first time when a user gets the "App downloaded from the
@@ -341,7 +341,7 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
 
         if (key[0] != '-') {
             if (!m_accept_any_command && m_command.empty()) {
-                // The first non-smartiecoin arg is a registered command
+                // The first non-korsh arg is a registered command
                 std::optional<unsigned int> flags = GetArgFlags(key);
                 if (!flags || !(*flags & ArgsManager::COMMAND)) {
                     error = strprintf("Invalid command '%s'", argv[i]);
@@ -870,12 +870,12 @@ void PrintExceptionContinue(const std::exception_ptr pex, const char* pszExcepti
 
 fs::path GetDefaultDataDir()
 {
-    // Windows: C:\Users\Username\AppData\Roaming\SmartiecoinCore
-    // macOS: ~/Library/Application Support/SmartiecoinCore
-    // Unix-like: ~/.smartiecoincore
+    // Windows: C:\Users\Username\AppData\Roaming\KorshCore
+    // macOS: ~/Library/Application Support/KorshCore
+    // Unix-like: ~/.korshcore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "SmartiecoinCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "KorshCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -885,10 +885,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // macOS
-    return pathRet / "Library/Application Support/SmartiecoinCore";
+    return pathRet / "Library/Application Support/KorshCore";
 #else
     // Unix-like
-    return pathRet / ".smartiecoincore";
+    return pathRet / ".korshcore";
 #endif
 #endif
 }
@@ -1084,7 +1084,7 @@ bool ArgsManager::ReadConfigFiles(std::string& error, bool ignore_invalid_keys)
             }
         }
     } else {
-        // Create an empty smartiecoin.conf if it does not exist
+        // Create an empty korsh.conf if it does not exist
         std::ofstream configFile{GetConfigFile(conf_path), std::ios_base::app};
         if (!configFile.good())
             return false;

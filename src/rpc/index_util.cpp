@@ -15,7 +15,7 @@
 static void EnsureAddressIndexAvailable()
 {
     if (!node::fAddressIndex) {
-        throw JSONRPCError(RPC_INVALID_REQUEST, "Address index is disabled. You should run Smartiecoin Core with -addressindex (requires reindex)");
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Address index is disabled. You should run Korsh Core with -addressindex (requires reindex)");
     }
 }
 
@@ -74,7 +74,7 @@ bool GetSpentIndex(CBlockTreeDB& block_tree_db, const CTxMemPool& mempool, const
     AssertLockHeld(::cs_main);
 
     if (!node::fSpentIndex) {
-        throw JSONRPCError(RPC_INVALID_REQUEST, "Spent index is disabled. You should run Smartiecoin Core with -spentindex (requires reindex)");
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Spent index is disabled. You should run Korsh Core with -spentindex (requires reindex)");
     }
 
     if (mempool.getSpentIndex(key, value))
@@ -89,7 +89,7 @@ bool GetTimestampIndex(CBlockTreeDB& block_tree_db, const uint32_t high, const u
     AssertLockHeld(::cs_main);
 
     if (!node::fTimestampIndex) {
-        throw JSONRPCError(RPC_INVALID_REQUEST, "Timestamp index is disabled. You should run Smartiecoin Core with -timestampindex (requires reindex)");
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Timestamp index is disabled. You should run Korsh Core with -timestampindex (requires reindex)");
     }
 
     return block_tree_db.ReadTimestampIndex(high, low, hashes);

@@ -1,8 +1,8 @@
-# Smartiecoin Port Plan to Bitcoin Core v30.2
+# Korsh Port Plan to Bitcoin Core v30.2
 
 ## Objective
 
-Move the Smartiecoin codebase onto Bitcoin Core `v30.2` while preserving:
+Move the Korsh codebase onto Bitcoin Core `v30.2` while preserving:
 
 - YesPower PoW.
 - Masternodes and LLMQ stack.

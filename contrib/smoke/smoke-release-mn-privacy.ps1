@@ -33,7 +33,7 @@ function Clear-ReadOnlyRecursively([string]$Path) {
 }
 
 function Reset-FunctionalCache() {
-    Get-Process smartiecoind -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    Get-Process korshd -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 
     if (-not (Test-Path "test/cache")) {
         return
@@ -61,9 +61,9 @@ try {
         }
 
         $buildCmd = @(
-            "cd /c/Dev/Smartiecoin"
+            "cd /c/Dev/Korsh"
             "export PATH='/mingw64/bin:/usr/bin:/bin'"
-            "make -C src -j8 EVENT_CFLAGS='' EVENT_PTHREADS_CFLAGS='' LDFLAGS='-LC:/Dev/Smartiecoin/.local/msys_extract/msys64/mingw64/qt5-static/lib' smartiecoind.exe smartiecoin-cli.exe smartiecoin-util.exe"
+            "make -C src -j8 EVENT_CFLAGS='' EVENT_PTHREADS_CFLAGS='' LDFLAGS='-LC:/Dev/Korsh/.local/msys_extract/msys64/mingw64/qt5-static/lib' korshd.exe korsh-cli.exe korsh-util.exe"
         ) -join " && "
 
         & $bashPath -lc $buildCmd
@@ -73,9 +73,9 @@ try {
     }
 
     $requiredBinaries = @(
-        "src/smartiecoind.exe",
-        "src/smartiecoin-cli.exe",
-        "src/smartiecoin-util.exe"
+        "src/korshd.exe",
+        "src/korsh-cli.exe",
+        "src/korsh-util.exe"
     )
     foreach ($bin in $requiredBinaries) {
         if (-not (Test-Path $bin)) {
@@ -85,7 +85,7 @@ try {
 
     Clear-ReadOnlyRecursively "test/cache"
 
-    $env:SMARTIECOINUTIL = (Resolve-Path "src/smartiecoin-util.exe").Path
+    $env:KORSHUTIL = (Resolve-Path "src/korsh-util.exe").Path
 
     $quickTests = @(
         "rpc_masternode.py",

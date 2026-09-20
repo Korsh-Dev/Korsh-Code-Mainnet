@@ -5,7 +5,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #
-# Run cppcheck for smartiecoin specific files
+# Run cppcheck for korsh specific files
 
 import multiprocessing
 import os

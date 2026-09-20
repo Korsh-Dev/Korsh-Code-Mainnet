@@ -1,4 +1,4 @@
-usr/local/bin/smartiecoind usr/bin
-usr/local/bin/smartiecoin-cli usr/bin
+usr/local/bin/korshd usr/bin
+usr/local/bin/korsh-cli usr/bin
 
 

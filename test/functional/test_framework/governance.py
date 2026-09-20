@@ -2,7 +2,7 @@
 # Copyright (c) 2018-2024 The Smartiecoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Utils for smartiecoin governance tests."""
+"""Utils for korsh governance tests."""
 
 import json
 
@@ -20,7 +20,7 @@ def prepare_object(node, object_type, parent_hash, creation_time, revision, name
         "end_epoch": end_epoch if end_epoch is not None else proposal_time + 24 * 60 * 60,
         "payment_amount": float(amount),
         "payment_address": payment_address,
-        "url": "https://smartiecoin.org"
+        "url": "https://korsh.org"
     }
     if payment_height is not None:
         proposal_template["payment_height"] = payment_height

@@ -14,10 +14,10 @@
 #include <librustzcash.h>
 #include <sodium.h>
 
-const unsigned char SMT_HD_SEED_FP_PERSONAL[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char KSH_HD_SEED_FP_PERSONAL[crypto_generichash_blake2b_PERSONALBYTES] =
     {'S', 'M', 'T', '_', '_', 'H', 'D', '_', 'S', 'e', 'e', 'd', '_', 'F', 'P', 'v'};
 
-const unsigned char SMT_TADDR_OVK_PERSONAL[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char KSH_TADDR_OVK_PERSONAL[crypto_generichash_blake2b_PERSONALBYTES] =
         {'S', 'M', 'T', 'a', 'd', 'd', 'r', 'T', 'o', 'S', 'a', 'p', 'l', 'i', 'n', 'g'};
 
 namespace {
@@ -38,7 +38,7 @@ HDSeed HDSeed::Random(size_t len)
 
 uint256 HDSeed::Fingerprint() const
 {
-    CBLAKE2bWriter h(SER_GETHASH, 0, SMT_HD_SEED_FP_PERSONAL);
+    CBLAKE2bWriter h(SER_GETHASH, 0, KSH_HD_SEED_FP_PERSONAL);
     h << seed;
     return h.GetHash();
 }
@@ -53,7 +53,7 @@ uint256 ovkForShieldingFromTaddr(HDSeed& seed) {
             nullptr, 0, // No key.
             64,
             nullptr,    // No salt.
-            SMT_TADDR_OVK_PERSONAL) == 0);
+            KSH_TADDR_OVK_PERSONAL) == 0);
     crypto_generichash_blake2b_update(&state, rawSeed.data(), rawSeed.size());
     auto intermediate = std::array<unsigned char, 64>();
     crypto_generichash_blake2b_final(&state, intermediate.data(), 64);

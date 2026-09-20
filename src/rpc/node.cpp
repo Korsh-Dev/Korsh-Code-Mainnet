@@ -50,7 +50,7 @@ static RPCHelpMan debug()
         "libevent logging is configured on startup and cannot be modified by this RPC during runtime.\n"
         "There are also a few meta-categories:\n"
         " - \"all\", \"1\" and \"\" activate all categories at once;\n"
-        " - \"smartiecoin\" activates all Smartiecoin-specific categories at once;\n"
+        " - \"korsh\" activates all Korsh-specific categories at once;\n"
         " - \"none\" (or \"0\") deactivates all categories at once.\n"
         "Note: If specified category doesn't match any of the above, no error is thrown.\n"
         "Note: Consider using 'logging' RPC which has more features.\n"
@@ -64,8 +64,8 @@ static RPCHelpMan debug()
             RPCResult::Type::STR, "result", "\"Debug mode: \" followed by the specified category",
         },
         RPCExamples {
-            HelpExampleCli("debug", "smartiecoin")
-    + HelpExampleRpc("debug", "smartiecoin+net")
+            HelpExampleCli("debug", "korsh")
+    + HelpExampleRpc("debug", "korsh+net")
         },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
@@ -969,7 +969,7 @@ static RPCHelpMan logging()
             "The valid logging categories are: " + LogInstance().LogCategoriesString() + "\n"
             "In addition, the following are available as category names with special meanings:\n"
             "  - \"all\",  \"1\" : represent all logging categories.\n"
-            "  - \"smartiecoin\" activates all Smartiecoin-specific categories at once.\n"
+            "  - \"korsh\" activates all Korsh-specific categories at once.\n"
             "To deactivate all categories at once you can specify \"all\" in <exclude>.\n"
             "  - \"none\", \"0\" : even if other logging categories are specified, ignore all of them.\n"
             ,
@@ -991,7 +991,7 @@ static RPCHelpMan logging()
                 },
                 RPCExamples{
                     HelpExampleCli("logging", "\"[\\\"all\\\"]\" \"[\\\"http\\\"]\"")
-            + HelpExampleCli("logging", "'[\"smartiecoin\"]' '[\"llmq\",\"zmq\"]'")
+            + HelpExampleCli("logging", "'[\"korsh\"]' '[\"llmq\",\"zmq\"]'")
             + HelpExampleRpc("logging", "[\"all\"], \"[libevent]\"")
                 },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
@@ -1028,7 +1028,7 @@ static RPCHelpMan echo(const std::string& name)
                 "\nSimply echo back the input arguments. This command is for testing.\n"
                 "\nIt will return an internal bug report when arg9='trigger_internal_bug' is passed.\n"
                 "\nThe difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in "
-                "smartiecoin-cli and the GUI. There is no server-side difference.",
+                "korsh-cli and the GUI. There is no server-side difference.",
         {
             {"arg0", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, ""},
             {"arg1", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, ""},
@@ -1079,7 +1079,7 @@ static RPCHelpMan echoipc()
                 // and spawn bitcoin-echo below instead of bitcoin-node. But
                 // using bitcoin-node avoids the need to build and install a
                 // new executable just for this one test.
-                auto init = ipc->spawnProcess("smartiecoin-node");
+                auto init = ipc->spawnProcess("korsh-node");
                 echo = init->makeEcho();
                 ipc->addCleanup(*echo, [init = init.release()] { delete init; });
             } else {
@@ -1171,10 +1171,10 @@ static const CRPCCommand commands[] =
     { "addressindex",       &getaddresstxids,         },
     { "addressindex",       &getaddressbalance,       },
 
-    /* Smartiecoin features */
-    { "smartiecoin",               &mnsync,                  },
-    { "smartiecoin",               &spork,                   },
-    { "smartiecoin",               &sporkupdate,             },
+    /* Korsh features */
+    { "korsh",               &mnsync,                  },
+    { "korsh",               &spork,                   },
+    { "korsh",               &sporkupdate,             },
 
     /* Not shown in help */
     { "hidden",             &setmocktime,             },

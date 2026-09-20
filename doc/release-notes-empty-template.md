@@ -2,7 +2,7 @@
 [/doc/developer-notes.md#release-notes](/doc/developer-notes.md#release-notes)
 for the process.*
 
-# Smartiecoin Core version *version*
+# Korsh Core version *version*
 ===============================
 
 This is a new minor version release, bringing various bugfixes and performance improvements.
@@ -10,7 +10,7 @@ This release is **optional** for all nodes, although recommended.
 
 Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/SmartiesCoin/Smartiecoin/issues>
+  <https://github.com/SmartiesCoin/Korsh/issues>
 
 
 # Upgrading and downgrading
@@ -19,8 +19,8 @@ Please report bugs using the issue tracker at GitHub:
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes in some cases), then run the
-installer (on Windows) or just copy over `/Applications/Smartiecoin-Qt` (on macOS) or
-`smartiecoind`/`smartiecoin-qt` (on Linux).
+installer (on Windows) or just copy over `/Applications/Korsh-Qt` (on macOS) or
+`korshd`/`korsh-qt` (on Linux).
 
 ## Downgrade warning
 
@@ -31,10 +31,10 @@ likely require a reindex.
 
 # Compatibility
 
-Smartiecoin Core is supported and tested on operating systems using the
-Linux Kernel 3.17+, macOS 14+, and Windows 10+. Smartiecoin Core
+Korsh Core is supported and tested on operating systems using the
+Linux Kernel 3.17+, macOS 14+, and Windows 10+. Korsh Core
 should also work on most other Unix-like systems but is not as
-frequently tested on them. It is not recommended to use Smartiecoin Core on
+frequently tested on them. It is not recommended to use Korsh Core on
 unsupported systems.
 
 # Release Notes
@@ -105,4 +105,4 @@ These releases are considered obsolete. Old release notes can be found here:
 -
 -
 
-[set-of-changes]: https://github.com/SmartiesCoin/Smartiecoin/compare/*version*...dashpay:*version*
+[set-of-changes]: https://github.com/SmartiesCoin/Korsh/compare/*version*...dashpay:*version*

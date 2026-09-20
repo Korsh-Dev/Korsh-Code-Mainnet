@@ -284,7 +284,7 @@ BENCHMARK(MuHashMul);
 BENCHMARK(MuHashDiv);
 BENCHMARK(MuHashPrecompute);
 
-/* --------------------------- Smartiecoin-specific tests start here --------------------------- */
+/* --------------------------- Korsh-specific tests start here --------------------------- */
 
 static void DSHA256_1M(benchmark::Bench& bench)
 {

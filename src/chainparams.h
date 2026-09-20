@@ -67,7 +67,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Smartiecoin system.
+ * Korsh system.
  */
 class CChainParams
 {

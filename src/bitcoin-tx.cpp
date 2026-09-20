@@ -102,14 +102,14 @@ static int AppInitRawTx(int argc, char* argv[])
 
     if (argc < 2 || HelpRequested(gArgs) || gArgs.IsArgSet("-version")) {
         // First part of help message is specific to this utility
-        std::string strUsage = PACKAGE_NAME " smartiecoin-tx utility version " + FormatFullVersion() + "\n";
+        std::string strUsage = PACKAGE_NAME " korsh-tx utility version " + FormatFullVersion() + "\n";
 
         if (gArgs.IsArgSet("-version")) {
             strUsage += FormatParagraph(LicenseInfo());
         } else {
             strUsage += "\n"
-                "Usage:  smartiecoin-tx [options] <hex-tx> [commands]  Update hex-encoded Smartiecoin transaction\n"
-                "or:     smartiecoin-tx [options] -create [commands]   Create hex-encoded Smartiecoin transaction\n"
+                "Usage:  korsh-tx [options] <hex-tx> [commands]  Update hex-encoded Korsh transaction\n"
+                "or:     korsh-tx [options] -create [commands]   Create hex-encoded Korsh transaction\n"
                 "\n";
             strUsage += gArgs.GetHelpMessage();
         }
@@ -759,7 +759,7 @@ static int CommandLineRawTx(int argc, char* argv[])
             if (argc < 2)
                 throw std::runtime_error("too few parameters");
 
-            // param: hex-encoded Smartiecoin transaction
+            // param: hex-encoded Korsh transaction
             std::string strHexTx(argv[1]);
             if (strHexTx == "-")                 // "-" implies standard input
                 strHexTx = readStdin();

@@ -29,16 +29,16 @@ if test -n "$PKG_CONFIG_LIBDIR"; then
   PKG_CONFIG="env PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR $PKG_CONFIG"
 fi
 
-BITCOIN_DAEMON_NAME=smartiecoind
-BITCOIN_GUI_NAME=smartiecoin-qt
+BITCOIN_DAEMON_NAME=korshd
+BITCOIN_GUI_NAME=korsh-qt
 BITCOIN_TEST_NAME=test_dash
-BITCOIN_CLI_NAME=smartiecoin-cli
-BITCOIN_TX_NAME=smartiecoin-tx
-BITCOIN_UTIL_NAME=smartiecoin-util
-BITCOIN_WALLET_TOOL_NAME=smartiecoin-wallet
+BITCOIN_CLI_NAME=korsh-cli
+BITCOIN_TX_NAME=korsh-tx
+BITCOIN_UTIL_NAME=korsh-util
+BITCOIN_WALLET_TOOL_NAME=korsh-wallet
 dnl Multi Process
-BITCOIN_MP_NODE_NAME=smartiecoin-node
-BITCOIN_MP_GUI_NAME=smartiecoin-gui
+BITCOIN_MP_NODE_NAME=korsh-node
+BITCOIN_MP_GUI_NAME=korsh-gui
 
 dnl Unless the user specified ARFLAGS, force it to be cr
 dnl This is also the default as-of libtool 2.4.7
@@ -49,9 +49,9 @@ fi
 
 AC_CANONICAL_HOST
 
-AH_TOP([#ifndef SMARTIECOIN_CONFIG_H])
-AH_TOP([#define SMARTIECOIN_CONFIG_H])
-AH_BOTTOM([#endif //SMARTIECOIN_CONFIG_H])
+AH_TOP([#ifndef KORSH_CONFIG_H])
+AH_TOP([#define KORSH_CONFIG_H])
+AH_BOTTOM([#endif //KORSH_CONFIG_H])
 
 dnl Automake init set-up and checks
 AM_INIT_AUTOMAKE([1.13 no-define subdir-objects foreign])
@@ -262,7 +262,7 @@ AC_ARG_WITH([mpgen],
 
 AC_ARG_ENABLE([multiprocess],
   [AS_HELP_STRING([--enable-multiprocess],
-  [build multiprocess smartiecoin-node, smartiecoin-wallet, and smartiecoin-gui executables in addition to monolithic smartiecoind and smartiecoin-qt executables. Requires libmultiprocess library. Experimental (default is no)])],
+  [build multiprocess korsh-node, korsh-wallet, and korsh-gui executables in addition to monolithic korshd and korsh-qt executables. Requires libmultiprocess library. Experimental (default is no)])],
   [enable_multiprocess=$enableval],
   [enable_multiprocess=no])
 
@@ -745,31 +745,31 @@ CORE_CPPFLAGS="$CORE_CPPFLAGS -DHAVE_BUILD_INFO -DGSL_NO_IOSTREAMS"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
-  [build smartiecoin-cli smartiecoin-tx smartiecoin-util smartiecoin-wallet (default=yes)])],
+  [build korsh-cli korsh-tx korsh-util korsh-wallet (default=yes)])],
   [build_bitcoin_utils=$withval],
   [build_bitcoin_utils=yes])
 
 AC_ARG_ENABLE([util-cli],
   [AS_HELP_STRING([--enable-util-cli],
-  [build smartiecoin-cli])],
+  [build korsh-cli])],
   [build_bitcoin_cli=$enableval],
   [build_bitcoin_cli=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-tx],
   [AS_HELP_STRING([--enable-util-tx],
-  [build smartiecoin-tx])],
+  [build korsh-tx])],
   [build_bitcoin_tx=$enableval],
   [build_bitcoin_tx=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-wallet],
   [AS_HELP_STRING([--enable-util-wallet],
-  [build smartiecoin-wallet])],
+  [build korsh-wallet])],
   [build_bitcoin_wallet=$enableval],
   [build_bitcoin_wallet=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-util],
   [AS_HELP_STRING([--enable-util-util],
-  [build smartiecoin-util])],
+  [build korsh-util])],
   [build_bitcoin_util=$enableval],
   [build_bitcoin_util=$build_bitcoin_utils])
 
@@ -781,7 +781,7 @@ AC_ARG_WITH([libs],
 
 AC_ARG_WITH([daemon],
   [AS_HELP_STRING([--with-daemon],
-  [build smartiecoind daemon (default=yes)])],
+  [build korshd daemon (default=yes)])],
   [build_bitcoind=$withval],
   [build_bitcoind=yes])
 
@@ -1136,7 +1136,7 @@ AC_CHECK_DECLS([getifaddrs, freeifaddrs],[CHECK_SOCKET],,
     #include <ifaddrs.h>]
 )
 
-dnl These are used for daemonization in smartiecoind
+dnl These are used for daemonization in korshd
 AC_CHECK_DECLS([fork])
 AC_CHECK_DECLS([setsid])
 
@@ -1817,23 +1817,23 @@ if test "$build_multiprocess" != "no"; then
   AC_SUBST(MPGEN_PREFIX)
 fi
 
-AC_MSG_CHECKING([whether to build smartiecoind])
+AC_MSG_CHECKING([whether to build korshd])
 AM_CONDITIONAL([BUILD_BITCOIND], [test $build_bitcoind = "yes"])
 AC_MSG_RESULT($build_bitcoind)
 
-AC_MSG_CHECKING([whether to build smartiecoin-cli])
+AC_MSG_CHECKING([whether to build korsh-cli])
 AM_CONDITIONAL([BUILD_BITCOIN_CLI], [test $build_bitcoin_cli = "yes"])
 AC_MSG_RESULT($build_bitcoin_cli)
 
-AC_MSG_CHECKING([whether to build smartiecoin-tx])
+AC_MSG_CHECKING([whether to build korsh-tx])
 AM_CONDITIONAL([BUILD_BITCOIN_TX], [test $build_bitcoin_tx = "yes"])
 AC_MSG_RESULT($build_bitcoin_tx)
 
-AC_MSG_CHECKING([whether to build smartiecoin-wallet])
+AC_MSG_CHECKING([whether to build korsh-wallet])
 AM_CONDITIONAL([BUILD_BITCOIN_WALLET], [test $build_bitcoin_wallet = "yes"])
 AC_MSG_RESULT($build_bitcoin_wallet)
 
-AC_MSG_CHECKING([whether to build smartiecoin-util])
+AC_MSG_CHECKING([whether to build korsh-util])
 AM_CONDITIONAL([BUILD_BITCOIN_UTIL], [test $build_bitcoin_util = "yes"])
 AC_MSG_RESULT($build_bitcoin_util)
 
@@ -1949,7 +1949,7 @@ if test "$bitcoin_enable_qt" != "no"; then
     AC_MSG_WARN([xgettext is required to update qt translations])
   fi
 
-  AC_MSG_CHECKING([whether to build test_smartiecoin-qt])
+  AC_MSG_CHECKING([whether to build test_korsh-qt])
   if test "$use_gui_tests$bitcoin_enable_qt_test" = "yesyes"; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="yes"
@@ -1958,7 +1958,7 @@ if test "$bitcoin_enable_qt" != "no"; then
   fi
 fi
 
-AC_MSG_CHECKING([whether to build test_smartiecoin])
+AC_MSG_CHECKING([whether to build test_korsh])
 if test "$use_tests" = "yes"; then
   if test "$enable_fuzz" = "yes"; then
     AC_MSG_RESULT([no, because fuzzing is enabled])
@@ -2174,7 +2174,7 @@ echo "  with zmq        = $use_zmq"
 if test $enable_fuzz = "no"; then
     echo "  with test       = $use_tests"
 else
-    echo "  with test       = not building test_smartiecoin because fuzzing is enabled"
+    echo "  with test       = not building test_korsh because fuzzing is enabled"
 fi
 echo "  with fuzz binary= $enable_fuzz_binary"
 echo "  with bench      = $use_bench"

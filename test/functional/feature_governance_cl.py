@@ -31,7 +31,7 @@ class DashGovernanceTest (DashTestFramework):
             "end_epoch": proposal_time + 20 * 156,
             "payment_amount": float(amount),
             "payment_address": payment_address,
-            "url": "https://smartiecoin.org"
+            "url": "https://korsh.org"
         }
         proposal_hex = ''.join(format(x, '02x') for x in json.dumps(proposal_template).encode())
         collateral_hash = self.nodes[0].gobject("prepare", parent_hash, proposal_rev, proposal_time, proposal_hex)

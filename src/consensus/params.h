@@ -36,7 +36,7 @@ enum BuriedDeployment : int16_t {
     DEPLOYMENT_V19,
     DEPLOYMENT_V20,
     DEPLOYMENT_MN_RR,
-    DEPLOYMENT_SMT_SHIELD,
+    DEPLOYMENT_KSH_SHIELD,
     DEPLOYMENT_WITHDRAWALS,
 };
 constexpr bool ValidDeployment(BuriedDeployment dep) { return dep <= DEPLOYMENT_WITHDRAWALS; }
@@ -153,22 +153,24 @@ struct Params {
     int V20Height;
     /** Block height at which MN_RR (Deployment of Masternode Reward Location Reallocation) becomes active */
     int MN_RRHeight;
-    /** Block height at which SMT v0.1.4 consensus activates (fixed 45/45/10 split, 1M halving interval) */
-    int nSMTv014Height;
-    /** Block height at which SMT v0.3.0 reward realloc activates (18/72/10 split). Governance-approved. */
-    int nSMTv030Height;
-    /** Block height at which SMT shielded transaction version 4 activates. */
-    int nSMTShieldHeight;
-    /** Block height at which SMT v0.4.0 economics and 2-minute spacing activate. */
-    int nSMTv040Height;
-    /** SMT v0.4.0 halving interval, in blocks. */
-    int nSMTv040HalvingInterval;
-    /** SMT v0.4.0 target spacing, in seconds. */
-    int64_t nSMTv040PowTargetSpacing;
-    /** SMT v0.4.0 superblock cycle, in blocks. */
-    int nSMTv040SuperblockCycle;
+    /** Block height at which KSH v0.1.4 consensus activates (fixed 45/45/10 split, 1M halving interval) */
+    int nKSHv014Height;
+    /** Block height at which Evo masternode registrations become valid. */
+    int nKorshEvoActivationHeight{999999999};
+    /** Block height at which KSH v0.3.0 reward realloc activates (18/72/10 split). Governance-approved. */
+    int nKSHv030Height;
+    /** Block height at which KSH shielded transaction version 4 activates. */
+    int nKSHShieldHeight;
+    /** Block height at which KSH v0.4.0 economics and 2-minute spacing activate. */
+    int nKSHv040Height;
+    /** KSH v0.4.0 halving interval, in blocks. */
+    int nKSHv040HalvingInterval;
+    /** KSH v0.4.0 target spacing, in seconds. */
+    int64_t nKSHv040PowTargetSpacing;
+    /** KSH v0.4.0 superblock cycle, in blocks. */
+    int nKSHv040SuperblockCycle;
     /** Block height at which small-network LLMQ quorums activate (LLMQ_10_60/10_75) */
-    int nSMTSmallQuorumsHeight;
+    int nKSHSmallQuorumsHeight;
     /** Block height at which WITHDRAWALS (Deployment of quorum fix and higher limits for withdrawals) becomes active */
     int WithdrawalsHeight;
     /** Don't warn about unknown BIP 9 activations below this height.
@@ -193,24 +195,24 @@ struct Params {
     int nPowKGWHeight;
     int nPowDGWHeight;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
-    bool IsSMTv040Active(int nHeight) const { return nHeight >= nSMTv040Height; }
+    bool IsKSHv040Active(int nHeight) const { return nHeight >= nKSHv040Height; }
     int SubsidyHalvingInterval(int nHeight) const
     {
-        return IsSMTv040Active(nHeight) ? nSMTv040HalvingInterval : nSubsidyHalvingInterval;
+        return IsKSHv040Active(nHeight) ? nKSHv040HalvingInterval : nSubsidyHalvingInterval;
     }
     int64_t PowTargetSpacing(int nHeight) const
     {
-        return IsSMTv040Active(nHeight) ? nSMTv040PowTargetSpacing : nPowTargetSpacing;
+        return IsKSHv040Active(nHeight) ? nKSHv040PowTargetSpacing : nPowTargetSpacing;
     }
     int SuperblockCycle(int nHeight) const
     {
-        return IsSMTv040Active(nHeight) ? nSMTv040SuperblockCycle : nSuperblockCycle;
+        return IsKSHv040Active(nHeight) ? nKSHv040SuperblockCycle : nSuperblockCycle;
     }
     int SuperblockBudgetCycle(int nHeight) const
     {
         // The activation block closes the pre-fork governance cycle. This keeps
         // already-approved payouts at the fork height on the old 15-day budget.
-        return nHeight > nSMTv040Height ? nSMTv040SuperblockCycle : nSuperblockCycle;
+        return nHeight > nKSHv040Height ? nKSHv040SuperblockCycle : nSuperblockCycle;
     }
     /** The best chain should have at least this much work */
     uint256 nMinimumChainWork;
@@ -236,16 +238,16 @@ struct Params {
 
     /** Get the effective quorum type for a given height */
     LLMQType GetChainLocksType(int nHeight) const {
-        return (nHeight >= nSMTSmallQuorumsHeight && llmqTypeSmallChainLocks != LLMQType::LLMQ_NONE) ? llmqTypeSmallChainLocks : llmqTypeChainLocks;
+        return (nHeight >= nKSHSmallQuorumsHeight && llmqTypeSmallChainLocks != LLMQType::LLMQ_NONE) ? llmqTypeSmallChainLocks : llmqTypeChainLocks;
     }
     LLMQType GetInstantSendType(int nHeight) const {
-        return (nHeight >= nSMTSmallQuorumsHeight && llmqTypeSmallInstantSend != LLMQType::LLMQ_NONE) ? llmqTypeSmallInstantSend : llmqTypeDIP0024InstantSend;
+        return (nHeight >= nKSHSmallQuorumsHeight && llmqTypeSmallInstantSend != LLMQType::LLMQ_NONE) ? llmqTypeSmallInstantSend : llmqTypeDIP0024InstantSend;
     }
     LLMQType GetPlatformType(int nHeight) const {
-        return (nHeight >= nSMTSmallQuorumsHeight && llmqTypeSmallPlatform != LLMQType::LLMQ_NONE) ? llmqTypeSmallPlatform : llmqTypePlatform;
+        return (nHeight >= nKSHSmallQuorumsHeight && llmqTypeSmallPlatform != LLMQType::LLMQ_NONE) ? llmqTypeSmallPlatform : llmqTypePlatform;
     }
     LLMQType GetMnhfType(int nHeight) const {
-        return (nHeight >= nSMTSmallQuorumsHeight && llmqTypeSmallMnhf != LLMQType::LLMQ_NONE) ? llmqTypeSmallMnhf : llmqTypeMnhf;
+        return (nHeight >= nKSHSmallQuorumsHeight && llmqTypeSmallMnhf != LLMQType::LLMQ_NONE) ? llmqTypeSmallMnhf : llmqTypeMnhf;
     }
 
     int DeploymentHeight(BuriedDeployment dep) const
@@ -279,8 +281,8 @@ struct Params {
             return V20Height;
         case DEPLOYMENT_MN_RR:
             return MN_RRHeight;
-        case DEPLOYMENT_SMT_SHIELD:
-            return nSMTShieldHeight;
+        case DEPLOYMENT_KSH_SHIELD:
+            return nKSHShieldHeight;
         case DEPLOYMENT_WITHDRAWALS:
             return WithdrawalsHeight;
         } // no default case, so the compiler can warn about missing cases

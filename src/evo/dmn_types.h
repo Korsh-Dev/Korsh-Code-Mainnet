@@ -32,12 +32,12 @@ struct mntype_struct
 
 constexpr auto Regular = mntype_struct{
     .voting_weight = 1,
-    .collat_amount = 15000 * COIN,
+    .collat_amount = 1500 * COIN,
     .description = "Regular",
 };
 constexpr auto Evo = mntype_struct{
     .voting_weight = 5,
-    .collat_amount = 75000 * COIN,
+    .collat_amount = 7500 * COIN,
     .description = "Evo",
 };
 constexpr auto Invalid = mntype_struct{

@@ -119,17 +119,17 @@ bool CSuperblock::IsValidBlockHeight(int nBlockHeight)
         return false;
     }
 
-    if (nBlockHeight < consensusParams.nSMTv040Height) {
+    if (nBlockHeight < consensusParams.nKSHv040Height) {
         return nBlockHeight % consensusParams.nSuperblockCycle == 0;
     }
 
-    if (nBlockHeight == consensusParams.nSMTv040Height) {
+    if (nBlockHeight == consensusParams.nKSHv040Height) {
         // The fork height was chosen as an existing superblock height so the
         // pre-fork governance cycle can close without losing approved payouts.
         return nBlockHeight % consensusParams.nSuperblockCycle == 0;
     }
 
-    return (nBlockHeight - consensusParams.nSMTv040Height) % consensusParams.nSMTv040SuperblockCycle == 0;
+    return (nBlockHeight - consensusParams.nKSHv040Height) % consensusParams.nKSHv040SuperblockCycle == 0;
 }
 
 int CSuperblock::GetPaymentCycle(int nBlockHeight)
@@ -150,12 +150,12 @@ void CSuperblock::GetNearestSuperblocksHeights(int nBlockHeight, int& nLastSuper
     if (nBlockHeight < nFirstSuperblock) {
         nLastSuperblockRet = 0;
         nNextSuperblockRet = nFirstSuperblock;
-    } else if (nBlockHeight < consensusParams.nSMTv040Height) {
+    } else if (nBlockHeight < consensusParams.nKSHv040Height) {
         nLastSuperblockRet = nBlockHeight - nBlockHeight % nSuperblockCycle;
         nNextSuperblockRet = nLastSuperblockRet + nSuperblockCycle;
     } else {
-        const int nForkSuperblock = consensusParams.nSMTv040Height;
-        const int nForkCycle = consensusParams.nSMTv040SuperblockCycle;
+        const int nForkSuperblock = consensusParams.nKSHv040Height;
+        const int nForkCycle = consensusParams.nKSHv040SuperblockCycle;
         nLastSuperblockRet = nForkSuperblock + ((nBlockHeight - nForkSuperblock) / nForkCycle) * nForkCycle;
         nNextSuperblockRet = nLastSuperblockRet + nForkCycle;
     }
@@ -212,7 +212,7 @@ void CSuperblock::ParsePaymentSchedule(const std::string& strPaymentAddresses, c
     for (int i = 0; i < (int)vecPaymentAddresses.size(); i++) {
         CTxDestination dest = DecodeDestination(vecPaymentAddresses[i]);
         if (!IsValidDestination(dest)) {
-            std::string msg{strprintf("CSuperblock::%s -- Invalid Smartiecoin Address: %s", __func__, vecPaymentAddresses[i])};
+            std::string msg{strprintf("CSuperblock::%s -- Invalid Korsh Address: %s", __func__, vecPaymentAddresses[i])};
             LogPrintf("%s\n", msg);
             throw std::runtime_error(msg);
         }

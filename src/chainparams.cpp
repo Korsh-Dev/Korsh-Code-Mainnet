@@ -84,7 +84,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, uint32_t nTime, uint3
 
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Decentralised Smartiecoin fork 02/05/2024";
+    const char* pszTimestamp = "Decentralised Korsh fork 02/05/2024";
     return CreateGenesisBlock(pszTimestamp, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -167,8 +167,11 @@ public:
     CMainParams() {
         strNetworkID = CBaseChainParams::MAIN;
         consensus.nMaxMoney = 10'000'000 * COIN;
-        consensus.nSubsidyHalvingInterval = 1000000;
-        consensus.nMasternodePaymentsStartBlock = 999999999;
+        consensus.nSubsidyHalvingInterval = 2500000;
+        // Korsh mainnet: deterministic masternodes are enabled from block 2.
+        // Masternode payments remain available; all treasury/superblock payments
+        // and quorum-backed services stay disabled until explicitly activated.
+        consensus.nMasternodePaymentsStartBlock = 2;
         consensus.nMasternodePaymentsIncreaseBlock = 999999999;
         consensus.nMasternodePaymentsIncreasePeriod = 262800;
         consensus.nInstantSendConfirmationsRequired = 2;
@@ -189,9 +192,11 @@ public:
         consensus.BIP66Height = 0;
         consensus.BIP147Height = 0;
         consensus.CSVHeight = 0;
+        // Keep the masternode registry available, but leave all optional Dash
+        // Platform, quorum, governance, shield and reward forks height-gated.
         consensus.DIP0001Height = 2;
-        consensus.DIP0003Height = 999999999;
-        consensus.DIP0003EnforcementHeight = 999999999;
+        consensus.DIP0003Height = 2;
+        consensus.DIP0003EnforcementHeight = 50;
         consensus.DIP0003EnforcementHash = uint256();
         consensus.DIP0008Height = 999999999;
         consensus.BRRHeight = 999999999;
@@ -202,13 +207,14 @@ public:
         consensus.V19Height = 999999999;
         consensus.V20Height = 999999999;
         consensus.MN_RRHeight = 999999999;
-        consensus.nSMTv014Height = 999999999;
-        consensus.nSMTv030Height = 999999999;
-        consensus.nSMTShieldHeight = 999999999;
-        consensus.nSMTv040Height = 999999999;
-        consensus.nSMTv040HalvingInterval = 1000000;
-        consensus.nSMTv040PowTargetSpacing = 60;
-        consensus.nSMTv040SuperblockCycle = 10800;
+        consensus.nKSHv014Height = 999999999;
+        consensus.nKorshEvoActivationHeight = 999999999;
+        consensus.nKSHv030Height = 999999999;
+        consensus.nKSHShieldHeight = 999999999;
+        consensus.nKSHv040Height = 999999999;
+        consensus.nKSHv040HalvingInterval = 1000000;
+        consensus.nKSHv040PowTargetSpacing = 60;
+        consensus.nKSHv040SuperblockCycle = 10800;
         consensus.WithdrawalsHeight = 999999999;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("00ffffffff000000000000000000000000000000000000000000000000000000");
@@ -247,8 +253,9 @@ public:
         pchMessageStart[2] = 0x93;
         pchMessageStart[3] = 0xc7;
         nDefaultPort = 8383;
-        nDefaultPlatformP2PPort = 29256;
-        nDefaultPlatformHTTPPort = 29257;
+        // Dash Platform networking is disabled until a future activation height.
+        nDefaultPlatformP2PPort = 0;
+        nDefaultPlatformHTTPPort = 0;
         nPruneAfterHeight = 100000;
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 1;
@@ -265,9 +272,9 @@ public:
         // release ASAP to avoid it where possible.
         vSeeds.clear();
         vSeeds.emplace_back("207.180.230.125");
-        vSeeds.emplace_back("explorer.smartiecoin.com");
-        vSeeds.emplace_back("rpc.smartiecoin.com");
-        vSeeds.emplace_back("smartiecoin.com");
+        vSeeds.emplace_back("explorer.korsh.com");
+        vSeeds.emplace_back("rpc.korsh.com");
+        vSeeds.emplace_back("korsh.com");
         vSeeds.emplace_back("smartiescoin.com");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,63);
@@ -288,7 +295,7 @@ public:
         consensus.llmqTypeDIP0024InstantSend = Consensus::LLMQType::LLMQ_NONE;
         consensus.llmqTypePlatform = Consensus::LLMQType::LLMQ_NONE;
         consensus.llmqTypeMnhf = Consensus::LLMQType::LLMQ_NONE;
-        consensus.nSMTSmallQuorumsHeight = 999999999;
+        consensus.nKSHSmallQuorumsHeight = 999999999;
         consensus.llmqTypeSmallChainLocks = Consensus::LLMQType::LLMQ_NONE;
         consensus.llmqTypeSmallInstantSend = Consensus::LLMQType::LLMQ_NONE;
         consensus.llmqTypeSmallPlatform = Consensus::LLMQType::LLMQ_NONE;
@@ -372,13 +379,13 @@ public:
         consensus.V19Height = 20000;
         consensus.V20Height = 20000;
         consensus.MN_RRHeight = 999999999;
-        consensus.nSMTv014Height = 40000;
-        consensus.nSMTv030Height = 90000; // SMT v0.3.0: 18/72/10 reward realloc
-        consensus.nSMTShieldHeight = 999999999; // SMT shielded transactions disabled until activation height is chosen
-        consensus.nSMTv040Height = 172800;
-        consensus.nSMTv040HalvingInterval = 1000000;
-        consensus.nSMTv040PowTargetSpacing = 120;
-        consensus.nSMTv040SuperblockCycle = 10800;
+        consensus.nKSHv014Height = 40000;
+        consensus.nKSHv030Height = 90000; // KSH v0.3.0: 18/72/10 reward realloc
+        consensus.nKSHShieldHeight = 999999999; // KSH shielded transactions disabled until activation height is chosen
+        consensus.nKSHv040Height = 172800;
+        consensus.nKSHv040HalvingInterval = 1000000;
+        consensus.nKSHv040PowTargetSpacing = 120;
+        consensus.nKSHv040SuperblockCycle = 10800;
         consensus.WithdrawalsHeight = 999999999;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("00ffffffff000000000000000000000000000000000000000000000000000000");
@@ -426,21 +433,21 @@ public:
 
         vSeeds.clear();
 
-        // Testnet Smartiecoin addresses start with 'y'
+        // Testnet Korsh addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Testnet Smartiecoin script addresses start with '8' or '9'
+        // Testnet Korsh script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Testnet Smartiecoin BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Testnet Korsh BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Testnet Smartiecoin BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Testnet Korsh BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
         bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "tsmtsapling";
         bech32HRPs[SAPLING_EXTENDED_FVK] = "tsmtview";
         bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "tsmtsecret";
 
-        // Testnet Smartiecoin BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Korsh BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         // long living quorum params — keep original types for v0.1.3 compatibility
@@ -533,18 +540,18 @@ public:
         consensus.V19Height = 2;     // V19 activated immediately on devnet
         consensus.V20Height = 2;     // V20 activated immediately on devnet
         consensus.MN_RRHeight = 2;   // MN_RR activated immediately on devnet
-        consensus.nSMTv014Height = 2; // SMT v0.1.4 activated immediately on devnet
-        consensus.nSMTv030Height = 999999999; // SMT v0.3.0 disabled by default on devnet (override via -testactivationheight=smt030@N)
-        consensus.nSMTShieldHeight = 999999999; // SMT shielded transactions disabled by default on devnet (override via -testactivationheight=shield@N)
-        consensus.nSMTv040Height = 999999999; // SMT v0.4.0 disabled by default on devnet (override via -testactivationheight=smt040@N)
-        consensus.nSMTv040HalvingInterval = 1000000;
-        consensus.nSMTv040PowTargetSpacing = 120;
-        consensus.nSMTv040SuperblockCycle = 12;
+        consensus.nKSHv014Height = 2; // KSH v0.1.4 activated immediately on devnet
+        consensus.nKSHv030Height = 999999999; // KSH v0.3.0 disabled by default on devnet (override via -testactivationheight=smt030@N)
+        consensus.nKSHShieldHeight = 999999999; // KSH shielded transactions disabled by default on devnet (override via -testactivationheight=shield@N)
+        consensus.nKSHv040Height = 999999999; // KSH v0.4.0 disabled by default on devnet (override via -testactivationheight=smt040@N)
+        consensus.nKSHv040HalvingInterval = 1000000;
+        consensus.nKSHv040PowTargetSpacing = 120;
+        consensus.nKSHv040SuperblockCycle = 12;
         consensus.WithdrawalsHeight = 2;   // withdrawals activated immediately on devnet
         consensus.MinBIP9WarningHeight = 2 + 60; // withdrawals activation height + miner confirmation window
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 60 * 60; // Smartiecoin: 1 hour (match mainnet)
-        consensus.nPowTargetSpacing = 60; // Smartiecoin: 1 minute (match mainnet)
+        consensus.nPowTargetTimespan = 60 * 60; // Korsh: 1 hour (match mainnet)
+        consensus.nPowTargetSpacing = 60; // Korsh: 1 minute (match mainnet)
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -592,21 +599,21 @@ public:
         vSeeds.clear();
         //vSeeds.push_back(CDNSSeedData("dashevo.org.",  "devnet-seed.dashevo.org."));
 
-        // Testnet Smartiecoin addresses start with 'y'
+        // Testnet Korsh addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Testnet Smartiecoin script addresses start with '8' or '9'
+        // Testnet Korsh script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Testnet Smartiecoin BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Testnet Korsh BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Testnet Smartiecoin BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Testnet Korsh BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
         bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "dsmtsapling";
         bech32HRPs[SAPLING_EXTENDED_FVK] = "dsmtview";
         bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "dsmtsecret";
 
-        // Testnet Smartiecoin BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Korsh BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         // long living quorum params
@@ -765,7 +772,7 @@ public:
         consensus.BIP147Height = 0;  // Always active unless overridden
         consensus.CSVHeight = 1;     // Always active unless overridden
         consensus.DIP0001Height = 1; // Always active unless overridden
-        consensus.DIP0003Height = 432; // Always active for SmartiecoinTestFramework in functional tests (see dip3params)
+        consensus.DIP0003Height = 432; // Always active for KorshTestFramework in functional tests (see dip3params)
                                        // For unit tests and for BitcoinTestFramework is disabled due to missing quorum commitment for blocks created by helpers such as create_blocks
         consensus.DIP0003EnforcementHeight = 500;
         consensus.DIP0003EnforcementHash = uint256();
@@ -776,20 +783,20 @@ public:
         consensus.DIP0024Height = 1; // Always have dip0024 quorums unless overridden
         consensus.DIP0024QuorumsHeight = 1; // Always have dip0024 quorums unless overridden
         consensus.V19Height = 1; // Always active unless overridden
-        consensus.V20Height = consensus.DIP0003Height; // Active not earlier than dip0003. Functional tests (SmartiecoinTestFramework) uses height 100 (same as coinbase maturity)
+        consensus.V20Height = consensus.DIP0003Height; // Active not earlier than dip0003. Functional tests (KorshTestFramework) uses height 100 (same as coinbase maturity)
         consensus.MN_RRHeight = consensus.V20Height; // MN_RR does not really have effect before v20 activation
-        consensus.nSMTv014Height = 1; // SMT v0.1.4 activated immediately on regtest
-        consensus.nSMTv030Height = 999999999; // SMT v0.3.0 disabled by default on regtest (override via -testactivationheight=smt030@N)
-        consensus.nSMTShieldHeight = 999999999; // SMT shielded transactions disabled by default on regtest (override via -testactivationheight=shield@N)
-        consensus.nSMTv040Height = 999999999; // SMT v0.4.0 disabled by default on regtest (override via -testactivationheight=smt040@N)
-        consensus.nSMTv040HalvingInterval = 1000000;
-        consensus.nSMTv040PowTargetSpacing = 120;
-        consensus.nSMTv040SuperblockCycle = 10;
+        consensus.nKSHv014Height = 1; // KSH v0.1.4 activated immediately on regtest
+        consensus.nKSHv030Height = 999999999; // KSH v0.3.0 disabled by default on regtest (override via -testactivationheight=smt030@N)
+        consensus.nKSHShieldHeight = 999999999; // KSH shielded transactions disabled by default on regtest (override via -testactivationheight=shield@N)
+        consensus.nKSHv040Height = 999999999; // KSH v0.4.0 disabled by default on regtest (override via -testactivationheight=smt040@N)
+        consensus.nKSHv040HalvingInterval = 1000000;
+        consensus.nKSHv040PowTargetSpacing = 120;
+        consensus.nKSHv040SuperblockCycle = 10;
         consensus.WithdrawalsHeight = 600;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 60 * 60; // Smartiecoin: 1 hour (match mainnet)
-        consensus.nPowTargetSpacing = 60; // Smartiecoin: 1 minute (match mainnet)
+        consensus.nPowTargetTimespan = 60 * 60; // Korsh: 1 hour (match mainnet)
+        consensus.nPowTargetSpacing = 60; // Korsh: 1 minute (match mainnet)
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nPowKGWHeight = 15200; // irrelevant: fPowNoRetargeting is true
@@ -879,21 +886,21 @@ public:
             0
         };
 
-        // Regtest Smartiecoin addresses start with 'y'
+        // Regtest Korsh addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Regtest Smartiecoin script addresses start with '8' or '9'
+        // Regtest Korsh script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Regtest Smartiecoin BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Regtest Korsh BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Regtest Smartiecoin BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Regtest Korsh BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
         bech32HRPs[SAPLING_PAYMENT_ADDRESS] = "rsmtsapling";
         bech32HRPs[SAPLING_EXTENDED_FVK] = "rsmtview";
         bech32HRPs[SAPLING_EXTENDED_SPEND_KEY] = "rsmtsecret";
 
-        // Regtest Smartiecoin BIP44 coin type is '1' (All coin's testnet default)
+        // Regtest Korsh BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         // long living quorum params
@@ -1030,11 +1037,11 @@ static void MaybeUpdateHeights(const ArgsManager& args, Consensus::Params& conse
         } else if (name == "mn_rr") {
             consensus.MN_RRHeight = int{height};
         } else if (name == "smt030") {
-            consensus.nSMTv030Height = int{height};
+            consensus.nKSHv030Height = int{height};
         } else if (name == "shield") {
-            consensus.nSMTShieldHeight = int{height};
+            consensus.nKSHShieldHeight = int{height};
         } else if (name == "smt040") {
-            consensus.nSMTv040Height = int{height};
+            consensus.nKSHv040Height = int{height};
         } else {
             throw std::runtime_error(strprintf("Invalid name (%s) for -testactivationheight=name@height.", arg));
         }

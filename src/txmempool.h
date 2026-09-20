@@ -888,7 +888,7 @@ private:
     void UpdateChildrenForRemoval(txiter entry) EXCLUSIVE_LOCKS_REQUIRED(cs);
 
     /**
-     * addUnchecked extension for Smartiecoin-specific transactions (ProTx).
+     * addUnchecked extension for Korsh-specific transactions (ProTx).
      */
     void addUncheckedProTx(CDeterministicMNManager& dmnman, indexed_transaction_set::iterator& newit,
                            const CTransaction& tx);

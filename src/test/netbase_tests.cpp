@@ -450,7 +450,7 @@ BOOST_AUTO_TEST_CASE(isbadport)
     BOOST_CHECK(IsBadPort(22));
     BOOST_CHECK(IsBadPort(6000));
 
-    // We don't expect Smartiecoin Core to operate over HTTP(S)
+    // We don't expect Korsh Core to operate over HTTP(S)
     BOOST_CHECK(IsBadPort(80));
     BOOST_CHECK(IsBadPort(443));
 

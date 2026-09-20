@@ -24,7 +24,7 @@ if [ -n "$XCODE_VERSION" ] && [ -f "$OSX_SDK_PATH" ]; then
 fi
 if [ -z "$NO_DEPENDS" ]; then
   if [[ $DOCKER_NAME_TAG == *centos* ]]; then
-    SHELL_OPTS="CONFIG_SHELL=/bin/smartiecoin"
+    SHELL_OPTS="CONFIG_SHELL=/bin/korsh"
   else
     SHELL_OPTS="CONFIG_SHELL="
   fi

@@ -903,7 +903,7 @@ QToolBar > QToolButton:disabled {
 
 QToolBar QLabel#lblToolbarLogo {
     padding: 12px;
-    image: url(':/images/smartiecoin_logo_toolbar');
+    image: url(':/images/korsh_logo_toolbar');
     height: 2.5em;
 }
 
@@ -992,11 +992,11 @@ AboutDialog
 
 QDialog#AboutDialog QLabel#label,
 QDialog#AboutDialog QLabel#copyrightLabel,
-QDialog#AboutDialog QLabel#label_2 { /* About Smartiecoin Contents */
+QDialog#AboutDialog QLabel#label_2 { /* About Korsh Contents */
     margin-left: 10px;
 }
 
-QDialog#AboutDialog QLabel#label_2 { /* Margin for About Smartiecoin text */
+QDialog#AboutDialog QLabel#label_2 { /* Margin for About Korsh text */
     margin-right: 10px;
 }
 

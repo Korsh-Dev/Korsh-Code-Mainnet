@@ -1,44 +1,44 @@
-# Smartiecoin Masternode Guide for Windows (Simple)
+# Korsh Masternode Guide for Windows (Simple)
 
 This is the Windows version of the old-school flow:
 
 If you want the shortest version with mostly Qt UI, use:
 
 - `doc/masternode-setup-smt-windows-qt.md`
-- Direct link: https://github.com/SmartiesCoin/Smartiecoin/blob/main/doc/masternode-setup-smt-windows-qt.md
+- Direct link: https://github.com/SmartiesCoin/Korsh/blob/main/doc/masternode-setup-smt-windows-qt.md
 
 1. Create collateral.
-2. Send `15000 SMT` to yourself.
+2. Send `15000 KSH` to yourself.
 3. Wait confirmations.
 4. Register MN.
 
 Chain values:
 
-- Regular MN collateral: `15000 SMT`
-- Evo collateral: `75000 SMT`
+- Regular MN collateral: `15000 KSH`
+- Evo collateral: `75000 KSH`
 - Mainnet port: `8383`
 - Required confirmations: `15`
 
 ## 1. Requirements
 
-- Smartiecoin Core v0.0.5 installed on Windows.
+- Korsh Core v0.0.5 installed on Windows.
 - Wallet fully synced.
 - Public IP (if running from home) and port `8383` open in router/firewall.
-- `smartiecoin-cli.exe` available (from release zip).
+- `korsh-cli.exe` available (from release zip).
 
 Data dir on Windows:
 
-`%APPDATA%\SmartiecoinCore`
+`%APPDATA%\KorshCore`
 
 Usually:
 
-`C:\Users\<YourUser>\AppData\Roaming\SmartiecoinCore`
+`C:\Users\<YourUser>\AppData\Roaming\KorshCore`
 
 ## 2. Configure single-wallet MN
 
 Edit:
 
-`%APPDATA%\SmartiecoinCore\smartiecoin.conf`
+`%APPDATA%\KorshCore\korsh.conf`
 
 Use:
 
@@ -55,15 +55,15 @@ masternodeblsprivkey=PASTE_OPERATOR_SECRET_HERE
 disablewallet=0
 ```
 
-Restart Smartiecoin Core after editing.
+Restart Korsh Core after editing.
 
 ## 3. Open PowerShell and set variables
 
-Open PowerShell in the folder where `smartiecoin-cli.exe` is located and run:
+Open PowerShell in the folder where `korsh-cli.exe` is located and run:
 
 ```powershell
-$CLI = ".\smartiecoin-cli.exe"
-$DATADIR = "$env:APPDATA\SmartiecoinCore"
+$CLI = ".\korsh-cli.exe"
+$DATADIR = "$env:APPDATA\KorshCore"
 $WALLET = "main"
 ```
 
@@ -92,7 +92,7 @@ $operatorSecret
 $operatorPub
 ```
 
-Put `$operatorSecret` into `smartiecoin.conf` as `masternodeblsprivkey=...` and restart wallet/node.
+Put `$operatorSecret` into `korsh.conf` as `masternodeblsprivkey=...` and restart wallet/node.
 
 ## 5. Send collateral to yourself
 
@@ -159,7 +159,7 @@ $mnIp = "YOUR_PUBLIC_IP"
 
 ## 10. Most common errors
 
-- Collateral is not exactly `15000 SMT`.
+- Collateral is not exactly `15000 KSH`.
 - Not enough confirmations.
 - Wrong `masternodeblsprivkey` (does not match operator pubkey in ProTx).
 - Port `8383` is closed.

@@ -66,12 +66,12 @@
         <translation>C&amp;họn</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Đây là các địa chỉ SMT của bạn để gửi thanh toán. Luôn luôn kiểm tra số tiền và địa chỉ nhận trước khi bạn gửi tiền.</translation>
+        <source>These are your KSH addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Đây là các địa chỉ KSH của bạn để gửi thanh toán. Luôn luôn kiểm tra số tiền và địa chỉ nhận trước khi bạn gửi tiền.</translation>
     </message>
     <message>
-        <source>These are your SMT addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Đây là các địa chỉ SMT của bạn để nhận thanh toán. Sử dụng nút 'Tạo địa chỉ nhận mới' trong tab nhận để tạo địa chỉ mới.</translation>
+        <source>These are your KSH addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Đây là các địa chỉ KSH của bạn để nhận thanh toán. Sử dụng nút 'Tạo địa chỉ nhận mới' trong tab nhận để tạo địa chỉ mới.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -225,8 +225,8 @@
         <translation>Xác nhận mã hoá ví</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR SMT&lt;/b&gt;!</source>
-        <translation>Chú ý: Nếu bạn mã hoá ví và mất mật khẩu, bạn sẽ &lt;b&gt;MẤT TẤT CẢ SMT CỦA BẠN&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR KSH&lt;/b&gt;!</source>
+        <translation>Chú ý: Nếu bạn mã hoá ví và mất mật khẩu, bạn sẽ &lt;b&gt;MẤT TẤT CẢ KSH CỦA BẠN&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -365,16 +365,16 @@
         <translation>&amp;Gửi</translation>
     </message>
     <message>
-        <source>Send coins to a SMT address</source>
-        <translation>Gửi tiền vào địa chỉ SMT</translation>
+        <source>Send coins to a KSH address</source>
+        <translation>Gửi tiền vào địa chỉ KSH</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Nhận</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and smartiecoin: URIs)</source>
-        <translation>Yêu cầu thanh toán (sinh mã QR và smartiecoin: URIs)</translation>
+        <source>Request payments (generates QR codes and korsh: URIs)</source>
+        <translation>Yêu cầu thanh toán (sinh mã QR và korsh: URIs)</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -489,8 +489,8 @@
         <translation>&amp;Khoảng %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a SMT address</source>
-        <translation>Gửi %1 tiền đến một địa chỉ SMT</translation>
+        <source>Send %1 funds to a KSH address</source>
+        <translation>Gửi %1 tiền đến một địa chỉ KSH</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -525,12 +525,12 @@
         <translation>&amp;Khoá Ví</translation>
     </message>
     <message>
-        <source>Sign messages with your SMT addresses to prove you own them</source>
-        <translation>Ký vào thông điệp với địa chỉ SMT để chứng minh bạn là chủ của chúng</translation>
+        <source>Sign messages with your KSH addresses to prove you own them</source>
+        <translation>Ký vào thông điệp với địa chỉ KSH để chứng minh bạn là chủ của chúng</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified SMT addresses</source>
-        <translation>Kiểm tra thông điệp để đảm bảo rằng nó đã được ký bằng địa chỉ SMT nhất định</translation>
+        <source>Verify messages to ensure they were signed with specified KSH addresses</source>
+        <translation>Kiểm tra thông điệp để đảm bảo rằng nó đã được ký bằng địa chỉ KSH nhất định</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -593,8 +593,8 @@
         <translation>&amp;Các Tuỳ chọn dòng lệnh</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible SMT command-line options</source>
-        <translation>Hiển thị %1 tin nhắn hỗ trợ để nhận được danh sách SMT command-line khả dụng</translation>
+        <source>Show the %1 help message to get a list with possible KSH command-line options</source>
+        <translation>Hiển thị %1 tin nhắn hỗ trợ để nhận được danh sách KSH command-line khả dụng</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -655,8 +655,8 @@
         <translation>Mở tệp cấu hình &amp;ví</translation>
     </message>
     <message>
-        <source>Open a smartiecoin: URI</source>
-        <translation>Mở một smartiecoin: URI</translation>
+        <source>Open a korsh: URI</source>
+        <translation>Mở một korsh: URI</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -745,9 +745,9 @@
         <translation>&amp;Hiển thị</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Smartiecoin network</source>
+        <source>%n active connection(s) to Korsh network</source>
         <extracomment>A substring of the tooltip.</extracomment>
-        <translation><numerusform>%n kết nối hiện thời tới mạng lưới của SMT</numerusform></translation>
+        <translation><numerusform>%n kết nối hiện thời tới mạng lưới của KSH</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -1298,8 +1298,8 @@
         <translation>Sửa địa chỉ gửi</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid SMT address.</source>
-        <translation>Địa chỉ vừa nhập "%1" không phải địa chỉ SMT hợp lệ.</translation>
+        <source>The entered address "%1" is not a valid KSH address.</source>
+        <translation>Địa chỉ vừa nhập "%1" không phải địa chỉ KSH hợp lệ.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1547,8 +1547,8 @@ Bạn có muốn tiếp tục không?</translation>
         <translation>Thông tin %1</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the SMT in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT and 10 SMT -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Cơ bản về %1&lt;/h3&gt; %1 mang lại cho bạn sự riêng tư tài chính thực sự bằng cách che giấu nguồn gốc tiền của bạn. Tất cả SMT trong ví của bạn được tạo thành từ các "đầu vào" khác nhau mà bạn có thể coi như các đồng xu riêng biệt.&lt;br&gt; %1 sử dụng một quy trình sáng tạo để trộn đầu vào của bạn với đầu vào của hai hoặc nhiều người khác, mà không cần coin của bạn rời khỏi ví. Bạn giữ quyền kiểm soát tiền của mình mọi lúc.&lt;hr&gt; &lt;b&gt;Quy trình %1 hoạt động như sau:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 bắt đầu bằng cách chia nhỏ đầu vào giao dịch của bạn thành các mệnh giá tiêu chuẩn. Các mệnh giá này là 0.001 SMT, 0.01 SMT, 0.1 SMT, 1 SMT và 10 SMT -- giống như tiền giấy bạn sử dụng hàng ngày.&lt;/li&gt; &lt;li&gt;Ví của bạn sau đó gửi yêu cầu đến các nút phần mềm được cấu hình đặc biệt trên mạng, được gọi là "masternode". Các masternode này sau đó được thông báo rằng bạn quan tâm đến việc trộn một mệnh giá nhất định. Không có thông tin nhận dạng nào được gửi đến masternode, vì vậy chúng không bao giờ biết bạn "là ai".&lt;/li&gt; &lt;li&gt;Khi hai hoặc nhiều người khác gửi thông điệp tương tự, cho biết họ muốn trộn cùng một mệnh giá, một phiên trộn bắt đầu. Masternode trộn lẫn các đầu vào và hướng dẫn ví của cả ba người dùng trả đầu vào đã chuyển đổi về cho chính họ. Ví của bạn trả mệnh giá đó trực tiếp cho chính nó, nhưng ở một địa chỉ khác (được gọi là địa chỉ tiền thối).&lt;/li&gt; &lt;li&gt;Để che giấu hoàn toàn tiền của bạn, ví của bạn phải lặp lại quy trình này nhiều lần với mỗi mệnh giá. Mỗi lần quy trình hoàn thành, nó được gọi là một "vòng". Mỗi vòng %1 làm cho việc xác định nguồn gốc tiền của bạn trở nên khó khăn hơn theo cấp số nhân.&lt;/li&gt; &lt;li&gt;Quy trình trộn này diễn ra trong nền mà không cần sự can thiệp của bạn. Khi bạn muốn thực hiện giao dịch, tiền của bạn sẽ đã được trộn sẵn. Không cần chờ đợi thêm.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;QUAN TRỌNG:&lt;/b&gt; Ví của bạn chỉ chứa 1000 "địa chỉ tiền thối" này. Mỗi lần một sự kiện trộn xảy ra, tối đa 9 địa chỉ của bạn được sử dụng. Điều này có nghĩa là 1000 địa chỉ đó tồn tại cho khoảng 100 sự kiện trộn. Khi 900 trong số chúng được sử dụng, ví của bạn phải tạo thêm địa chỉ. Tuy nhiên, nó chỉ có thể làm điều này nếu bạn đã bật sao lưu tự động.&lt;br&gt; Do đó, người dùng tắt sao lưu cũng sẽ bị tắt %1. &lt;hr&gt;Để biết thêm thông tin, xem &lt;a style="%2" href="%3"&gt;tài liệu %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the KSH in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH and 10 KSH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Cơ bản về %1&lt;/h3&gt; %1 mang lại cho bạn sự riêng tư tài chính thực sự bằng cách che giấu nguồn gốc tiền của bạn. Tất cả KSH trong ví của bạn được tạo thành từ các "đầu vào" khác nhau mà bạn có thể coi như các đồng xu riêng biệt.&lt;br&gt; %1 sử dụng một quy trình sáng tạo để trộn đầu vào của bạn với đầu vào của hai hoặc nhiều người khác, mà không cần coin của bạn rời khỏi ví. Bạn giữ quyền kiểm soát tiền của mình mọi lúc.&lt;hr&gt; &lt;b&gt;Quy trình %1 hoạt động như sau:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 bắt đầu bằng cách chia nhỏ đầu vào giao dịch của bạn thành các mệnh giá tiêu chuẩn. Các mệnh giá này là 0.001 KSH, 0.01 KSH, 0.1 KSH, 1 KSH và 10 KSH -- giống như tiền giấy bạn sử dụng hàng ngày.&lt;/li&gt; &lt;li&gt;Ví của bạn sau đó gửi yêu cầu đến các nút phần mềm được cấu hình đặc biệt trên mạng, được gọi là "masternode". Các masternode này sau đó được thông báo rằng bạn quan tâm đến việc trộn một mệnh giá nhất định. Không có thông tin nhận dạng nào được gửi đến masternode, vì vậy chúng không bao giờ biết bạn "là ai".&lt;/li&gt; &lt;li&gt;Khi hai hoặc nhiều người khác gửi thông điệp tương tự, cho biết họ muốn trộn cùng một mệnh giá, một phiên trộn bắt đầu. Masternode trộn lẫn các đầu vào và hướng dẫn ví của cả ba người dùng trả đầu vào đã chuyển đổi về cho chính họ. Ví của bạn trả mệnh giá đó trực tiếp cho chính nó, nhưng ở một địa chỉ khác (được gọi là địa chỉ tiền thối).&lt;/li&gt; &lt;li&gt;Để che giấu hoàn toàn tiền của bạn, ví của bạn phải lặp lại quy trình này nhiều lần với mỗi mệnh giá. Mỗi lần quy trình hoàn thành, nó được gọi là một "vòng". Mỗi vòng %1 làm cho việc xác định nguồn gốc tiền của bạn trở nên khó khăn hơn theo cấp số nhân.&lt;/li&gt; &lt;li&gt;Quy trình trộn này diễn ra trong nền mà không cần sự can thiệp của bạn. Khi bạn muốn thực hiện giao dịch, tiền của bạn sẽ đã được trộn sẵn. Không cần chờ đợi thêm.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;QUAN TRỌNG:&lt;/b&gt; Ví của bạn chỉ chứa 1000 "địa chỉ tiền thối" này. Mỗi lần một sự kiện trộn xảy ra, tối đa 9 địa chỉ của bạn được sử dụng. Điều này có nghĩa là 1000 địa chỉ đó tồn tại cho khoảng 100 sự kiện trộn. Khi 900 trong số chúng được sử dụng, ví của bạn phải tạo thêm địa chỉ. Tuy nhiên, nó chỉ có thể làm điều này nếu bạn đã bật sao lưu tự động.&lt;br&gt; Do đó, người dùng tắt sao lưu cũng sẽ bị tắt %1. &lt;hr&gt;Để biết thêm thông tin, xem &lt;a style="%2" href="%3"&gt;tài liệu %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1623,8 +1623,8 @@ Bạn có muốn tiếp tục không?</translation>
         <translation><numerusform>(đủ để khôi phục bản sao lưu %n ngày tuổi)</numerusform></translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the SMT block chain.</source>
-        <translation>%1 sẽ download và lưu trữ một bản copy của SMT block chain.</translation>
+        <source>%1 will download and store a copy of the KSH block chain.</source>
+        <translation>%1 sẽ download và lưu trữ một bản copy của KSH block chain.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1900,12 +1900,12 @@ Bạn có muốn tiếp tục không?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Smartiecoin network, as detailed below.</source>
-        <translation>Những giao dịch mới có thể chưa hiện ra, và do đó số dư trong ví của bạn có thể chưa chính xác. Những thông tin này sẽ chính xác một khi ví của bạn đã hoàn tất việc đồng bộ với mạng lưới của SMT, như cụ thể bên dưới.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Korsh network, as detailed below.</source>
+        <translation>Những giao dịch mới có thể chưa hiện ra, và do đó số dư trong ví của bạn có thể chưa chính xác. Những thông tin này sẽ chính xác một khi ví của bạn đã hoàn tất việc đồng bộ với mạng lưới của KSH, như cụ thể bên dưới.</translation>
     </message>
     <message>
-        <source>Attempting to spend SMT that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Việc chi tiêu SMT khi mà các giao dịch của nó chưa được đồng bộ hết sẽ không được chấp nhận bởi mạng lưới.</translation>
+        <source>Attempting to spend KSH that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Việc chi tiêu KSH khi mà các giao dịch của nó chưa được đồng bộ hết sẽ không được chấp nhận bởi mạng lưới.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -2232,8 +2232,8 @@ Bạn có muốn tiếp tục không?</translation>
         <translation>Tối đa</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Tự động mở cổng cho phần mềm Smartiecoin Core trên rounter. Điều này chỉ hoạt động được khi rounter của bạn hỗ trợ UpnP và tính năng đó được bật lên.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Tự động mở cổng cho phần mềm Korsh Core trên rounter. Điều này chỉ hoạt động được khi rounter của bạn hỗ trợ UpnP và tính năng đó được bật lên.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -2248,8 +2248,8 @@ Bạn có muốn tiếp tục không?</translation>
         <translation>Cho phép &amp;nhận kết nối</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a SOCKS5 proxy.</source>
-        <translation>Kết nối với mạng lưới SMT thông qua một SOCK5 proxy.</translation>
+        <source>Connect to the Korsh network through a SOCKS5 proxy.</source>
+        <translation>Kết nối với mạng lưới KSH thông qua một SOCK5 proxy.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -2261,9 +2261,9 @@ Bạn có muốn tiếp tục không?</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/SMT/SMT/</source>
+https://explore.transifex.com/KSH/KSH/</source>
         <translation>Thiếu ngôn ngữ hoặc bản dịch chưa hoàn chỉnh? Giúp đóng góp bản dịch tại đây:
-https://explore.transifex.com/SMT/SMT/</translation>
+https://explore.transifex.com/KSH/KSH/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -2314,8 +2314,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Ánh xạ cổng sử dụng &amp;UPnP</translation>
     </message>
     <message>
-        <source>Automatically open the Smartiecoin Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Tự động mở cổng ứng dụng Smartiecoin Core trên router. Điều này chỉ hoạt động khi router của bạn hỗ trợ NAT-PMP và được bật. Cổng ngoài có thể là ngẫu nhiên.</translation>
+        <source>Automatically open the Korsh Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>Tự động mở cổng ứng dụng Korsh Core trên router. Điều này chỉ hoạt động khi router của bạn hỗ trợ NAT-PMP và được bật. Cổng ngoài có thể là ngẫu nhiên.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -2366,8 +2366,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>&amp;Hiển thị</translation>
     </message>
     <message>
-        <source>Connect to the Smartiecoin network through a separate SOCKS5 proxy for Tor onion services.</source>
-        <translation>Kết nối với mạng SMT thông qua proxy SOCKS5 riêng cho dịch vụ Tor onion.</translation>
+        <source>Connect to the Korsh network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <translation>Kết nối với mạng KSH thông qua proxy SOCKS5 riêng cho dịch vụ Tor onion.</translation>
     </message>
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</source>
@@ -2469,8 +2469,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Biểu mẫu</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Smartiecoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Thông tin được hiển thị có thể đã lỗi thời. Ví của bạn sẽ tự động đồng bộ với mạng lưới SMT sau khi kết nối được thiết lập, tuy nhiên quá trình này chưa hoàn thành.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Korsh network after a connection is established, but this process has not completed yet.</source>
+        <translation>Thông tin được hiển thị có thể đã lỗi thời. Ví của bạn sẽ tự động đồng bộ với mạng lưới KSH sau khi kết nối được thiết lập, tuy nhiên quá trình này chưa hoàn thành.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -2549,8 +2549,8 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Số tiền và số vòng:</translation>
     </message>
     <message>
-        <source>0 SMT / 0 Rounds</source>
-        <translation>0 SMT / 0 Vòng</translation>
+        <source>0 KSH / 0 Rounds</source>
+        <translation>0 KSH / 0 Vòng</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -2832,16 +2832,16 @@ https://explore.transifex.com/SMT/SMT/</translation>
         <translation>Yêu cầu thanh toán bị lỗi</translation>
     </message>
     <message>
-        <source>Cannot start smartiecoin: click-to-pay handler</source>
-        <translation>Không thể khởi động smartiecoin: trình xử lý click-to-pay</translation>
+        <source>Cannot start korsh: click-to-pay handler</source>
+        <translation>Không thể khởi động korsh: trình xử lý click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>xử lý URI</translation>
     </message>
     <message>
-        <source>'smartiecoin://' is not a valid URI. Use 'smartiecoin:' instead.</source>
-        <translation>'smartiecoin://' không phải là URI hợp lệ. Sử dụng 'smartiecoin:' thay thế.</translation>
+        <source>'korsh://' is not a valid URI. Use 'korsh:' instead.</source>
+        <translation>'korsh://' không phải là URI hợp lệ. Sử dụng 'korsh:' thay thế.</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.
@@ -2850,8 +2850,8 @@ Due to discontinued support, you should request the merchant to provide you with
 Do ngừng hỗ trợ, bạn nên yêu cầu người bán cung cấp cho bạn URI tương thích BIP21 hoặc sử dụng ví vẫn tiếp tục hỗ trợ BIP70.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid SMT address or malformed URI parameters.</source>
-        <translation>URI không thể phân tích. Nó có thể bởi địa chỉ SMT không hợp lệ hoặc thông số URI dị hình.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid KSH address or malformed URI parameters.</source>
+        <translation>URI không thể phân tích. Nó có thể bởi địa chỉ KSH không hợp lệ hoặc thông số URI dị hình.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -3235,8 +3235,8 @@ Bạn sẽ được chuyển hướng để theo dõi và phát sóng đề xu�
         <translation>Số lượng</translation>
     </message>
     <message>
-        <source>Enter a SMT address (e.g. %1)</source>
-        <translation>Hãy nhập một địa chỉ SMT (VD: %1)</translation>
+        <source>Enter a KSH address (e.g. %1)</source>
+        <translation>Hãy nhập một địa chỉ KSH (VD: %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -3785,8 +3785,8 @@ Bạn sẽ được chuyển hướng để theo dõi và phát sóng đề xu�
         <translation>Địa chỉ cục bộ</translation>
     </message>
     <message>
-        <source>Network addresses that your SMT node is currently using to communicate with other nodes.</source>
-        <translation>Các địa chỉ mạng mà node SMT của bạn hiện đang sử dụng để giao tiếp với các node khác.</translation>
+        <source>Network addresses that your KSH node is currently using to communicate with other nodes.</source>
+        <translation>Các địa chỉ mạng mà node KSH của bạn hiện đang sử dụng để giao tiếp với các node khác.</translation>
     </message>
     <message>
         <source>Number of regular Masternodes</source>
@@ -4195,8 +4195,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Smartiecoin network.</source>
-        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở. Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới SMT.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Korsh network.</source>
+        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở. Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới KSH.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -4207,8 +4207,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Một nhãn tuỳ chọn để liên kết với địa chỉ nhận mới.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Smartiecoin network.</source>
-        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở.&lt;br&gt;Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới SMT.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Korsh network.</source>
+        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở.&lt;br&gt;Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới KSH.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -4499,8 +4499,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Phí giao dịch</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for SMT transactions than the network can process.</source>
-        <translation>Khi có ít giao dịch hơn không gian trong các khối, thợ đào cũng như các nút chuyển tiếp có thể áp dụng mức phí tối thiểu. Chỉ trả mức phí tối thiểu này là được, nhưng hãy lưu ý rằng điều này có thể dẫn đến giao dịch không bao giờ được xác nhận khi có nhiều nhu cầu giao dịch SMT hơn mức mạng có thể xử lý.</translation>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for KSH transactions than the network can process.</source>
+        <translation>Khi có ít giao dịch hơn không gian trong các khối, thợ đào cũng như các nút chuyển tiếp có thể áp dụng mức phí tối thiểu. Chỉ trả mức phí tối thiểu này là được, nhưng hãy lưu ý rằng điều này có thể dẫn đến giao dịch không bao giờ được xác nhận khi có nhiều nhu cầu giao dịch KSH hơn mức mạng có thể xử lý.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -4804,8 +4804,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation><numerusform>Ước lượng để bắt đầu xác thực trong vòng %n khối.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid SMT address</source>
-        <translation>Cảnh báo: Địa chỉ SMT không hợp lệ</translation>
+        <source>Warning: Invalid KSH address</source>
+        <translation>Cảnh báo: Địa chỉ KSH không hợp lệ</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -4831,8 +4831,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Trả &amp;Cho</translation>
     </message>
     <message>
-        <source>The SMT address to send the payment to</source>
-        <translation>Địa chỉ SMT để gửi thanh toán</translation>
+        <source>The KSH address to send the payment to</source>
+        <translation>Địa chỉ KSH để gửi thanh toán</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4871,8 +4871,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Số tiền gửi trong đơn vị đã chọn</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of SMT than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Phí sẽ được trừ trong khoản tiền mà bạn gửi. Bên nhận sẽ nhận được một khoản nhỏ hơn số SMT mà bạn nhập vào ở trong trường số lượng. Nếu có nhiều người nhận được chọn, phí được chia đều cho mọi người.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of KSH than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>Phí sẽ được trừ trong khoản tiền mà bạn gửi. Bên nhận sẽ nhận được một khoản nhỏ hơn số KSH mà bạn nhập vào ở trong trường số lượng. Nếu có nhiều người nhận được chọn, phí được chia đều cho mọi người.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -4887,8 +4887,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Thông điệp:</translation>
     </message>
     <message>
-        <source>A message that was attached to the smartiecoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Smartiecoin network.</source>
-        <translation>Một thông điệp được đính với smartiecoin: URI đó sẽ được lưu trữ với các giao dịch cho các bạn tham khảo. Lưu ý: Thông điệp này sẽ không được gửi qua mạng SMT. </translation>
+        <source>A message that was attached to the korsh: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Korsh network.</source>
+        <translation>Một thông điệp được đính với korsh: URI đó sẽ được lưu trữ với các giao dịch cho các bạn tham khảo. Lưu ý: Thông điệp này sẽ không được gửi qua mạng KSH. </translation>
     </message>
 </context>
 <context>
@@ -4924,12 +4924,12 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>&amp;Ký thông điệp</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive SMT sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Bạn có thể ký vào thông điệp/thoả thuận với địa chỉ của bạn để chứng minh bạn có thể nhận SMT đã gửi cho họ. Hãy cẩn thận không ký vào những gì mơ hồ hay ngẫu nhiên, như là thứ lừa đảo để lừa bạn ký xác nhận của bạn vào đó cho họ. Chỉ ký vào những gì mà bạn hoàn thoàn đồng ý.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive KSH sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Bạn có thể ký vào thông điệp/thoả thuận với địa chỉ của bạn để chứng minh bạn có thể nhận KSH đã gửi cho họ. Hãy cẩn thận không ký vào những gì mơ hồ hay ngẫu nhiên, như là thứ lừa đảo để lừa bạn ký xác nhận của bạn vào đó cho họ. Chỉ ký vào những gì mà bạn hoàn thoàn đồng ý.</translation>
     </message>
     <message>
-        <source>The SMT address to sign the message with</source>
-        <translation>Địa chỉ SMT để ký cho thông điệp</translation>
+        <source>The KSH address to sign the message with</source>
+        <translation>Địa chỉ KSH để ký cho thông điệp</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -4960,8 +4960,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Copy chữ ký hiện tại vào bộ đệm của hệ thống</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this SMT address</source>
-        <translation>Ký vào thông điệp để chứng tỏ bạn sở hữu địa chỉ SMT</translation>
+        <source>Sign the message to prove you own this KSH address</source>
+        <translation>Ký vào thông điệp để chứng tỏ bạn sở hữu địa chỉ KSH</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -4984,8 +4984,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Hãy nhập vào địa chỉ của người nhận, thông điệp (hãy đảm bảo rằng bạn copy cả dấu xuống dòng, dấu cách, dấu tab,… một cách chính xác) và chữ ký bên dưới để kiểm tra thông điệp. Hãy cẩn thận để không đọc thêm vào phần chữ ký mà nó dùng để ký, để tránh bị đánh lừa bởi kiểu tấn công người trung gian. Chú ý đây chỉ để chứng minh chữ ký của bên nhận với địa chỉ đó, nó không thể chứng minh người gửi hoặc bất kỳ giao dich nào!</translation>
     </message>
     <message>
-        <source>The SMT address the message was signed with</source>
-        <translation>Địa chỉ SMT mà thông điệp được ký bởi</translation>
+        <source>The KSH address the message was signed with</source>
+        <translation>Địa chỉ KSH mà thông điệp được ký bởi</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -4996,8 +4996,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Chữ ký được đưa ra khi thông điệp được ký</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified SMT address</source>
-        <translation>Kiểm tra lại thông điệp để đảm bảo rằng nó được ký với địa chỉ SMT cụ thể</translation>
+        <source>Verify the message to ensure it was signed with the specified KSH address</source>
+        <translation>Kiểm tra lại thông điệp để đảm bảo rằng nó được ký với địa chỉ KSH cụ thể</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -5777,7 +5777,7 @@ Vào File &gt; Mở Ví để tải một ví.
     </message>
 </context>
 <context>
-    <name>SMT-core</name>
+    <name>KSH-core</name>
     <message>
         <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <translation>Lỗi này có thể xảy ra nếu ví không được tắt đúng cách và được tải lần cuối bằng phiên bản mới hơn của Berkeley DB. Nếu vậy, vui lòng sử dụng phần mềm đã tải ví này lần cuối</translation>
@@ -6031,8 +6031,8 @@ Vào File &gt; Mở Ví để tải một ví.
         <translation>Lỗi khi tải %s: Ví người ký bên ngoài đang được tải mà không có hỗ trợ người ký bên ngoài được biên dịch</translation>
     </message>
     <message>
-        <source>Error: Dumpfile version is not supported. This version of SMT-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
-        <translation>Lỗi: Phiên bản tệp kết xuất không được hỗ trợ. Phiên bản SMT-wallet này chỉ hỗ trợ tệp kết xuất phiên bản 1. Nhận được tệp kết xuất phiên bản %s</translation>
+        <source>Error: Dumpfile version is not supported. This version of KSH-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <translation>Lỗi: Phiên bản tệp kết xuất không được hỗ trợ. Phiên bản KSH-wallet này chỉ hỗ trợ tệp kết xuất phiên bản 1. Nhận được tệp kết xuất phiên bản %s</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -6743,8 +6743,8 @@ Vào File &gt; Mở Ví để tải một ví.
         <translation>Hàng đợi cuối cùng được tạo quá gần đây.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool SMT-wallet to salvage or restoring a backup.</source>
-        <translation>%s bị hỏng. Hãy thử sử dụng công cụ ví SMT-wallet để cứu hộ hoặc khôi phục từ bản sao lưu.</translation>
+        <source>%s corrupt. Try using the wallet tool KSH-wallet to salvage or restoring a backup.</source>
+        <translation>%s bị hỏng. Hãy thử sử dụng công cụ ví KSH-wallet để cứu hộ hoặc khôi phục từ bản sao lưu.</translation>
     </message>
     <message>
         <source>%s is set very high! Fees this large could be paid on a single transaction.</source>

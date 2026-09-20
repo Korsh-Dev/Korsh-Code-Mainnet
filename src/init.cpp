@@ -190,7 +190,7 @@ static const char* DEFAULT_ASMAP_FILENAME="ip_asn.map";
 /**
  * The PID file facilities.
  */
-static const char* BITCOIN_PID_FILENAME = "smartiecoind.pid";
+static const char* BITCOIN_PID_FILENAME = "korshd.pid";
 
 static fs::path GetPidFile(const ArgsManager& args)
 {
@@ -779,7 +779,7 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-minsporkkeys=<n>", "Overrides minimum spork signers to change spork value. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.", ArgsManager::ALLOW_ANY, OptionsCategory::DEBUG_TEST);
     argsman.AddArg("-printpriority", strprintf("Log transaction fee per kB when mining blocks (default: %u)", DEFAULT_PRINTPRIORITY), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::DEBUG_TEST);
     argsman.AddArg("-pushversion", "Protocol version to report to other nodes", ArgsManager::ALLOW_ANY, OptionsCategory::DEBUG_TEST);
-    argsman.AddArg("-sporkaddr=<smartiecoinaddress>", "Override spork address. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.", ArgsManager::ALLOW_ANY, OptionsCategory::DEBUG_TEST);
+    argsman.AddArg("-sporkaddr=<korshaddress>", "Override spork address. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.", ArgsManager::ALLOW_ANY, OptionsCategory::DEBUG_TEST);
     argsman.AddArg("-sporkkey=<privatekey>", "Set the private key to be used for signing spork messages.", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::DEBUG_TEST);
     argsman.AddArg("-uacomment=<cmt>", "Append comment to the user agent string", ArgsManager::ALLOW_ANY, OptionsCategory::DEBUG_TEST);
 
@@ -788,7 +788,7 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-llmq-data-recovery=<n>", strprintf("Enable automated quorum data recovery (default: %u)", llmq::DEFAULT_ENABLE_QUORUM_DATA_RECOVERY), ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
     argsman.AddArg("-llmq-qvvec-sync=<quorum_name>:<mode>", strprintf("Defines from which LLMQ type the masternode should sync quorum verification vectors. Can be used multiple times with different LLMQ types. <mode>: %d (sync always from all quorums of the type defined by <quorum_name>), %d (sync from all quorums of the type defined by <quorum_name> if a member of any of the quorums)", (int32_t)llmq::QvvecSyncMode::Always, (int32_t)llmq::QvvecSyncMode::OnlyIfTypeMember), ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
     argsman.AddArg("-masternodeblsprivkey=<hex>", "Set the masternode BLS private key and enable the client to act as a masternode", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::MASTERNODE);
-    argsman.AddArg("-deprecated-platform-user=<user>", "Set the username for the \"platform user\", a restricted user intended to be used by Smartiecoin Platform, to the specified username.", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-deprecated-platform-user=<user>", "Set the username for the \"platform user\", a restricted user intended to be used by Korsh Platform, to the specified username.", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
 
     argsman.AddArg("-acceptnonstdtxn", strprintf("Relay and mine \"non-standard\" transactions (%sdefault: %u)", "testnet/regtest only; ", !testnetChainParams->RequireStandard()), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::NODE_RELAY);
     argsman.AddArg("-dustrelayfee=<amt>", strprintf("Fee rate (in %s/kB) used to define dust, the value of an output such that it will cost more than its value in fees at this fee rate to spend it. (default: %s)", CURRENCY_UNIT, FormatMoney(DUST_RELAY_TX_FEE)), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::NODE_RELAY);
@@ -1013,7 +1013,7 @@ void InitParameterInteraction(ArgsManager& args)
             LogPrintf("%s: parameter interaction: -blocksonly=1 -> setting -whitelistrelay=0\n", __func__);
     }
 
-    // Smartiecoin operators commonly run tx/address/spent indexes on Linux
+    // Korsh operators commonly run tx/address/spent indexes on Linux
     // daemons. With the Dash inherited defaults, that turns every clean restart
     // into a slow VerifyDB pass. Keep explicit -checkblocks settings honored,
     // but make normal daemon and service restarts fast by default.
@@ -1085,10 +1085,10 @@ void InitLogging(const ArgsManager& args)
 
 #if defined(__linux__)
 extern "C" {
-extern const unsigned char smartiecoin_sapling_spend_params_start[];
-extern const unsigned char smartiecoin_sapling_spend_params_end[];
-extern const unsigned char smartiecoin_sapling_output_params_start[];
-extern const unsigned char smartiecoin_sapling_output_params_end[];
+extern const unsigned char korsh_sapling_spend_params_start[];
+extern const unsigned char korsh_sapling_spend_params_end[];
+extern const unsigned char korsh_sapling_output_params_start[];
+extern const unsigned char korsh_sapling_output_params_end[];
 }
 #endif
 
@@ -1176,8 +1176,8 @@ static bool ExtractEmbeddedSaplingParams(const ArgsManager& args, fs::path& para
     const fs::path spend_path = embedded_params_dir / SAPLING_SPEND_PARAM_FILE;
     const fs::path output_path = embedded_params_dir / SAPLING_OUTPUT_PARAM_FILE;
 
-    if (!WriteSaplingParamBytes(smartiecoin_sapling_spend_params_start, smartiecoin_sapling_spend_params_end, spend_path)) return false;
-    if (!WriteSaplingParamBytes(smartiecoin_sapling_output_params_start, smartiecoin_sapling_output_params_end, output_path)) return false;
+    if (!WriteSaplingParamBytes(korsh_sapling_spend_params_start, korsh_sapling_spend_params_end, spend_path)) return false;
+    if (!WriteSaplingParamBytes(korsh_sapling_output_params_start, korsh_sapling_output_params_end, output_path)) return false;
 
     params_dir = embedded_params_dir;
     return true;
@@ -1216,11 +1216,11 @@ static void AddSaplingParamsExecutableCandidates(std::vector<fs::path>& candidat
 
     candidates.push_back(exe_dir / "params");
     candidates.push_back(exe_dir.parent_path() / "params");
-    candidates.push_back(exe_dir / "share" / "smartiecoin");
-    candidates.push_back(exe_dir.parent_path() / "share" / "smartiecoin");
+    candidates.push_back(exe_dir / "share" / "korsh");
+    candidates.push_back(exe_dir.parent_path() / "share" / "korsh");
 #ifdef MAC_OSX
     candidates.push_back(exe_dir.parent_path() / "Resources" / "params");
-    candidates.push_back(exe_dir.parent_path() / "Resources" / "share" / "smartiecoin");
+    candidates.push_back(exe_dir.parent_path() / "Resources" / "share" / "korsh");
 #endif
 }
 
@@ -1232,7 +1232,7 @@ bool InitSaplingParams(const ArgsManager& args)
     }
     candidates.push_back(args.GetDataDirBase() / "params");
     candidates.push_back(fs::current_path() / "params");
-    candidates.push_back(fs::current_path() / "share" / "smartiecoin");
+    candidates.push_back(fs::current_path() / "share" / "korsh");
     candidates.push_back(fs::current_path() / "share" / "pivx");
     AddSaplingParamsExecutableCandidates(candidates);
 
@@ -1647,7 +1647,7 @@ bool AppInitParameterInteraction(const ArgsManager& args)
 
 static bool LockDataDirectory(bool probeOnly)
 {
-    // Make sure only a single Smartiecoin Core process is using the data directory.
+    // Make sure only a single Korsh Core process is using the data directory.
     const fs::path& datadir = gArgs.GetDataDirNet();
     if (!DirIsWritable(datadir)) {
         return InitError(strprintf(_("Cannot write to data directory '%s'; check permissions."), fs::PathToString(datadir)));
@@ -1717,9 +1717,9 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     // Warn about relative -datadir path.
     if (args.IsArgSet("-datadir") && !args.GetPathArg("-datadir").is_absolute()) {
         LogPrintf("Warning: relative datadir option '%s' specified, which will be interpreted relative to the " /* Continued */
-                  "current working directory '%s'. This is fragile, because if Smartiecoin Core is started in the future "
+                  "current working directory '%s'. This is fragile, because if Korsh Core is started in the future "
                   "from a different location, it will be unable to locate the current data files. There could "
-                  "also be data loss if Smartiecoin Core is started while in a temporary directory.\n",
+                  "also be data loss if Korsh Core is started while in a temporary directory.\n",
                   args.GetArg("-datadir", ""), fs::PathToString(fs::current_path()));
     }
 
@@ -2417,7 +2417,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         RegisterValidationInterface(node.observer_ctx.get());
     }
 
-    // ********************************************************* Step 7d: Setup other Smartiecoin services
+    // ********************************************************* Step 7d: Setup other Korsh services
 
     node.peerman->AddExtraHandler(std::make_unique<NetInstantSend>(node.peerman.get(), *node.llmq_ctx->isman, *node.llmq_ctx->qman, chainman.ActiveChainstate()));
     node.peerman->AddExtraHandler(std::make_unique<NetSigning>(node.peerman.get(), *node.llmq_ctx->sigman));
@@ -2529,7 +2529,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         return false;
     }
 
-    // ********************************************************* Step 10a: schedule Smartiecoin-specific tasks
+    // ********************************************************* Step 10a: schedule Korsh-specific tasks
 
     node.peerman->StartHandlers();
     node.clhandler->Start();

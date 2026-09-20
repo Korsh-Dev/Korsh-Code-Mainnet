@@ -912,7 +912,7 @@ const RPCResult getblock_vin{
                     {RPCResult::Type::STR, "asm", "Disassembly of the public key script"},
                     {RPCResult::Type::STR, "desc", "Inferred descriptor for the output"},
                     {RPCResult::Type::STR_HEX, "hex", "The raw public key script bytes, hex-encoded"},
-                    {RPCResult::Type::STR, "address", /*optional=*/true, "The Smartiecoin address (only if a well-defined address exists)"},
+                    {RPCResult::Type::STR, "address", /*optional=*/true, "The Korsh address (only if a well-defined address exists)"},
                     {RPCResult::Type::STR, "type", "The type, eg 'pubkeyhash'"},
                 }},
             }},
@@ -1310,7 +1310,7 @@ static RPCHelpMan gettxout()
                     {RPCResult::Type::STR, "desc", "Inferred descriptor for the output"},
                     {RPCResult::Type::STR_HEX, "hex", "The raw public key script bytes, hex-encoded"},
                     {RPCResult::Type::STR_HEX, "type", "The type, eg pubkeyhash"},
-                    {RPCResult::Type::STR, "address", /*optional=*/ true, "Smartiecoin address (only if a well-defined address exists)"},
+                    {RPCResult::Type::STR, "address", /*optional=*/ true, "Korsh address (only if a well-defined address exists)"},
                 }},
                 {RPCResult::Type::BOOL, "coinbase", "Coinbase or not"},
             }},
@@ -1596,7 +1596,7 @@ RPCHelpMan getblockchaininfo()
                          Consensus::DEPLOYMENT_V19,
                          Consensus::DEPLOYMENT_V20,
                          Consensus::DEPLOYMENT_MN_RR,
-                         Consensus::DEPLOYMENT_SMT_SHIELD,
+                         Consensus::DEPLOYMENT_KSH_SHIELD,
                          Consensus::DEPLOYMENT_WITHDRAWALS,
                         }) {
         SoftForkDescPushBack(&tip, softforks, chainman, deploy);

@@ -1,7 +1,7 @@
 # Bitcoin v30.2 Phase-2 Runtime Worklist
 
 - Generated: `2026-02-23T05:02:14Z`
-- Source report: `C:\Dev\Smartiecoin\doc\porting\bitcoin-v30.2-gap-report.json`
+- Source report: `C:\Dev\Korsh\doc\porting\bitcoin-v30.2-gap-report.json`
 
 ## Scope
 

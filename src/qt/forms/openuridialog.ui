@@ -26,7 +26,7 @@
      <item>
       <widget class="QValidatedLineEdit" name="uriEdit">
        <property name="placeholderText">
-        <string notr="true">smartiecoin:</string>
+        <string notr="true">korsh:</string>
        </property>
       </widget>
      </item>
@@ -81,7 +81,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../smartiecoin.qrc"/>
+  <include location="../korsh.qrc"/>
  </resources>
  <connections>
   <connection>

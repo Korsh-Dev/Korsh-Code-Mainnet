@@ -380,7 +380,7 @@ bool SaplingWallet::RebuildWitnesses(std::string* error)
     const auto tip_height = m_wallet.chain().getHeight();
     if (!tip_height) return true;
 
-    const int shield_height = Params().GetConsensus().nSMTShieldHeight;
+    const int shield_height = Params().GetConsensus().nKSHShieldHeight;
     if (shield_height < 0 || shield_height > *tip_height) return true;
 
     SaplingMerkleTree tree;

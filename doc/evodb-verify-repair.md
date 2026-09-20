@@ -41,10 +41,10 @@ The command processes snapshot pairs (snapshots are stored every 576 blocks) and
 **Example:**
 ```bash
 # Verify entire chain
-smartiecoin-cli evodb verify
+korsh-cli evodb verify
 
 # Verify specific range
-smartiecoin-cli evodb verify 1000 10000
+korsh-cli evodb verify 1000 10000
 ```
 
 ---
@@ -104,10 +104,10 @@ The repair process:
 **Example:**
 ```bash
 # Repair entire chain
-smartiecoin-cli evodb repair
+korsh-cli evodb repair
 
 # Repair specific range
-smartiecoin-cli evodb repair 1000 10000
+korsh-cli evodb repair 1000 10000
 ```
 
 ---

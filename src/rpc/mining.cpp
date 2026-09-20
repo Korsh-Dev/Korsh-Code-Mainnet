@@ -478,7 +478,7 @@ static RPCHelpMan getmininginfo()
 }
 
 
-// NOTE: Unlike wallet RPC (which use SMT values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
+// NOTE: Unlike wallet RPC (which use KSH values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
 static RPCHelpMan prioritisetransaction()
 {
     return RPCHelpMan{"prioritisetransaction",

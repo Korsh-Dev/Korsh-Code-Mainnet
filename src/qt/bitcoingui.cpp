@@ -379,14 +379,14 @@ void BitcoinGUI::stopConnectingAnimation()
 void BitcoinGUI::createActions()
 {
     sendCoinsAction = new QAction(tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a Smartiecoin address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a Korsh address"));
     QString strCoinJoinName = QString::fromStdString(gCoinJoinName);
     coinJoinCoinsAction = new QAction(QString("&%1").arg(strCoinJoinName), this);
-    coinJoinCoinsAction->setStatusTip(tr("Send %1 funds to a Smartiecoin address").arg(strCoinJoinName));
+    coinJoinCoinsAction->setStatusTip(tr("Send %1 funds to a Korsh address").arg(strCoinJoinName));
     coinJoinCoinsAction->setToolTip(coinJoinCoinsAction->statusTip());
 
     receiveCoinsAction = new QAction(tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and smartiecoin: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and korsh: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
 
 #ifdef ENABLE_WALLET
@@ -428,9 +428,9 @@ void BitcoinGUI::createActions()
     unlockWalletAction->setToolTip(tr("Unlock wallet"));
     lockWalletAction = new QAction(tr("&Lock Wallet"), this);
     signMessageAction = new QAction(tr("Sign &message…"), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your Smartiecoin addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your Korsh addresses to prove you own them"));
     verifyMessageAction = new QAction(tr("&Verify message…"), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Smartiecoin addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Korsh addresses"));
     m_load_psbt_action = new QAction(tr("&Load PSBT from file…"), this);
     m_load_psbt_action->setStatusTip(tr("Load Partially Signed Blockchain Transaction"));
     m_load_psbt_clipboard_action = new QAction(tr("Load PSBT from &clipboard…"), this);
@@ -466,7 +466,7 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(tr("Open &URI…"), this);
-    openAction->setStatusTip(tr("Open a smartiecoin: URI"));
+    openAction->setStatusTip(tr("Open a korsh: URI"));
 
     m_open_wallet_action = new QAction(tr("Open Wallet"), this);
     m_open_wallet_action->setEnabled(false);
@@ -491,7 +491,7 @@ void BitcoinGUI::createActions()
 
     showHelpMessageAction = new QAction(tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Smartiecoin command-line options").arg(PACKAGE_NAME));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Korsh command-line options").arg(PACKAGE_NAME));
 
     showCoinJoinHelpAction = new QAction(tr("%1 &information").arg(strCoinJoinName), this);
     showCoinJoinHelpAction->setMenuRole(QAction::NoRole);
@@ -1388,7 +1388,7 @@ void BitcoinGUI::updateNetworkState()
     QString tooltip;
     if (fNetworkActive) {
         //: A substring of the tooltip.
-        tooltip = tr("%n active connection(s) to Smartiecoin network", "", count);
+        tooltip = tr("%n active connection(s) to Korsh network", "", count);
     } else {
         tooltip = tr("Network activity disabled");
         icon = "connect_4";
@@ -1563,7 +1563,7 @@ void BitcoinGUI::updateWidth()
         ++nButtonsVisible;
     }
     // Add 30 per button as padding and use minimum 980 which is the minimum required to show all tab's contents
-    // Use nButtonsVisible + 1 <- for the smartiecoin logo
+    // Use nButtonsVisible + 1 <- for the korsh logo
     int nWidth = std::max<int>(980, (nWidthWidestButton + 30) * (nButtonsVisible + 1));
     setMinimumWidth(nWidth);
 

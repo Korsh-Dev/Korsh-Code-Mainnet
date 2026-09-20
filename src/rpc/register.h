@@ -32,7 +32,7 @@ void RegisterEvoRPCCommands(CRPCTable &tableRPC);
 void RegisterQuorumsRPCCommands(CRPCTable &tableRPC);
 
 #ifdef ENABLE_WALLET
-// Smartiecoin-specific wallet-only RPC commands
+// Korsh-specific wallet-only RPC commands
 Span<const CRPCCommand> GetWalletCoinJoinRPCCommands();
 Span<const CRPCCommand> GetWalletEvoRPCCommands();
 Span<const CRPCCommand> GetWalletGovernanceRPCCommands();

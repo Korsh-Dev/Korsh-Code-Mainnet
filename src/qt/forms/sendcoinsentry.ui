@@ -50,7 +50,7 @@
     <item>
       <widget class="QValidatedLineEdit" name="payTo">
       <property name="toolTip">
-        <string>The Smartiecoin address to send the payment to</string>
+        <string>The Korsh address to send the payment to</string>
       </property>
       </widget>
     </item>
@@ -158,7 +158,7 @@
     <item>
       <widget class="QCheckBox" name="checkboxSubtractFeeFromAmount">
       <property name="toolTip">
-        <string>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Smartiecoin than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</string>
+        <string>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Korsh than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</string>
       </property>
       <property name="text">
         <string>S&amp;ubtract fee from amount</string>
@@ -187,7 +187,7 @@
   <item row="3" column="1">
     <widget class="QLabel" name="messageTextLabel">
     <property name="toolTip">
-      <string>A message that was attached to the smartiecoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Smartiecoin network.</string>
+      <string>A message that was attached to the korsh: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Korsh network.</string>
     </property>
     <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -225,7 +225,7 @@
   <tabstop>payAmount</tabstop>
  </tabstops>
  <resources>
-  <include location="../smartiecoin.qrc"/>
+  <include location="../korsh.qrc"/>
  </resources>
  <connections/>
 </ui>

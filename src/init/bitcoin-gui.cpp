@@ -16,7 +16,7 @@
 
 namespace init {
 namespace {
-const char* EXE_NAME = "smartiecoin-gui";
+const char* EXE_NAME = "korsh-gui";
 
 class BitcoinGuiInit : public interfaces::Init
 {

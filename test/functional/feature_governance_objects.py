@@ -2,7 +2,7 @@
 # Copyright (c) 2018-2024 The Smartiecoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Tests around smartiecoin governance objects."""
+"""Tests around korsh governance objects."""
 
 import time
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate a structured gap report between Smartiecoin and upstream Bitcoin Core.
+Generate a structured gap report between Korsh and upstream Bitcoin Core.
 """
 
 from __future__ import annotations
@@ -121,12 +121,12 @@ FEATURE_GROUPS = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate a Smartiecoin vs Bitcoin Core gap report.",
+        description="Generate a Korsh vs Bitcoin Core gap report.",
     )
     parser.add_argument(
         "--smartie-root",
         default=str(Path(__file__).resolve().parents[3]),
-        help="Path to Smartiecoin root (default: repository root).",
+        help="Path to Korsh root (default: repository root).",
     )
     parser.add_argument(
         "--bitcoin-root",
@@ -282,7 +282,7 @@ def make_markdown(
     }
 
     lines: List[str] = []
-    lines.append("# Smartiecoin vs Bitcoin v30.2 Gap Report")
+    lines.append("# Korsh vs Bitcoin v30.2 Gap Report")
     lines.append("")
     lines.append(f"- Generated: `{now}`")
     lines.append(f"- Smartie root: `{smartie_root}`")

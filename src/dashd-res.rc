@@ -14,14 +14,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "Smartiecoin"
-            VALUE "FileDescription",    "smartiecoind (Smartiecoin node with a JSON-RPC server)"
+            VALUE "CompanyName",        "Korsh"
+            VALUE "FileDescription",    "korshd (Korsh node with a JSON-RPC server)"
             VALUE "FileVersion",        PACKAGE_VERSION
-            VALUE "InternalName",       "smartiecoind"
+            VALUE "InternalName",       "korshd"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "smartiecoind.exe"
-            VALUE "ProductName",        "smartiecoind"
+            VALUE "OriginalFilename",   "korshd.exe"
+            VALUE "ProductName",        "korshd"
             VALUE "ProductVersion",     PACKAGE_VERSION
         END
     END

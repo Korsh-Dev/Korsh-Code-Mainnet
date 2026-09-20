@@ -1,8 +1,8 @@
-# Smartiecoin vs Bitcoin v30.2 Gap Report
+# Korsh vs Bitcoin v30.2 Gap Report
 
 - Generated: `2026-02-23T05:02:14Z`
-- Smartie root: `C:\Dev\Smartiecoin`
-- Bitcoin root: `C:\Dev\Smartiecoin\.upstream\bitcoin-30.2`
+- Smartie root: `C:\Dev\Korsh`
+- Bitcoin root: `C:\Dev\Korsh\.upstream\bitcoin-30.2`
 
 ## Summary
 
