@@ -65,7 +65,19 @@ BOOST_FIXTURE_TEST_CASE(utils_IsQuorumTypeEnabled_tests_regtest, RegTestingSetup
 
 BOOST_FIXTURE_TEST_CASE(utils_IsQuorumTypeEnabled_tests_mainnet, TestingSetup)
 {
-    Test(m_node);
+    // Korsh mainnet disables every quorum-based service, so all quorum roles map to
+    // LLMQ_NONE and IsQuorumTypeEnabled() must report them as disabled regardless of
+    // the DIP0024 flags.
+    using namespace llmq;
+    auto tip = m_node.chainman->ActiveTip();
+    const auto& consensus_params = Params().GetConsensus();
+    for (const auto llmq_type : {consensus_params.llmqTypeDIP0024InstantSend, consensus_params.llmqTypeChainLocks,
+                                 consensus_params.llmqTypePlatform, consensus_params.llmqTypeMnhf}) {
+        BOOST_CHECK(llmq_type == Consensus::LLMQType::LLMQ_NONE);
+        BOOST_CHECK_EQUAL(m_node.chainman->IsQuorumTypeEnabled(llmq_type, tip, /*optDIP0024IsActive=*/false, /*optHaveDIP0024Quorums=*/false), false);
+        BOOST_CHECK_EQUAL(m_node.chainman->IsQuorumTypeEnabled(llmq_type, tip, /*optDIP0024IsActive=*/true, /*optHaveDIP0024Quorums=*/false), false);
+        BOOST_CHECK_EQUAL(m_node.chainman->IsQuorumTypeEnabled(llmq_type, tip, /*optDIP0024IsActive=*/true, /*optHaveDIP0024Quorums=*/true), false);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

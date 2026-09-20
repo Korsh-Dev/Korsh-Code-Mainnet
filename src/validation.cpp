@@ -6228,6 +6228,11 @@ bool ChainstateManager::IsQuorumTypeEnabled(const Consensus::LLMQType llmqType,
     case Consensus::LLMQType::LLMQ_10_75:
         return pindexPrev->nHeight >= GetConsensus().nKSHSmallQuorumsHeight && fDIP0024IsActive;
 
+    case Consensus::LLMQType::LLMQ_NONE:
+        // Korsh mainnet disables every quorum-based service, so a "none" type is
+        // never enabled instead of being an unknown type.
+        return false;
+
     default:
         throw std::runtime_error(strprintf("%s: Unknown LLMQ type %d", __func__, ToUnderlying(llmqType)));
     }
