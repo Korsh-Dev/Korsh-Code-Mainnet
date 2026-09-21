@@ -1,5 +1,5 @@
 /*
- * korsh-miner: native solo CPU miner for Korsh (Yespower 1.0, N=256, r=8).
+ * korsh-miner: native solo CPU miner for Korsh (Yespower 1.0, N=256, r=32).
  *
  * Talks to a local Korsh node over JSON-RPC (getblocktemplate / submitblock) and hashes with the
  * node's own yespower_hash(), so a nonce found here is valid for the node's consensus code.
@@ -14,7 +14,6 @@
 #include <math.h>
 #include <openssl/sha.h>
 #include <pthread.h>
-#include <sched.h>
 #include <signal.h>
 #include <stdatomic.h>
 #include <stdint.h>
@@ -22,7 +21,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#ifndef _WIN32
 #include <unistd.h>
+#include <sched.h>
+#endif
+
+/* ---- Windows port (compiled out on POSIX builds; Linux behaviour unchanged) ---- */
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0
+#endif
+#define close closesocket
+static void korsh_usleep_win(unsigned us) { Sleep(us / 1000); }
+#define usleep korsh_usleep_win
+static unsigned korsh_sleep_win(unsigned s) { Sleep(s * 1000); return 0; }
+#define sleep korsh_sleep_win
+static long korsh_ncpu_win(void) { return (long)GetActiveProcessorCount(ALL_PROCESSOR_GROUPS); }
+#define korsh_ncpu() korsh_ncpu_win()
+#else
+#define korsh_ncpu() sysconf(_SC_NPROCESSORS_ONLN)
+#endif
+/* ------------------------------------------------------------------------------- */
+
 
 extern int yespower_hash(const char *input, char *output);
 
@@ -276,11 +299,15 @@ static void *worker(void *arg)
 {
     int id = (int)(intptr_t)arg;
     if (g_pin) {
-        long ncpu = sysconf(_SC_NPROCESSORS_ONLN);
+#ifdef _WIN32
+        SetThreadAffinityMask(GetCurrentThread(), (DWORD_PTR)1 << (id % korsh_ncpu())); /* best effort */
+#else
+        long ncpu = korsh_ncpu();
         cpu_set_t set;
         CPU_ZERO(&set);
         CPU_SET(id % ncpu, &set);
         pthread_setaffinity_np(pthread_self(), sizeof set, &set); /* best effort */
+#endif
     }
     uint8_t h[80], target[32], outs[2][32];
     unsigned mine = 0;
@@ -464,7 +491,9 @@ static uint64_t total_hashes(void)
 }
 
 /* ============================================================ Stratum (v1) */
+#ifndef _WIN32
 #include <arpa/inet.h>
+#endif
 #include <netdb.h>
 #include <poll.h>
 #include <sys/socket.h>
@@ -842,11 +871,15 @@ static void bench_header(uint8_t h[80])
 static void pin_thread(int id)
 {
     if (!g_pin) return;
-    long ncpu = sysconf(_SC_NPROCESSORS_ONLN);
+#ifdef _WIN32
+    SetThreadAffinityMask(GetCurrentThread(), (DWORD_PTR)1 << (id % korsh_ncpu())); /* best effort */
+#else
+    long ncpu = korsh_ncpu();
     cpu_set_t set;
     CPU_ZERO(&set);
     CPU_SET(id % ncpu, &set);
     pthread_setaffinity_np(pthread_self(), sizeof set, &set);
+#endif
 }
 
 static void *bench_worker(void *arg)
@@ -923,7 +956,7 @@ int main(int argc, char **argv)
     const char *addr = NULL, *conf = NULL, *rpc_url = NULL;
     const char *surl = NULL, *suser = NULL, *spass = "x";
     int bench = 0, selftest = 0, ways_opt = 0;
-    g_threads = (int)sysconf(_SC_NPROCESSORS_ONLN) - 2;
+    g_threads = (int)korsh_ncpu() - 2;
     if (g_threads < 1) g_threads = 1;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--threads") && i + 1 < argc) g_threads = atoi(argv[++i]);
@@ -976,7 +1009,9 @@ int main(int argc, char **argv)
     if (surl) { /* pool mining: no local node needed */
         signal(SIGINT, on_signal);
         signal(SIGTERM, on_signal);
+        #ifndef _WIN32
         signal(SIGPIPE, SIG_IGN);
+#endif
         g_hashes = calloc((size_t)g_threads, sizeof(counter_t));
         pthread_t *ths = calloc((size_t)g_threads, sizeof *ths);
         for (int i = 0; i < g_threads; i++) pthread_create(&ths[i], NULL, worker, (void *)(intptr_t)i);
