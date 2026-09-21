@@ -42,12 +42,12 @@ The Korsh mainnet genesis block was mined with the final launch parameters:
 ```text
 Timestamp Phrase: "In honor of my uncle Satoshi Nakamoto"
 Unix Timestamp (nTime): 1789885960 (September 20, 2026)
-Nonce (nNonce): 504853
+Nonce (nNonce): 26429
 Difficulty (nBits): 0x1e3fffff
 Genesis Reward: 2 KSH
 
 Genesis Hash:
-00003e467fd9e7841b9e7d107c9173b09b00387ac807515f6d47c971018baaa0
+000017ec1f2f978429db70495ec7653aedca360e5f251bfe2a780ae5e731d7eb
 
 Merkle Root:
 1dd60dd52dda0fd4b6912baca209aa327ae8b4825a23415b0a4356585897d073

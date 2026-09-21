@@ -260,9 +260,9 @@ public:
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock("In honor of my uncle Satoshi Nakamoto", 1789885960, 504853, 0x1e3fffff, 1, 2 * COIN);
+        genesis = CreateGenesisBlock("In honor of my uncle Satoshi Nakamoto", 1789885960, 26429, 0x1e3fffff, 1, 2 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00003e467fd9e7841b9e7d107c9173b09b00387ac807515f6d47c971018baaa0"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000017ec1f2f978429db70495ec7653aedca360e5f251bfe2a780ae5e731d7eb"));
         assert(genesis.hashMerkleRoot == uint256S("0x1dd60dd52dda0fd4b6912baca209aa327ae8b4825a23415b0a4356585897d073"));
         consensus.BIP34Hash = consensus.hashGenesisBlock;
 
