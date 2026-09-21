@@ -22,6 +22,15 @@
  */
 namespace KorshFeatures {
 
+/**
+ * Korsh marks "never" activation heights with 999999999 instead of INT_MAX, so
+ * a plain comparison against INT_MAX would treat a disabled feature as enabled.
+ */
+inline bool HeightReached(int activation_height)
+{
+    return activation_height < 999999999;
+}
+
 /** InstantSend needs a configured quorum type and its spork enabled. */
 inline bool InstantSendEnabled(interfaces::Node& node)
 {
@@ -40,7 +49,7 @@ inline bool ChainLocksEnabled(interfaces::Node& node)
  */
 inline bool GovernanceEnabled()
 {
-    return Params().GetConsensus().nBudgetPaymentsStartBlock < std::numeric_limits<int>::max();
+    return HeightReached(Params().GetConsensus().nBudgetPaymentsStartBlock);
 }
 
 /** Evo/Platform masternodes need a configured platform quorum type. */
