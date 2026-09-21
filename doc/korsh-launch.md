@@ -87,6 +87,17 @@ Operational notes for whoever maintains it:
   `contrib/explorer/` as a dependency-free fallback (Flask + SQLite); it is not
   running.
 
+Two install traps worth knowing before touching this stack a second time:
+
+- **eIquidus needs Node >= 20.19** (`scripts/prestart.js` hard-fails on 18, which
+  is what Ubuntu 24.04 ships). Install NodeSource's 20.x first, or `npm start`
+  (which runs `bin/cluster`, not `app.js`) dies instantly and the unit just says
+  "Deactivated successfully".
+- **The Mongo user must live in the database named in `settings.json`**
+  (`explorerdb`), not in `admin`. The driver resolves `authSource` from the URI's
+  database, so a user created in `admin` authenticates fine with `mongosh` and
+  still gets `AuthenticationFailed (code 18)` from the app.
+
 ## 4. Protect the young chain
 
 - Difficulty already reacts every block (DGW), so a hashrate spike is absorbed
