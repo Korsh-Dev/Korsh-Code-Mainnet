@@ -844,6 +844,11 @@ LONG WINAPI HandleWindowsException(EXCEPTION_POINTERS * ExceptionInfo)
 
 void RegisterPrettySignalHandlers()
 {
+    // Debugging aid: let the platform crash reporter handle faults so a real
+    // backtrace is recorded (KORSH_NO_SIGNAL_HANDLERS=1).
+    if (getenv("KORSH_NO_SIGNAL_HANDLERS") != nullptr) {
+        return;
+    }
 #if defined(WIN32)
     SetUnhandledExceptionFilter(HandleWindowsException);
 #else
