@@ -57,6 +57,7 @@ jobs:
 
       - name: Smoke test (mainnet genesis)
         run: |
+          mkdir -p /tmp/k-smoke
           ./src/korshd -chain=main -datadir=/tmp/k-smoke -daemon=1 -server=1 -listen=0 -dnsseed=0
           sleep 10
           ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke getblockcount
