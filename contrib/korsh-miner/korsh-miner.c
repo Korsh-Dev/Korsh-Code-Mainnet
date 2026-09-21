@@ -35,6 +35,7 @@
 #define MSG_NOSIGNAL 0
 #endif
 #define close closesocket
+#define poll WSAPoll
 static void korsh_usleep_win(unsigned us) { Sleep(us / 1000); }
 #define usleep korsh_usleep_win
 static unsigned korsh_sleep_win(unsigned s) { Sleep(s * 1000); return 0; }
@@ -494,9 +495,15 @@ static uint64_t total_hashes(void)
 #ifndef _WIN32
 #include <arpa/inet.h>
 #endif
+#ifndef _WIN32
 #include <netdb.h>
+#endif
+#ifndef _WIN32
 #include <poll.h>
+#endif
+#ifndef _WIN32
 #include <sys/socket.h>
+#endif
 
 /*
  * Difficulty convention: share target = diff1 / difficulty, where diff1 is
@@ -843,7 +850,7 @@ static int run_stratum(const char *url, const char *user, const char *pass)
             double t = now_s();
             if (t - last_stats >= STATS_EVERY) {
                 last_stats = t;
-                printf("rate=%.0f H/s shares: submitted=%lu accepted=%lu rejected=%lu\n", (double)total_hashes() / (t - t0), sub, acc, rej);
+                printf("rate=%.1f kH/s shares: submitted=%lu accepted=%lu rejected=%lu\n", (double)total_hashes() / 1000.0 / (t - t0), sub, acc, rej);
                 fflush(stdout);
             }
             if (t - last_rx > 300) { printf("pool silent for 300s, reconnecting\n"); fflush(stdout); break; }
@@ -942,7 +949,7 @@ static int run_bench(int seconds)
     for (int i = 0; i < g_threads; i++) pthread_join(th[i], NULL);
     double el = now_s() - t0;
     uint64_t total = total_hashes();
-    printf("threads=%d ways=%d seconds=%.1f hashrate=%.0f H/s (%.0f H/s per thread)\n", g_threads, g_ways, el, total / el, total / el / g_threads);
+    printf("threads=%d ways=%d seconds=%.1f hashrate=%.1f kH/s (%.2f kH/s per thread)\n", g_threads, g_ways, el, total / 1000.0 / el, total / 1000.0 / el / g_threads);
     printf("hugepages: reserved-free before=%ld during=%ld (2 MB pages), transparent huge pages in use by this process=%ld kB\n",
            hp_free0, hp_free1, thp);
     printf("selftest digest: %s\n", digest);
@@ -1127,7 +1134,7 @@ int main(int argc, char **argv)
             }
             if (t - last_stats >= STATS_EVERY) {
                 last_stats = t;
-                printf("rate=%.0f H/s blocks=%u\n", (double)total_hashes() / (t - t0), blocks);
+                printf("rate=%.1f kH/s blocks=%u\n", (double)total_hashes() / 1000.0 / (t - t0), blocks);
                 fflush(stdout);
             }
         }
