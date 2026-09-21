@@ -1,0 +1,82 @@
+name: Build Linux release (x86_64)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_tests:
+        description: Run the unit test suite before packaging
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: Linux x86_64 build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential autoconf automake libtool pkg-config bsdmainutils python3 \
+            ca-certificates curl zip \
+            libboost-all-dev libevent-dev libssl-dev libsodium-dev libdb++-dev \
+            libminiupnpc-dev libnatpmp-dev zlib1g-dev libgmp-dev \
+            qtbase5-dev qttools5-dev-tools
+
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          rustc --version
+
+      - name: Configure
+        run: |
+          ./autogen.sh
+          ./configure \
+            --with-gui=qt5 \
+            --with-incompatible-bdb \
+            --disable-bench \
+            --disable-gui-tests \
+            --disable-man \
+            --disable-maintainer-mode \
+            CXXFLAGS="-O2"
+
+      - name: Build
+        run: make -j"$(nproc)"
+
+      - name: Unit tests
+        if: ${{ inputs.build_tests }}
+        run: make -k check -j"$(nproc)"
+
+      - name: Smoke test (mainnet genesis)
+        run: |
+          ./src/korshd -chain=main -datadir=/tmp/k-smoke -daemon=1 -server=1 -listen=0 -dnsseed=0
+          sleep 10
+          ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke getblockcount
+          ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke getblockhash 0
+          ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke stop
+
+      - name: Package
+        run: |
+          NAME=korsh-0.0.1-linux-x86_64
+          mkdir -p dist/$NAME/bin dist/$NAME/params
+          cp src/korshd src/korsh-cli src/korsh-tx src/korsh-wallet src/korsh-util src/qt/korsh-qt dist/$NAME/bin/
+          cp README.md COPYING dist/$NAME/
+          cp params/sapling-spend.params params/sapling-output.params dist/$NAME/params/ 2>/dev/null || true
+          strip dist/$NAME/bin/*
+          tar -C dist -czf korsh-0.0.1-linux-x86_64.tar.gz "$NAME"
+          sha256sum korsh-0.0.1-linux-x86_64.tar.gz
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: korsh-linux-x86_64
+          path: korsh-0.0.1-linux-x86_64.tar.gz
+          if-no-files-found: error
