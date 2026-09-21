@@ -9,6 +9,7 @@
 
 #include <qt/sendcoinsdialog.h>
 #include <qt/forms/ui_sendcoinsdialog.h>
+#include <qt/korshfeatures.h>
 
 #include <qt/addresstablemodel.h>
 #include <qt/bitcoinunits.h>
@@ -166,6 +167,12 @@ void SendCoinsDialog::setClientModel(ClientModel *_clientModel)
 void SendCoinsDialog::setModel(WalletModel *_model)
 {
     this->model = _model;
+
+    // Korsh: only advertise InstantSend while the network can actually lock
+    // transactions (a quorum type configured and the matching spork enabled).
+    if (_model) {
+        ui->labelInstantSend->setVisible(KorshFeatures::InstantSendEnabled(_model->node()));
+    }
 
     if(_model && _model->getOptionsModel())
     {

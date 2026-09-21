@@ -425,6 +425,35 @@ public:
         }
         return 0;
     }
+    bool isInstantSendEnabled() override
+    {
+        // Korsh: InstantSend only exists when a quorum type is configured for
+        // it; with every type set to LLMQ_NONE the network cannot lock txes.
+        const auto& consensus = Params().GetConsensus();
+        if (consensus.llmqTypeDIP0024InstantSend == Consensus::LLMQType::LLMQ_NONE &&
+            consensus.llmqTypeSmallInstantSend == Consensus::LLMQType::LLMQ_NONE) {
+            return false;
+        }
+        if (context().llmq_ctx && context().llmq_ctx->isman != nullptr) {
+            return context().llmq_ctx->isman->IsInstantSendEnabled();
+        }
+        return false;
+    }
+    bool isChainLocksEnabled() override
+    {
+        const auto& consensus = Params().GetConsensus();
+        if (consensus.llmqTypeChainLocks == Consensus::LLMQType::LLMQ_NONE &&
+            consensus.llmqTypeSmallChainLocks == Consensus::LLMQType::LLMQ_NONE) {
+            return false;
+        }
+        if (consensus.DIP0008Height >= std::numeric_limits<int>::max()) {
+            return false;
+        }
+        if (context().chainlocks != nullptr) {
+            return context().chainlocks->IsEnabled();
+        }
+        return false;
+    }
     void setContext(NodeContext* context) override
     {
         m_context = context;

@@ -178,6 +178,11 @@ class LLMQ
 public:
     virtual ~LLMQ() {}
     virtual size_t getInstantSentLockCount() = 0;
+    //! Whether InstantSend can lock transactions on this network right now
+    //! (a quorum type is configured and the matching spork is enabled).
+    virtual bool isInstantSendEnabled() = 0;
+    //! Whether ChainLocks can lock blocks on this network right now.
+    virtual bool isChainLocksEnabled() = 0;
     virtual void setContext(node::NodeContext* context) {}
 };
 

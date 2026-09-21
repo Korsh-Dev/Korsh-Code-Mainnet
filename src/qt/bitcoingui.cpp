@@ -39,6 +39,7 @@
 #include <interfaces/node.h>
 #include <node/interface_ui.h>
 #include <qt/governancelist.h>
+#include <qt/korshfeatures.h>
 #include <qt/masternodelist.h>
 #include <util/system.h>
 #include <util/translation.h>
@@ -1504,7 +1505,7 @@ void BitcoinGUI::updateCoinJoinVisibility()
 void BitcoinGUI::updateGovernanceVisibility()
 {
     if (!clientModel || !clientModel->getOptionsModel()) return;
-    const bool fShow = m_node.gov().isEnabled() && clientModel->getOptionsModel()->getShowGovernanceTab();
+    const bool fShow = KorshFeatures::GovernanceEnabled() && m_node.gov().isEnabled() && clientModel->getOptionsModel()->getShowGovernanceTab();
 
     // Show/hide the underlying QAction, hiding the QToolButton itself doesn't
     // work for the GUI part but is still needed for shortcuts to work properly.
@@ -1775,7 +1776,7 @@ void BitcoinGUI::updateGovernanceCycleIcon()
 
     const auto& options_model{*clientModel->getOptionsModel()};
     const bool hide_gov{!options_model.getShowGovernanceTab() || !options_model.getShowGovernanceClock()};
-    if (!m_node.gov().isEnabled() || clientModel->getNumConnections() == 0 || hide_gov) {
+    if (!m_node.gov().isEnabled() || !KorshFeatures::GovernanceEnabled() || clientModel->getNumConnections() == 0 || hide_gov) {
         stopGovernanceSyncAnimation();
         labelGovernanceCycleIcon->hide();
         m_last_gov_cycle_height.reset();
