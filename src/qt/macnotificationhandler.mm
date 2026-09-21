@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"com.smartiescoin.Korsh-Qt";
+        return @"com.korsh-core.Korsh-Qt";
     } else {
         return [self __bundleIdentifier];
     }

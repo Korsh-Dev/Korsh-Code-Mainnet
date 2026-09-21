@@ -151,7 +151,7 @@ For more information, see the <a style=\"%2\" href=\"%3\">%1 documentation</a>."
         )
         .arg(strCoinJoinName)
         .arg(GUIUtil::getThemedStyleQString(GUIUtil::ThemedStyle::TS_COMMAND))
-        .arg("https://github.com/SmartiesCoin/Korsh")
+        .arg("https://github.com/ELPilotPR/Korsh-Core")
         );
         ui->aboutMessage->setWordWrap(true);
         ui->helpMessage->setVisible(false);

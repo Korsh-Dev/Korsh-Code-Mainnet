@@ -1,5 +1,9 @@
 # Korsh Core [KSH]
 
+<p align="center">
+  <img src="doc/korsh-logo.png" alt="Korsh (KSH)" width="150">
+</p>
+
 [![Release](https://img.shields.io/badge/release-v0.0.1-blue.svg)](https://github.com/ELPilotPR/Korsh-Core/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
