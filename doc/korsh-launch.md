@@ -123,6 +123,15 @@ three.js), served by nginx from a systemd unit.
   *old* file and only shows up at reload time, so always check `nginx -T` output
   (the effective config) after editing a vhost.
 
+Users who want more than the wallet's single-threaded `generatetoaddress` can use the
+CPU miner in `contrib/korsh-miner/` (shipped as `korsh-miner-0.0.1-win64.zip` in the
+release): `korsh-miner <address> --threads N`. It is the korshcore fork's miner with
+`KYP_R` set to 8 and a `_WIN32` port (affinity via `SetThreadAffinityMask`, `WSAPoll`,
+`Sleep`-based sleeps). Its `--selftest` must print `identical to the reference` —
+anything else means it is hashing the wrong consensus. It refuses templates with
+masternode or superblock payouts, so it stops once a masternode registers; after that
+use the wallet's `generatetoaddress`.
+
 ## 4. Protect the young chain
 
 - Difficulty already reacts every block (DGW), so a hashrate spike is absorbed
