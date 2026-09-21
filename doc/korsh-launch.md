@@ -29,8 +29,20 @@ mkdir -p ~/.korsh
 ./bin/korsh-cli getblockchaininfo      # chain: main, blocks: 0
 ```
 
-Mainnet ports: **P2P 8383**, **RPC 8282**. Open 8383/tcp on the seed machine(s)
-so others can reach them.
+Mainnet ports: **P2P 8383**, **RPC 8282**.
+
+**A public seed node is already running** at `195.26.244.209:8383` (same VPS as
+the explorer), and the binaries from this release carry it as a fixed seed, so a
+fresh install connects on its own about a minute after starting. The machine runs
+`korshd` under systemd as the `korsh` user with the datadir in `/home/korsh/.korsh`;
+its RPC stays on localhost.
+
+On a minimal Debian/Ubuntu install the Linux tarball also needs its runtime
+libraries:
+
+```sh
+apt-get install -y libdb5.3t64 libdb5.3++t64 libminiupnpc17 libnatpmp1 libevent-2.1-7t64 libevent-pthreads-2.1-7t64
+```
 
 ## 2. Mine the first blocks
 
@@ -47,12 +59,33 @@ for the previous r=32 parameters produce invalid blocks and will be rejected.
 
 ## 3. Let other nodes find the network
 
-There are **no DNS seeds and no fixed seeds** in the binaries yet, so peers have
-to be introduced by hand until the next release:
+The binaries ship with the first seed node hardcoded (`vFixedSeeds` in
+`src/chainparams.cpp`, BIP155 form of `195.26.244.209:8383`), so a new install
+needs no flags: roughly a minute after start the node loads the fixed seed and
+connects. There is no DNS seed yet, so if that node is retired the list has to be
+updated in a release; adding a DNS seed (or more fixed seeds) is a one-line change
+plus a rebuild.
 
-- Tell users to start their node with `-addnode=<seed-ip>:8383`.
-- Publish the seed list wherever the launch is announced, and keep at least two
-  always-on nodes.
+## 3b. The block explorer
+
+<https://explorer.195-26-244-209.sslip.io/> — eIquidus (Node + MongoDB) reading
+the same node's RPC. It has block/transaction/address pages plus **masternodes**,
+rich list, movement, network panels and public JSON APIs. Temporary hostname
+(`sslip.io` encodes the IP) until a domain is bought.
+
+Operational notes for whoever maintains it:
+
+- Code: `/opt/korsh-explorer-eiquidus` (clone of `team-exor/eiquidus`), service
+  `korsh-explorer-eiquidus.service`, database `explorerdb` in MongoDB.
+- Sync: `/etc/cron.d/korsh-explorer` runs `scripts/sync.js index` every minute and
+  `peers`/`masternodes` every five minutes.
+- The masternode table fills from `/ext/getmasternodelist`, which the sync
+  populates from the node's masternode RPC.
+- Theme/coin name/logo live in `settings.json` (`theme` accepts any Bootswatch
+  theme, e.g. `slate`, `cyborg`, `darkly`).
+- The older lightweight explorer written for this repo is still in
+  `contrib/explorer/` as a dependency-free fallback (Flask + SQLite); it is not
+  running.
 
 ## 4. Protect the young chain
 
