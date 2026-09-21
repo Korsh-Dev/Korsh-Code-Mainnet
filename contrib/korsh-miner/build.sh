@@ -26,7 +26,7 @@ if [ "${KORSH_HUGEPAGES:-0}" = 1 ]; then
     tmp="$(mktemp -d)"
     trap 'rm -rf "$tmp"' EXIT
     cp -r "$yp"/. "$tmp"/
-    # the upstream allocator only asks for huge pages above 12 MB; Korsh's regions are about 1 MB
+    # the upstream allocator only asks for huge pages above 12 MB; Korsh's regions are about 256 KB
     sed -i 's/(12 \* 1024 \* 1024)/(1)/' "$tmp/yespower-platform.c"
     grep -q 'define HUGEPAGE_THRESHOLD[[:space:]]*(1)' "$tmp/yespower-platform.c" ||
         { echo "error: could not patch the huge page threshold (upstream file changed?)" >&2; exit 1; }

@@ -73,7 +73,7 @@ transaction (which exercises the merkle branch) confirmed on chain.
 ## Performance and tuning
 
 Measured with `korsh-miner --bench` on an AMD EPYC 9554 VPS (30 vCPUs), with the consensus parameters
-(Yespower 1.0, N=256, r=8, about 1 MB of memory per hash). Every variant printed the same self-test digest, i.e. the
+(Yespower 1.0, N=256, r=8, about 256 KB of memory per hash). Every variant printed the same self-test digest, i.e. the
 same hashes as the consensus code.
 
 ### Two-way interleaved kernel (default): about +35 %
@@ -113,7 +113,7 @@ What this shows:
   AVX2 or CPU-specific flags gives no measurable speed-up. The default `-march=native` is fine; for a binary that must
   run on other machines use `KORSH_CFLAGS="-O3 -march=x86-64-v2"`.
 - **Huge pages are optional.** The upstream allocator only requests huge pages for regions of 12 MB or more, so a
-  stock build never uses them for Korsh's 1 MB regions. `KORSH_HUGEPAGES=1 ./build.sh` builds a miner that does, and
+  stock build never uses them for Korsh's 256 KB regions. `KORSH_HUGEPAGES=1 ./build.sh` builds a miner that does, and
   `setup-hugepages.sh` reserves the pages. The gain here is about +0.4 %; it can be larger on CPUs with small TLBs.
   Reserved pages are removed from the memory available to everything else.
 
