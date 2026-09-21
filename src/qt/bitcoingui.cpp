@@ -1580,7 +1580,12 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, const QStri
 #ifdef ENABLE_WALLET
     if (enableWallet) {
         for (const auto& wallet : m_node.walletLoader().getWallets()) {
-            disableAppNap |= m_node.coinJoinLoader()->GetClient(wallet->getWalletName())->isMixing();
+            // A wallet without a CoinJoin client (for example a masternode
+            // wallet, or when mixing is off) has no client to query.
+            const auto client = m_node.coinJoinLoader()->GetClient(wallet->getWalletName());
+            if (client != nullptr) {
+                disableAppNap |= client->isMixing();
+            }
         }
     }
 #endif // ENABLE_WALLET
