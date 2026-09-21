@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ tx.txid[:16] }}… — Korsh{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Transaction</h2>
+  <table>
+    <tr><th>Txid</th><td class="hash mono">{{ tx.txid }}</td></tr>
+    {% if tx.blockhash %}
+    <tr><th>Block</th><td><a href="{{ url_for('block_view', ident=tx.blockhash) }}">{{ tx.blockhash }}</a>{% if row %} <span class="dim">(height {{ row['height'] }})</span>{% endif %}</td></tr>
+    {% else %}<tr><th>Status</th><td><span class="pill">mempool</span></td></tr>{% endif %}
+    {% if row and row['fee'] is not none %}<tr><th>Fee</th><td>{{ row['fee']|ksh }} KSH</td></tr>{% endif %}
+    <tr><th>Size</th><td>{{ tx.size }} bytes</td></tr>
+    {% if tx.type %}<tr><th>Type</th><td>{{ tx.type }}</td></tr>{% endif %}
+  </table>
+</div>
+<div class="flow">
+  <div class="card">
+    <h2>Inputs</h2>
+    <table>
+      {% for vin in tx.vin %}
+      <tr>
+        <td class="hash mono">
+          {% if vin.coinbase %}<span class="pill">coinbase</span>
+          {% else %}<a href="{{ url_for('tx_view', txid=vin.txid) }}">{{ vin.txid[:24] }}…</a><span class="dim">:{{ vin.vout }}</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div></div>
+  <div class="card">
+    <h2>Outputs</h2>
+    <table>
+      {% for vout in tx.vout %}
+      <tr>
+        <td class="hash mono">
+          {% for a in (vout.scriptPubKey.addresses or ([vout.scriptPubKey.address] if vout.scriptPubKey.address else [])) %}
+            <a href="{{ url_for('address_view', address=a) }}">{{ a }}</a>
+          {% else %}<span class="dim">{{ vout.scriptPubKey.type }}</span>{% endfor %}
+        </td>
+        <td class="right">{{ vout.value|ksh }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Korsh Explorer{% endblock %}</title>
+<style>
+  :root{--bg:#0e1116;--card:#161b22;--line:#232b36;--fg:#e6edf3;--dim:#8b949e;--acc:#22c55e;--acc2:#7ee787;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--acc2);text-decoration:none}a:hover{text-decoration:underline}
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .brand{font-weight:700;font-size:18px;color:var(--fg)}
+  .brand span{color:var(--acc)}
+  header form{margin-left:auto;display:flex;gap:8px}
+  input[type=text]{background:#0b0f14;border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:8px 10px;min-width:280px}
+  button{background:var(--acc);border:0;color:#04160a;font-weight:600;border-radius:8px;padding:8px 14px;cursor:pointer}
+  main{max-width:1100px;margin:0 auto;padding:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .stat b{display:block;font-size:20px;margin-top:2px}
+  .stat small{color:var(--dim)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;overflow:hidden}
+  .card h2{margin:0;padding:12px 14px;font-size:14px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  th{color:var(--dim);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+  .hash{word-break:break-all}
+  .dim{color:var(--dim)}
+  .right{text-align:right}
+  .pill{display:inline-block;background:#0b0f14;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:12px}
+  footer{color:var(--dim);text-align:center;padding:22px;font-size:12.5px}
+  .flow{display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;align-items:start}
+  @media(max-width:760px){.flow{grid-template-columns:1fr}input[type=text]{min-width:0}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">KORSH<span>·</span>explorer</div>
+  <form action="{{ url_for('search') }}" method="get">
+    <input type="text" name="q" placeholder="block height, block hash, txid or address" value="{{ request.args.get('q','') }}">
+    <button>Search</button>
+  </form>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer>Korsh (KSH) · yespower 1.0 N=256 r=8 · served by nginx from a full node's RPC</footer>
+</body>
+</html>

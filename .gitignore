@@ -176,3 +176,11 @@ test/lint/.cppcheck/*
 .vscode/
 compile_commands.json
 target/
+
+# In-tree build outputs of the node/wallet binaries
+src/korshd
+src/korsh-cli
+src/korsh-tx
+src/korsh-util
+src/korsh-wallet
+src/qt/korsh-qt
