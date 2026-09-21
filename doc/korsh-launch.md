@@ -98,6 +98,31 @@ Two install traps worth knowing before touching this stack a second time:
   database, so a user created in `admin` authenticates fine with `mongosh` and
   still gets `AuthenticationFailed (code 18)` from the app.
 
+All visible branding lives in `settings.json` (it accepts `//` comments, so a
+plain `json.load` fails — strip them first): `shared_pages.logo` is the header
+panel image, `shared_pages.page_header.page_title_image.image_path` is the small
+image that rotates next to each page title, `shared_pages.page_footer.powered_by_text`
+is the footer's "powered by" HTML (empty string removes it) and
+`shared_pages.page_footer.social_links` is the footer's icon row (empty array
+removes it). Restart the unit after editing.
+
+## 3c. The website
+
+<https://korsh.195-26-244-209.sslip.io/> — the Next.js 16 landing page (React 19,
+three.js), served by nginx from a systemd unit.
+
+- Code: `/opt/korsh-web` (source only; `node_modules` and `.next` are not shipped —
+  the macOS build in the source zip is unusable on Linux). User `korshweb`, unit
+  `korsh-web.service`, listening on `127.0.0.1:3000`.
+- To update: replace the source files, then
+  `su korshweb -s /bin/bash -c "cd /opt/korsh-web && npm ci && npm run build"` and
+  `systemctl restart korsh-web`. The build is native to the server, so an update
+  never needs a rebuild on a dev machine.
+- nginx here is **1.24**, which does not accept the newer `http2 on;` directive —
+  use `listen 443 ssl http2;`. The rejected config still passes `nginx -t` on the
+  *old* file and only shows up at reload time, so always check `nginx -T` output
+  (the effective config) after editing a vhost.
+
 ## 4. Protect the young chain
 
 - Difficulty already reacts every block (DGW), so a hashrate spike is absorbed
