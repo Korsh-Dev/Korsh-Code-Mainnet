@@ -288,7 +288,13 @@ public:
 
         nExtCoinType = 5;
 
-        vFixedSeeds.clear();
+        // Fixed seeds: the first public Korsh node, hardcoded as an IP so a new
+        // install finds the network without -addnode while there is no domain
+        // for a DNS seed yet. The blob is BIP155 (network id, address, port),
+        // the layout contrib/seeds/generate-seeds.py emits: here
+        // 195.26.244.209:8383 (01 = IPv4, 04 = length, c3 1a f4 d1 = the
+        // address, 20 bf = port 8383 big-endian).
+        vFixedSeeds = std::vector<uint8_t>{0x01, 0x04, 0xc3, 0x1a, 0xf4, 0xd1, 0x20, 0xbf};
 
         // Long living quorum params disabled on Korsh Mainnet (pure PoW)
         consensus.llmqTypeChainLocks = Consensus::LLMQType::LLMQ_NONE;
