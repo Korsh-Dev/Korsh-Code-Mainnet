@@ -135,15 +135,44 @@ rpcallowip=127.0.0.1
 
 ## Mining Korsh (Yespower)
 
-Korsh uses the **Yespower** proof-of-work algorithm, specifically optimized for fair CPU mining and resistant to centralized ASIC hardware.
+Korsh uses the **Yespower** proof-of-work algorithm (YesPower 1.0) tuned so that
+CPU mining is practical on ordinary hardware — old desktops, laptops and phones —
+while GPUs and ASICs still gain nothing, because the working set does not fit in
+their per-thread memory.
 
-You can solo mine directly with the node or point any Yespower-compatible CPU miner (such as `cpuminer-opt`) to your node's RPC or stratum pool.
+### Cache footprint
 
-To start built-in generation from the CLI:
+The memory a single hash needs is `128 * N * r` bytes plus roughly 100 KB of
+S-boxes. Korsh runs **N = 256, r = 8**, the smallest configuration Yespower
+accepts, which is what keeps it inside the cache of weak hardware:
+
+| Parameter | Region per hash | Plus S-boxes |
+|---|---|---|
+| `N = 256, r = 32` (previous parameters) | 1 MB | ~100 KB |
+| **`N = 256, r = 8` (current)** | **256 KB** | **~100 KB** |
+
+This matters more than it looks: a 1 MB region does not fit in the 512 KB of L2
+per core of, for example, an AMD EPYC 9554, so every hash ran from L3 there
+(measured at ~2.05 kH/s per thread, scaling linearly with thread count). At
+256 KB the region is served from L2 instead, which is what makes the chain
+reachable for older CPUs and mobile devices.
+
+Anyone mining Korsh must use a miner built for **YesPower 1.0, N=256, r=8 with
+no personalisation**. A miner compiled for the previous r=32 parameters produces
+blocks that the network rejects.
+
+### Solo mining
+
+The node can mine on its own:
 
 ```bash
-./src/korsh-cli setgenerate true -1
+./src/korsh-cli createwallet mining
+ADDR=$(./src/korsh-cli getnewaddress)
+./src/korsh-cli generatetoaddress 1 "$ADDR"
 ```
+
+Any external miner must talk to the node's RPC and implement the parameters
+above.
 
 ---
 
