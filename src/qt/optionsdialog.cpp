@@ -8,6 +8,7 @@
 
 #include <qt/optionsdialog.h>
 #include <qt/forms/ui_optionsdialog.h>
+#include <qt/korshfeatures.h>
 
 #include <qt/appearancewidget.h>
 #include <qt/bitcoinunits.h>
@@ -264,10 +265,12 @@ void OptionsDialog::setModel(OptionsModel *_model)
         mapper->toFirst();
 
         // If governance is disabled at the node level, force-disable governance checkboxes.
-        if (m_client_model && !m_client_model->node().gov().isEnabled()) {
+        if (m_client_model && (!m_client_model->node().gov().isEnabled() || !KorshFeatures::GovernanceEnabled())) {
             ui->showGovernanceTab->setChecked(false);
+            ui->showGovernanceTab->setVisible(false);
             ui->showGovernanceTab->setEnabled(false);
             ui->showGovernanceCycleIcon->setChecked(false);
+            ui->showGovernanceCycleIcon->setVisible(false);
             ui->showGovernanceCycleIcon->setEnabled(false);
         } else {
             // Initialize governance clock checkbox state based on governance tab checkbox

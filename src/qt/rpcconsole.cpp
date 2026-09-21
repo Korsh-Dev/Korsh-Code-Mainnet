@@ -9,6 +9,7 @@
 
 #include <qt/rpcconsole.h>
 #include <qt/forms/ui_debugwindow.h>
+#include <qt/korshfeatures.h>
 
 #include <evo/deterministicmns.h>
 
@@ -573,6 +574,17 @@ RPCConsole::RPCConsole(interfaces::Node& node, QWidget* parent, Qt::WindowFlags 
     // disable the wallet selector by default
     ui->WalletSelector->setVisible(false);
     ui->WalletSelectorLabel->setVisible(false);
+
+    // Korsh: hide the lock counters the network cannot produce while the
+    // quorum-based services are inactive.
+    const bool fInstantSend = KorshFeatures::InstantSendEnabled(m_node);
+    const bool fChainLocks = KorshFeatures::ChainLocksEnabled(m_node);
+    ui->labelInstantSendLockCount->setVisible(fInstantSend);
+    ui->instantSendLockCount->setVisible(fInstantSend);
+    ui->bestChainLockHashLabel->setVisible(fChainLocks);
+    ui->bestChainLockHash->setVisible(fChainLocks);
+    ui->bestChainLockHeightLabel->setVisible(fChainLocks);
+    ui->bestChainLockHeight->setVisible(fChainLocks);
 
     // Repair Buttons
     // Disable wallet repair options that require a wallet (enable them later when a wallet is added)
