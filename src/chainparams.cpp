@@ -837,9 +837,10 @@ public:
         UpdateDIP3ParametersFromArgs(args);
         UpdateBudgetParametersFromArgs(args);
 
-        genesis = CreateGenesisBlock(1590000000, 2, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1590000000, 1, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         // Regtest genesis hash assertions removed - non-production network
+        // (the nonce had to be re-mined when the proof of work moved to N=256, r=8)
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();
