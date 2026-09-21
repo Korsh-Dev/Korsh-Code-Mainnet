@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Korsh Explorer — node unreachable{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>The node is not answering</h2>
+  <p>The explorer could not reach the Korsh node's RPC:</p>
+  <pre class="mono hash">{{ error }}</pre>
+  <p class="dim">The page refreshes itself; nothing was lost.</p>
+</div>
+<meta http-equiv="refresh" content="15">
+{% endblock %}

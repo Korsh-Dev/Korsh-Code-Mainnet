@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Korsh Explorer — {{ stats.height }} blocks{% endblock %}
+{% block content %}
+<div class="grid">
+  <div class="stat"><small>Chain</small><b>{{ stats.chain }}</b></div>
+  <div class="stat"><small>Blocks</small><b>{{ stats.height }}</b></div>
+  <div class="stat"><small>Difficulty</small><b>{{ '%.6f'|format(stats.difficulty or 0) }}</b></div>
+  <div class="stat"><small>Network hashrate</small><b>{{ '%.0f'|format(stats.hashrate or 0) }} H/s</b></div>
+  <div class="stat"><small>Peers</small><b>{{ stats.peers if stats.peers is not none else '—' }}</b></div>
+  <div class="stat"><small>Supply</small><b>{{ stats.supply|ksh if stats.supply else '—' }} KSH</b></div>
+</div>
+
+<div class="card">
+  <h2>Latest blocks</h2>
+  <table>
+    <tr><th>Height</th><th>Age</th><th>Hash</th><th class="right">Txs</th><th class="right">Size</th></tr>
+    {% for b in blocks %}
+    <tr>
+      <td><a href="{{ url_for('block_view', ident=b['height']) }}">{{ b['height'] }}</a></td>
+      <td class="dim">{{ b['time']|ago }}</td>
+      <td class="hash mono"><a href="{{ url_for('block_view', ident=b['hash']) }}">{{ b['hash'][:28] }}…</a></td>
+      <td class="right">{{ b['tx_count'] }}</td>
+      <td class="right dim">{{ b['size'] }} B</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="dim">No blocks indexed yet — mainnet is at height 0 until mining starts.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h2>Latest transactions</h2>
+  <table>
+    <tr><th>Txid</th><th>Height</th><th>Age</th><th class="right">Out</th></tr>
+    {% for t in txs %}
+    <tr>
+      <td class="hash mono"><a href="{{ url_for('tx_view', txid=t['txid']) }}">{{ t['txid'][:40] }}…</a></td>
+      <td><a href="{{ url_for('block_view', ident=t['height']) }}">{{ t['height'] }}</a></td>
+      <td class="dim">{{ t['time']|ago }}</td>
+      <td class="right">{{ t['total_out']|ksh }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="dim">Nothing yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<p class="dim">Addresses indexed: {{ indexed }} · best block
+  <span class="mono hash">{{ stats.bestblockhash }}</span></p>
+{% endblock %}
