@@ -264,8 +264,11 @@ void OptionsDialog::setModel(OptionsModel *_model)
         setMapper();
         mapper->toFirst();
 
-        // If governance is disabled at the node level, force-disable governance checkboxes.
-        if (m_client_model && (!m_client_model->node().gov().isEnabled() || !KorshFeatures::GovernanceEnabled())) {
+        // Governance can only pay approved proposals out of the superblock
+        // budget, so without budget payments scheduled there is nothing the tab
+        // or its status-bar clock could ever show: keep them out of the dialog.
+        if (!KorshFeatures::GovernanceEnabled() ||
+            (m_client_model && !m_client_model->node().gov().isEnabled())) {
             ui->showGovernanceTab->setChecked(false);
             ui->showGovernanceTab->setVisible(false);
             ui->showGovernanceTab->setEnabled(false);
