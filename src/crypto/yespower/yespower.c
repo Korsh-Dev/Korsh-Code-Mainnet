@@ -33,16 +33,24 @@
 #include "sha256.h"
 #include "yespower-opt.c"
 
-static const yespower_params_t smartiecoin_yespower_0_5 = {YESPOWER_0_5, 4096, 32, "WaviBanana", 10};
+static const yespower_params_t korsh_yespower_0_5 = {YESPOWER_0_5, 4096, 32, "WaviBanana", 10};
 
-static const yespower_params_t smartiecoin_yespower_1_0 = {YESPOWER_1_0, 256, 32, NULL, 0};
+/*
+ * Korsh proof of work: YesPower 1.0 with N=256, r=8.
+ *
+ * The memory region is 128*N*r bytes, so 128*256*8 = 256 KB (plus about
+ * 100 KB of S-boxes). This is the smallest configuration the algorithm
+ * accepts (N >= 256, r >= 8) and it is what lets the chain be mined from L2/L3
+ * on older CPUs and mobile phones instead of needing a 1 MB working set.
+ */
+static const yespower_params_t korsh_yespower_1_0 = {YESPOWER_1_0, 256, 8, NULL, 0};
 
 int yespower_hash(const char *input, char *output)
 {
     uint32_t time = le32dec(&input[68]);
     if (time > 1546539305) {
-        return yespower_tls(input, 80, &smartiecoin_yespower_1_0, (yespower_binary_t *) output);
+        return yespower_tls(input, 80, &korsh_yespower_1_0, (yespower_binary_t *) output);
     } else {
-        return yespower_tls(input, 80 ,&smartiecoin_yespower_0_5, (yespower_binary_t *) output);
+        return yespower_tls(input, 80 ,&korsh_yespower_0_5, (yespower_binary_t *) output);
     }
 }
