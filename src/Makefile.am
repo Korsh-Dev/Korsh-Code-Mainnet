@@ -660,6 +660,10 @@ if TARGET_LINUX
 libbitcoin_node_a_SOURCES += sapling/embedded_params_linux.S
 endif
 
+if TARGET_DARWIN
+libbitcoin_node_a_SOURCES += sapling/embedded_params_darwin.S
+endif
+
 if ENABLE_WALLET
 libbitcoin_node_a_SOURCES += wallet/init.cpp
 libbitcoin_node_a_CPPFLAGS += $(BDB_CPPFLAGS)

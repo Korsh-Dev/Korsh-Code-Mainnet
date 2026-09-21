@@ -1083,7 +1083,7 @@ void InitLogging(const ArgsManager& args)
     init::LogPackageVersion();
 }
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
 extern "C" {
 extern const unsigned char korsh_sapling_spend_params_start[];
 extern const unsigned char korsh_sapling_spend_params_end[];
@@ -1148,7 +1148,7 @@ static bool ExtractEmbeddedSaplingParams(const ArgsManager& args, fs::path& para
     params_dir = embedded_params_dir;
     return true;
 }
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__APPLE__)
 
 
 static bool WriteSaplingParamBytes(const unsigned char* begin, const unsigned char* end, const fs::path& path)
