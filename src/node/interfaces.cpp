@@ -446,7 +446,8 @@ public:
             consensus.llmqTypeSmallChainLocks == Consensus::LLMQType::LLMQ_NONE) {
             return false;
         }
-        if (consensus.DIP0008Height >= std::numeric_limits<int>::max()) {
+        // Korsh marks "never" heights with 999999999, not INT_MAX.
+        if (consensus.DIP0008Height >= 999999999) {
             return false;
         }
         if (context().chainlocks != nullptr) {
