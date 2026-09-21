@@ -1246,7 +1246,7 @@ bool InitSaplingParams(const ArgsManager& args)
     }
 
     if (params_dir.empty()) {
-#if defined(WIN32) || defined(__linux__)
+#if defined(WIN32) || defined(__linux__) || defined(__APPLE__)
         if (ExtractEmbeddedSaplingParams(args, params_dir)) {
             LogPrintf("Extracted embedded Sapling zkSNARK parameters to %s\n", fs::PathToString(params_dir));
         }
