@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+#
+#  korshd The Korsh Core server.
+#
+#
+# chkconfig: 345 80 20
+# description: korshd
+# processname: korshd
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/korshd, see below
+if [ -f /etc/sysconfig/korshd ]; then
+        . /etc/sysconfig/korshd
+fi
+
+RETVAL=0
+
+prog=korshd
+# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/korshd
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/korshd}
+
+# korshd defaults to /usr/bin/korshd, override with BITCOIND_BIN
+korshd=${BITCOIND_BIN-/usr/bin/korshd}
+
+# korshd opts default to -disablewallet, override with BITCOIND_OPTS
+korshd_opts=${BITCOIND_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $korshd $korshd_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog -t600
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+
+

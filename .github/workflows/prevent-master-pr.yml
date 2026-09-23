@@ -1,0 +1,13 @@
+name: Prevent Merging into Main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1
+

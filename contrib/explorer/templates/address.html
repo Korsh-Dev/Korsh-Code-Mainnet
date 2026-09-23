@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ address }} — Korsh{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Address</h2>
+  <table>
+    <tr><th>Address</th><td class="hash mono">{{ address }}</td></tr>
+    <tr><th>Balance</th><td><b>{{ (info['balance'] if info else 0)|ksh }} KSH</b></td></tr>
+    <tr><th>Received</th><td class="dim">{{ (info['received'] if info else 0)|ksh }} KSH in {{ (info['tx_count'] if info else 0) }} outputs</td></tr>
+    {% if info and info['first_height'] is not none %}
+    <tr><th>First seen</th><td><a href="{{ url_for('block_view', ident=info['first_height']) }}">block {{ info['first_height'] }}</a></td></tr>
+    {% endif %}
+  </table>
+</div>
+<div class="card">
+  <h2>Outputs (last 50)</h2>
+  <table>
+    <tr><th>Txid</th><th>Height</th><th class="right">Value</th><th>Status</th></tr>
+    {% for o in outputs %}
+    <tr>
+      <td class="hash mono"><a href="{{ url_for('tx_view', txid=o['txid']) }}">{{ o['txid'][:34] }}…</a><span class="dim">:{{ o['vout'] }}</span></td>
+      <td><a href="{{ url_for('block_view', ident=o['height']) }}">{{ o['height'] }}</a></td>
+      <td class="right">{{ o['value']|ksh }}</td>
+      <td>{% if o['spent_by'] %}<span class="dim">spent</span>{% else %}<span class="pill">unspent</span>{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="dim">Nothing indexed for this address yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
