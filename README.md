@@ -4,7 +4,7 @@
   <img src="doc/korsh-logo.png" alt="Korsh (KSH)" width="150">
 </p>
 
-[![Release](https://img.shields.io/badge/release-v0.0.1-blue.svg)](https://github.com/ELPilotPR/Korsh-Core/releases)
+[![Release](https://img.shields.io/badge/release-v0.0.2-blue.svg)](https://github.com/ELPilotPR/Korsh-Core/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Korsh Core** is the reference implementation of Korsh (KSH), a decentralized, peer-to-peer cryptocurrency focused on security, fast settlement, ASIC-resistant CPU mining, and community governance.
@@ -29,8 +29,8 @@
 | **Masternode Payments** | 30% of the block subsidy; regular masternodes remain enabled |
 | **Difficulty Retarget** | Targeted every 20 blocks using a 20-minute timespan |
 | **Optional Services** | Quorums, InstantSend, ChainLocks, Dash Platform, governance, superblocks and Evo masternodes disabled initially; retained for future height-based activation |
-| **Default P2P Port** | `8383` |
-| **RPC Default Port** | `8382` |
+| **Default P2P Port** | `9777` |
+| **RPC Default Port** | `9776` |
 
 ---
 
@@ -91,9 +91,12 @@ make -j$(nproc)
 ```
 
 The compiled binaries will be located in `src/`:
-* `korshd` / `korshd` — Headless full node daemon
-* `korsh-cli` / `korsh-cli` — RPC command-line tool
-* `korsh-tx` / `korsh-tx` — Transaction creation tool
+* `korshd` — Headless full node daemon
+* `korsh-cli` — RPC command-line tool
+* `korsh-tx` — Transaction creation tool
+* `korsh-wallet` — Wallet tool
+* `korsh-util` — Utility tool
+* `korsh-qt` (in `src/qt/`) — Graphical wallet, when the build includes Qt
 
 ---
 
@@ -113,7 +116,7 @@ maxconnections=64
 # RPC settings
 rpcuser=your_rpc_username
 rpcpassword=your_secure_password
-rpcport=8382
+rpcport=9776
 rpcallowip=127.0.0.1
 ```
 
