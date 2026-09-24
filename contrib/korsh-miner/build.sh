@@ -18,8 +18,16 @@ yp="$here/../../src/crypto/yespower"
 CF="${KORSH_CFLAGS:--O3 -march=native}"
 LIBS="-lcurl -ljansson -lcrypto -lm"
 
-gcc $CF -fopenmp -shared -fPIC -I"$yp" -o "$here/libyp.so" "$here/scan.c" "$yp/yespower.c" 2>/dev/null
-echo "built $here/libyp.so"
+# Windows (mingw/msys2): the miner talks raw sockets, so it needs the Winsock import library.
+case "$(gcc -dumpmachine 2>/dev/null || echo unknown)" in
+    *mingw*|*windows*|*cygwin*) LIBS="$LIBS -lws2_32" ;;
+esac
+
+if gcc $CF -fopenmp -shared -fPIC -I"$yp" -o "$here/libyp.so" "$here/scan.c" "$yp/yespower.c" 2>/dev/null; then
+    echo "built $here/libyp.so"
+else
+    echo "note: libyp.so not built (OpenMP runtime unavailable) - the native korsh-miner build continues"
+fi
 
 ypb="$yp"
 if [ "${KORSH_HUGEPAGES:-0}" = 1 ]; then
