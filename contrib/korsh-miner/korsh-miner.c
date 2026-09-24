@@ -1037,7 +1037,7 @@ int main(int argc, char **argv)
     memcpy(spk + 3, h160, 20);
     spk[23] = 0x88; spk[24] = 0xac;
 
-    char user[128] = "", pass[128] = "", port[16] = "8382";
+    char user[128] = "", pass[128] = "", port[16] = "9776";
     const char *home = getenv("HOME");
     char path[512];
     const char *cand[1] = {"%s/.korsh/korsh.conf"};

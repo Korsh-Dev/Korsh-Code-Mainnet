@@ -85,7 +85,7 @@ class Node:
             if "=" in line:
                 k, v = line.split("=", 1)
                 conf[k.strip()] = v.strip()
-        self.url = "http://127.0.0.1:%s/" % conf.get("rpcport", "8382")
+        self.url = "http://127.0.0.1:%s/" % conf.get("rpcport", "9776")
         self.auth = "Basic " + base64.b64encode((conf["rpcuser"] + ":" + conf["rpcpassword"]).encode()).decode()
 
     def call(self, method, *params):

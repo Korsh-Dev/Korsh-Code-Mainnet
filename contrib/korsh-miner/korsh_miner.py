@@ -132,12 +132,12 @@ def main():
     ap.add_argument("address", help="payout address (P2PKH)")
     ap.add_argument("--threads", type=int, default=max(1, (os.cpu_count() or 2) - 2))
     ap.add_argument("--conf", help="path to korsh.conf (default: ~/.korsh/korsh.conf)")
-    ap.add_argument("--rpc", help="RPC URL override, e.g. http://127.0.0.1:8382/")
+    ap.add_argument("--rpc", help="RPC URL override, e.g. http://127.0.0.1:9776/")
     ap.add_argument("--lib", default=os.path.join(HERE, "libyp.so"))
     args = ap.parse_args()
 
     conf = read_conf(find_conf(args.conf))
-    rpc = Rpc(args.rpc or "http://127.0.0.1:%s/" % conf.get("rpcport", "8382"), conf["rpcuser"], conf["rpcpassword"])
+    rpc = Rpc(args.rpc or "http://127.0.0.1:%s/" % conf.get("rpcport", "9776"), conf["rpcuser"], conf["rpcpassword"])
     _, h160 = b58check_decode(args.address)
     spk = b"\x76\xa9\x14" + h160 + b"\x88\xac"
 
