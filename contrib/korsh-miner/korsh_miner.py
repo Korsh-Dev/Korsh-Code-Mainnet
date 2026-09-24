@@ -28,7 +28,7 @@ TEMPLATE_MAX_AGE = 30   # seconds before the template is refreshed (new time / n
 def find_conf(explicit):
     if explicit:
         return explicit
-    for d in ("~/.korsh/korsh.conf", "~/.korsh/smartiecoin.conf", "~/.smartiecoincore/smartiecoin.conf"):
+    for d in ("~/.korsh/korsh.conf",):
         if os.path.exists(os.path.expanduser(d)):
             return os.path.expanduser(d)
     sys.exit("no korsh.conf found; pass --conf")

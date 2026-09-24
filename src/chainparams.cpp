@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2021 The Bitcoin Core developers
-// Copyright (c) 2014-2025 The Smartiecoin Core developers
+// Copyright (c) 2014-2025 The Korsh Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -248,11 +248,11 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 32-bit integer with any alignment.
          */
-        pchMessageStart[0] = 0xe4;
-        pchMessageStart[1] = 0xba;
-        pchMessageStart[2] = 0x93;
-        pchMessageStart[3] = 0xc7;
-        nDefaultPort = 8383;
+        pchMessageStart[0] = 0xcb;
+        pchMessageStart[1] = 0x4b;
+        pchMessageStart[2] = 0x53;
+        pchMessageStart[3] = 0x48;
+        nDefaultPort = 9777;
         // Dash Platform networking is disabled until a future activation height.
         nDefaultPlatformP2PPort = 0;
         nDefaultPlatformHTTPPort = 0;
@@ -292,9 +292,9 @@ public:
         // install finds the network without -addnode while there is no domain
         // for a DNS seed yet. The blob is BIP155 (network id, address, port),
         // the layout contrib/seeds/generate-seeds.py emits: here
-        // 195.26.244.209:8383 (01 = IPv4, 04 = length, c3 1a f4 d1 = the
-        // address, 20 bf = port 8383 big-endian).
-        vFixedSeeds = std::vector<uint8_t>{0x01, 0x04, 0xc3, 0x1a, 0xf4, 0xd1, 0x20, 0xbf};
+        // 195.26.244.209:9777 (01 = IPv4, 04 = length, c3 1a f4 d1 = the
+        // address, 26 31 = port 9777 big-endian).
+        vFixedSeeds = std::vector<uint8_t>{0x01, 0x04, 0xc3, 0x1a, 0xf4, 0xd1, 0x26, 0x31};
 
         // Long living quorum params disabled on Korsh Mainnet (pure PoW)
         consensus.llmqTypeChainLocks = Consensus::LLMQType::LLMQ_NONE;
@@ -420,11 +420,11 @@ public:
         consensus.nMinimumChainWork = uint256();
         consensus.defaultAssumeValid = uint256();
 
-        pchMessageStart[0] = 0xf2;
-        pchMessageStart[1] = 0xd3;
-        pchMessageStart[2] = 0xb4;
-        pchMessageStart[3] = 0xe5;
-        nDefaultPort = 19383;
+        pchMessageStart[0] = 0xcb;
+        pchMessageStart[1] = 0x4b;
+        pchMessageStart[2] = 0x53;
+        pchMessageStart[3] = 0x54;
+        nDefaultPort = 19777;
         nDefaultPlatformP2PPort = 32000;
         nDefaultPlatformHTTPPort = 32001;
         nPruneAfterHeight = 1000;
@@ -547,9 +547,9 @@ public:
         consensus.V20Height = 2;     // V20 activated immediately on devnet
         consensus.MN_RRHeight = 2;   // MN_RR activated immediately on devnet
         consensus.nKSHv014Height = 2; // KSH v0.1.4 activated immediately on devnet
-        consensus.nKSHv030Height = 999999999; // KSH v0.3.0 disabled by default on devnet (override via -testactivationheight=smt030@N)
+        consensus.nKSHv030Height = 999999999; // KSH v0.3.0 disabled by default on devnet (override via -testactivationheight=ksh030@N)
         consensus.nKSHShieldHeight = 999999999; // KSH shielded transactions disabled by default on devnet (override via -testactivationheight=shield@N)
-        consensus.nKSHv040Height = 999999999; // KSH v0.4.0 disabled by default on devnet (override via -testactivationheight=smt040@N)
+        consensus.nKSHv040Height = 999999999; // KSH v0.4.0 disabled by default on devnet (override via -testactivationheight=ksh040@N)
         consensus.nKSHv040HalvingInterval = 1000000;
         consensus.nKSHv040PowTargetSpacing = 120;
         consensus.nKSHv040SuperblockCycle = 12;
@@ -581,11 +581,11 @@ public:
         consensus.nMinimumChainWork = uint256{};
         consensus.defaultAssumeValid = uint256{};
 
-        pchMessageStart[0] = 0xd6;
-        pchMessageStart[1] = 0xa1;
-        pchMessageStart[2] = 0xf0;
-        pchMessageStart[3] = 0xc3;
-        nDefaultPort = 29799;
+        pchMessageStart[0] = 0xcb;
+        pchMessageStart[1] = 0x4b;
+        pchMessageStart[2] = 0x53;
+        pchMessageStart[3] = 0x44;
+        nDefaultPort = 29777;
         nDefaultPlatformP2PPort = 32100;
         nDefaultPlatformHTTPPort = 32101;
         nPruneAfterHeight = 1000;
@@ -792,9 +792,9 @@ public:
         consensus.V20Height = consensus.DIP0003Height; // Active not earlier than dip0003. Functional tests (KorshTestFramework) uses height 100 (same as coinbase maturity)
         consensus.MN_RRHeight = consensus.V20Height; // MN_RR does not really have effect before v20 activation
         consensus.nKSHv014Height = 1; // KSH v0.1.4 activated immediately on regtest
-        consensus.nKSHv030Height = 999999999; // KSH v0.3.0 disabled by default on regtest (override via -testactivationheight=smt030@N)
+        consensus.nKSHv030Height = 999999999; // KSH v0.3.0 disabled by default on regtest (override via -testactivationheight=ksh030@N)
         consensus.nKSHShieldHeight = 999999999; // KSH shielded transactions disabled by default on regtest (override via -testactivationheight=shield@N)
-        consensus.nKSHv040Height = 999999999; // KSH v0.4.0 disabled by default on regtest (override via -testactivationheight=smt040@N)
+        consensus.nKSHv040Height = 999999999; // KSH v0.4.0 disabled by default on regtest (override via -testactivationheight=ksh040@N)
         consensus.nKSHv040HalvingInterval = 1000000;
         consensus.nKSHv040PowTargetSpacing = 120;
         consensus.nKSHv040SuperblockCycle = 10;
@@ -828,11 +828,11 @@ public:
         consensus.nMinimumChainWork = uint256{};
         consensus.defaultAssumeValid = uint256{};
 
-        pchMessageStart[0] = 0xfb;
-        pchMessageStart[1] = 0xd2;
-        pchMessageStart[2] = 0xb8;
-        pchMessageStart[3] = 0xe1;
-        nDefaultPort = 29899;
+        pchMessageStart[0] = 0xcb;
+        pchMessageStart[1] = 0x4b;
+        pchMessageStart[2] = 0x53;
+        pchMessageStart[3] = 0x52;
+        nDefaultPort = 39777;
         nDefaultPlatformP2PPort = 32200;
         nDefaultPlatformHTTPPort = 32201;
         nPruneAfterHeight = args.GetBoolArg("-fastprune", false) ? 100 : 1000;
@@ -1043,11 +1043,11 @@ static void MaybeUpdateHeights(const ArgsManager& args, Consensus::Params& conse
             consensus.V20Height = int{height};
         } else if (name == "mn_rr") {
             consensus.MN_RRHeight = int{height};
-        } else if (name == "smt030") {
+        } else if (name == "ksh030") {
             consensus.nKSHv030Height = int{height};
         } else if (name == "shield") {
             consensus.nKSHShieldHeight = int{height};
-        } else if (name == "smt040") {
+        } else if (name == "ksh040") {
             consensus.nKSHv040Height = int{height};
         } else {
             throw std::runtime_error(strprintf("Invalid name (%s) for -testactivationheight=name@height.", arg));
@@ -1403,7 +1403,7 @@ void SetupChainParamsOptions(ArgsManager& argsman)
     argsman.AddArg("-llmqtestplatformparams=<size>:<threshold>", "Override the default LLMQ size for the LLMQ_TEST_PLATFORM quorum (default: 3:2, regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-minimumdifficultyblocks=<n>", "The number of blocks that can be mined with the minimum difficulty at the start of a chain (default: 0, devnet-only)", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-powtargetspacing=<n>", "Override the default PowTargetSpacing value in seconds (default: 2.5 minutes, devnet-only)", ArgsManager::ALLOW_ANY | ArgsManager::DISALLOW_NEGATION, OptionsCategory::CHAINPARAMS);
-    argsman.AddArg("-testactivationheight=name@height.", "Set the activation height of 'name' (bip147, bip34, dersig, cltv, csv, brr, brrfix, dip0001, dip0008, dip0024, v19, v20, mn_rr, smt030, shield, smt040). (regtest/devnet-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-testactivationheight=name@height.", "Set the activation height of 'name' (bip147, bip34, dersig, cltv, csv, brr, brrfix, dip0001, dip0008, dip0024, v19, v20, mn_rr, ksh030, shield, ksh040). (regtest/devnet-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-vbparams=<deployment>:<start>:<end>(:min_activation_height(:<window>:<threshold/thresholdstart>(:<thresholdmin>:<falloffcoeff>:<mnactivation>)))",
                  "Use given start/end times and min_activation_height for specified version bits deployment (regtest-only). "
                  "Specifying window, threshold/thresholdstart, thresholdmin, falloffcoeff and mnactivation is optional.", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);

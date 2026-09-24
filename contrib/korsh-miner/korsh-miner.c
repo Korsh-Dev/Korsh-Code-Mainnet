@@ -1040,7 +1040,7 @@ int main(int argc, char **argv)
     char user[128] = "", pass[128] = "", port[16] = "8382";
     const char *home = getenv("HOME");
     char path[512];
-    const char *cand[3] = {"%s/.korsh/korsh.conf", "%s/.korsh/smartiecoin.conf", "%s/.smartiecoincore/smartiecoin.conf"};
+    const char *cand[1] = {"%s/.korsh/korsh.conf"};
     int ok = 0;
     if (conf) ok = read_conf(conf, user, sizeof user, pass, sizeof pass, port, sizeof port) == 0;
     for (int i = 0; !conf && !ok && i < 3; i++) {

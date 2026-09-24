@@ -9,7 +9,6 @@
 
 **Korsh Core** is the reference implementation of Korsh (KSH), a decentralized, peer-to-peer cryptocurrency focused on security, fast settlement, ASIC-resistant CPU mining, and community governance.
 
-Korsh is a fork of Smartiecoin Core; Smartiecoin attribution is retained in source credits and licenses.
 
 ---
 
