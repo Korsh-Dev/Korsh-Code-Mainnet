@@ -232,7 +232,7 @@ QT_TRANSLATE_NOOP("korsh-core", "Cannot set -peerblockfilters without -blockfilt
 QT_TRANSLATE_NOOP("korsh-core", "Cannot write to data directory '%s'; check permissions."),
 QT_TRANSLATE_NOOP("korsh-core", "Collateral not valid."),
 QT_TRANSLATE_NOOP("korsh-core", "Config setting for %s only applied on %s network when in [%s] section."),
-QT_TRANSLATE_NOOP("smartiecoin-core", "Copyright (C)"),
+QT_TRANSLATE_NOOP("korsh-core", "Copyright (C)"),
 QT_TRANSLATE_NOOP("korsh-core", "Corrupted block database detected"),
 QT_TRANSLATE_NOOP("korsh-core", "Could not find asmap file %s"),
 QT_TRANSLATE_NOOP("korsh-core", "Could not parse asmap file %s"),

@@ -1,5 +1,5 @@
 // Copyright (c) 2012-2021 The Bitcoin Core developers
-// Copyright (c) 2014-2025 The Smartiecoin Core developers
+// Copyright (c) 2014-2025 The Korsh Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 

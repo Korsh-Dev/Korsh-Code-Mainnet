@@ -84,10 +84,6 @@ std::string CopyrightHolders(const std::string& strPrefix, unsigned int nStartYe
     const auto copyright_devs = strprintf(_(COPYRIGHT_HOLDERS).translated, COPYRIGHT_HOLDERS_SUBSTITUTION);
     std::string strCopyrightHolders = strPrefix + strprintf(" %u-%u ", nStartYear, nEndYear) + copyright_devs;
 
-    // Keep the parent project's attribution explicit in the distributed binary.
-    if (copyright_devs.find("Smartiecoin Core") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2018, nEndYear) + "The Smartiecoin Core developers";
-    }
     // Check for untranslated substitution to make sure Bitcoin Core copyright is not removed by accident
     if (copyright_devs.find("Bitcoin Core") == std::string::npos) {
         strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2009, nEndYear) + "The Bitcoin Core developers";

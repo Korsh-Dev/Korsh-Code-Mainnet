@@ -267,8 +267,7 @@ def main():
     ap.add_argument("--conf", default=None)
     ap.add_argument("--ease", type=int, default=16, help="share target = block target * ease")
     a = ap.parse_args()
-    conf = a.conf or next(p for p in map(os.path.expanduser, ["~/.korsh/korsh.conf", "~/.korsh/smartiecoin.conf",
-                                                             "~/.smartiecoincore/smartiecoin.conf"]) if os.path.exists(p))
+    conf = a.conf or next(p for p in map(os.path.expanduser, ["~/.korsh/korsh.conf"]) if os.path.exists(p))
     pool = Pool(Node(conf), a.address, a.ease)
     host, port = a.listen.rsplit(":", 1)
     srv = Server((host, int(port)), Handler)

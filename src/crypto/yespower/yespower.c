@@ -1,6 +1,6 @@
 /*-
  * Copyright 2018 Cryply team
- * Copyright 2018 Smartiecoin Core Developers
+ * Copyright 2018 Korsh Core Developers
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
