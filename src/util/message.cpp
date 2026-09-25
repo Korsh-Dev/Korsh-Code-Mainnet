@@ -24,6 +24,10 @@
  */
 const std::string MESSAGE_MAGIC = "Korsh Signed Message:\n";
 
+/** Legacy message magic from before the 0.0.2 rebrand. Used only so that signatures created with
+ *  the old magic can still be verified (required for syncing historical blocks). */
+const std::string MESSAGE_MAGIC_LEGACY = "DarkCoin Signed Message:\n";
+
 MessageVerificationResult MessageVerify(
     const std::string& address,
     const std::string& signature,

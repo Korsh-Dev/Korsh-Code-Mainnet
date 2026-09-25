@@ -14,6 +14,11 @@ class CKey;
 
 extern const std::string MESSAGE_MAGIC;
 
+/** Message magic used before the 0.0.2 Korsh rebrand (Smartiecoin era). Kept so that signatures
+ *  created with the old magic (e.g. the legacy masternode registration payloads mined before the
+ *  rebrand) can still be verified after the rebrand. */
+extern const std::string MESSAGE_MAGIC_LEGACY;
+
 /** The result of a signed message verification.
  * Message verification takes as an input:
  * - address (with whose private key the message is supposed to have been signed)

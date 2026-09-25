@@ -43,6 +43,11 @@ static constexpr std::array<std::string_view, 13> TLDS_BAD{
 };
 static constexpr std::array<std::string_view, 2> TLDS_PRIVACY{".i2p", ".onion"};
 
+/** Mainnet P2P port used before the 0.0.2 rebrand (Smartiecoin era). Kept so that mainnet
+ *  masternode registrations mined with the legacy port stay consensus-valid after the P2P
+ *  port was renamed (8383 -> 9777); otherwise fresh nodes reject block 3515 and can't sync. */
+static constexpr uint16_t LEGACY_MAINNET_P2P_PORT{8383};
+
 bool MatchCharsFilter(std::string_view input, std::string_view filter)
 {
     return std::all_of(input.begin(), input.end(), [&filter](char c) { return filter.find(c) != std::string_view::npos; });
@@ -291,9 +296,14 @@ NetInfoStatus MnNetInfo::ValidateService(const CService& service)
         return NetInfoStatus::NotRoutable;
     }
 
-    if (IsNodeOnMainnet() != (service.GetPort() == MainParams().GetDefaultPort())) {
-        // Must use mainnet port on mainnet.
-        // Must NOT use mainnet port on other networks.
+    const uint16_t port{service.GetPort()};
+    if (IsNodeOnMainnet()) {
+        // Must use the mainnet port (or the legacy pre-rebrand mainnet port) on mainnet.
+        if (port != MainParams().GetDefaultPort() && port != LEGACY_MAINNET_P2P_PORT) {
+            return NetInfoStatus::BadPort;
+        }
+    } else if (port == MainParams().GetDefaultPort()) {
+        // Must NOT use the mainnet port on other networks.
         return NetInfoStatus::BadPort;
     }
 

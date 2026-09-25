@@ -26,6 +26,7 @@
 #include <messagesigner.h>
 #include <primitives/block.h>
 #include <util/irange.h>
+#include <util/message.h>
 #include <util/system.h>
 #include <validation.h>
 
@@ -841,11 +842,20 @@ static bool CheckHashSig(const ProTx& proTx, const PKHash& pkhash, TxValidationS
 template <typename ProTx>
 static bool CheckStringSig(const ProTx& proTx, const PKHash& pkhash, TxValidationState& state)
 {
-    if (std::string strError;
-        !CMessageSigner::VerifyMessage(ToKeyID(pkhash), proTx.vchSig, proTx.MakeSignString(), strError)) {
-        return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-protx-sig");
+    std::string strError;
+    if (CMessageSigner::VerifyMessage(ToKeyID(pkhash), proTx.vchSig, proTx.MakeSignString(), strError)) {
+        return true;
     }
-    return true;
+    // Signatures created before the 0.0.2 rebrand used the old message magic. Accept them too so
+    // that historical special transactions (e.g. the masternode registration in block 3515) remain
+    // consensus-valid and fresh nodes can sync the whole chain.
+    CHashWriter ss(SER_GETHASH, 0);
+    ss << MESSAGE_MAGIC_LEGACY;
+    ss << proTx.MakeSignString();
+    if (CHashSigner::VerifyHash(ss.GetHash(), ToKeyID(pkhash), proTx.vchSig, strError)) {
+        return true;
+    }
+    return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-protx-sig");
 }
 
 template <typename ProTx>
