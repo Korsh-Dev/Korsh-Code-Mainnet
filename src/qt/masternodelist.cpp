@@ -188,7 +188,7 @@ MasternodeSetupWizard::MasternodeSetupWizard(QWidget* parent, WalletModel* walle
     details_form->addRow(tr("Public IP"), m_ip);
 
     m_port = new QLineEdit(details_page);
-    m_port->setText("8383");
+    m_port->setText(QString::number(Params().GetDefaultPort()));
     details_form->addRow(tr("Core P2P port"), m_port);
 
     m_collateral_address = new QLineEdit(details_page);
@@ -316,6 +316,13 @@ bool MasternodeSetupWizard::validateInput(QString& error) const
     const int port = m_port->text().trimmed().toInt(&ok_port);
     if (!ok_port || port < 1 || port > 65535) {
         error = tr("Invalid P2P port. Use a value between 1 and 65535.");
+        return false;
+    }
+    // Legacy-format registrations (used until V24) only support the network P2P port.
+    if (port != Params().GetDefaultPort()) {
+        error = tr("The masternode service port must be %1, the Korsh P2P port for this network. "
+                   "Port 8383 belongs to the old chain and will not connect.")
+                    .arg(Params().GetDefaultPort());
         return false;
     }
 
