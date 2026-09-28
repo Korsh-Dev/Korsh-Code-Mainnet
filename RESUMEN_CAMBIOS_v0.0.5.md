@@ -22,8 +22,9 @@ Este repositorio contiene la versión **Korsh Core v0.0.5**, la cual incluye tod
   - Si se intenta registrar un Evo masternode en una red con plataforma inactiva, ahora retorna un error claro `bad-protx-platform-disabled` en lugar de fallar por colisión duplicada `0 == 0`.
 
 ### C. Redundancia de Red y Eliminación del Punto Único de Fallo (SPOF)
-* **Semillas P2P Fijas (`src/chainparams.cpp`)**:
-  - Se añadió un segundo nodo semilla verificado en Mainnet: `185.251.19.161:9777` en formato BIP155 junto con el nodo primario `195.26.244.209:9777`. La red ya no depende de un solo servidor.
+* **Semillas P2P Fijas y Semilla DNS (`src/chainparams.cpp`)**:
+  - Se configuró la semilla DNS oficial en `vSeeds`: **`seed.korsh.org`** (resolviendo a `195.26.244.209`).
+  - Se añadió un segundo nodo semilla fijo verificado en Mainnet: `185.251.19.161:9777` en formato BIP155 junto con el nodo primario `195.26.244.209:9777`. La red ya cuenta con resolución DNS dinámica y redundancia de servidores.
 
 ### D. Correcciones en Testnet y Devnet
 * **BIP34Hash (`src/chainparams.cpp`)**:

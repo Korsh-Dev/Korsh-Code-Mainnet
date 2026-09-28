@@ -151,9 +151,12 @@ SECCIÓN 3: CONEXIONES REALES Y AUDITADAS DE LA BILLETERA QT
 --------------------------------------------------------------------------------
 
 [3.1 RED P2P (PEER-TO-PEER)]
-- NODO SEMILLA FIJO (MAINNET):
-  * IP / Puerto: 195.26.244.209:9777
-  * Archivo fuente: src/chainparams.cpp:297 (vFixedSeeds)
+- NODOS SEMILLA FIJOS (MAINNET):
+  * Primario:   195.26.244.209:9777 (src/chainparams.cpp)
+  * Secundario: 185.251.19.161:9777 (src/chainparams.cpp)
+- SEMILLA DNS OFICIAL (MAINNET):
+  * Hostname: seed.korsh.org (resuelve a 195.26.244.209)
+  * Vector vSeeds: src/chainparams.cpp:280
 - PUERTOS P2P ESCUCHADOS Y CONECTADOS:
   * Mainnet Oficial:  9777 / TCP (src/chainparams.cpp:255)
   * Mainnet Legacy:   8383 / TCP (src/evo/netinfo.cpp:49) - Transición histórica
