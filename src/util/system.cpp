@@ -915,6 +915,13 @@ static bool GetConfigOptions(std::istream& stream, const std::string& filepath, 
     std::string::size_type pos;
     int linenr = 1;
     while (std::getline(stream, str)) {
+        // Strip the UTF-8 byte order mark at the start of the file (e.g. config
+        // files saved by Windows Notepad). Only the first read can contain it,
+        // and it must be removed before comment stripping to avoid a bogus
+        // "parse error on line 1" for files beginning with a BOM + comment.
+        if (linenr == 1 && str.size() >= 3 && str.compare(0, 3, "\xEF\xBB\xBF") == 0) {
+            str.erase(0, 3);
+        }
         bool used_hash = false;
         if ((pos = str.find('#')) != std::string::npos) {
             str = str.substr(0, pos);
