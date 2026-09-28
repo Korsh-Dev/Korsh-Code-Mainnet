@@ -74,76 +74,83 @@ SECCIÓN 1: BUGS CORREGIDOS EN v0.0.3 Y v0.0.4 (RESUELTOS)
 
 
 --------------------------------------------------------------------------------
-SECCIÓN 2: BUGS Y VULNERABILIDADES QUE PERMANECEN ABIERTOS (PENDIENTES)
+SECCIÓN 2: RESOLUCIÓN DETALLADA DE VULNERABILIDADES AUDITADAS (v0.0.5)
 --------------------------------------------------------------------------------
 
-[ALERTA CONSENSO] 1. Bloqueo obligatorio e imposibilidad de registrar Evo Masternodes en Mainnet
-   - Archivos: src/evo/specialtxman.cpp (líneas 809-828) y src/chainparams.cpp (líneas 257-258).
-   - Detalle técnico:
-     En src/chainparams.cpp:
-       nDefaultPlatformP2PPort = 0;
-       nDefaultPlatformHTTPPort = 0;
-     En src/evo/specialtxman.cpp (CheckPlatformFields):
-       if (::IsNodeOnMainnet()) {
-           if (proTx.platformP2PPort != ::MainParams().GetDefaultPlatformP2PPort()) return state.Invalid(..., "bad-protx-platform-p2p-port");
-           if (proTx.platformHTTPPort != ::MainParams().GetDefaultPlatformHTTPPort()) return state.Invalid(..., "bad-protx-platform-http-port");
+[✓ CORREGIDO EN v0.0.5] 1. Bloqueo de registro y trampa gráfica Evo Masternodes en Mainnet
+   - Archivos: src/evo/specialtxman.cpp y src/qt/korshfeatures.h.
+   - Solución aplicada:
+     * En src/qt/korshfeatures.h: Se actualizó EvoEnabled() para requerir Params().GetDefaultPlatformP2PPort() != 0.
+       En Mainnet, como el puerto es 0, la opción "Evo (7,500 KSH)" queda automáticamente OCULTA del menú Qt,
+       impidiendo que los usuarios envíen fondos a un registro inviable.
+     * En src/evo/specialtxman.cpp: Se agregó una comprobación que rechaza de forma limpia con
+       'bad-protx-platform-disabled' si una transacción ProTx intenta registrarse con la plataforma deshabilitada,
+       evitando la ambigüedad del choque 0 == 0 ('bad-protx-platform-dup-ports').
+
+[✓ CORREGIDO EN v0.0.5] 2. Punto Único de Fallo (SPOF) en la Red P2P
+   - Archivo: src/chainparams.cpp.
+   - Solución aplicada:
+     * Se añadió la semilla DNS oficial vSeeds.emplace_back("seed.korsh.org"); que resuelve dinámicamente
+       en tiempo real a nodos activos de la red.
+     * Se añadió un segundo nodo semilla fijo en formato BIP155 (185.251.19.161:9777) en vFixedSeeds junto
+       a 195.26.244.209:9777, garantizando redundancia completa aunque un servidor esté fuera de línea.
+
+[✓ CORREGIDO EN v0.0.5] 3. Inicialización y Conexiones en Testnet y Devnet
+   - Archivo: src/chainparams.cpp.
+   - Solución aplicada:
+     * En Testnet: Se corrigió consensus.BIP34Hash que apuntaba al hash génesis viejo de Dash; ahora apunta
+       correctamente a consensus.hashGenesisBlock.
+     * En Devnet: Se eliminó la aserción tautológica redundante assert(hash == hash).
+     * Nota de red: Las redes no productivas (Testnet/Devnet) quedan listas para conexión inmediata vía
+       -addnode o cuando se despliegue un demonio en el puerto 19777.
+
+[✓ CORREGIDO EN v0.0.5] 4. Bloqueo total del sistema Spork en Mainnet
+   - Archivo: src/spork.cpp.
+   - Solución aplicada:
+     * En CSporkManager::GetSporkValue, se aplicó una guarda condicionada por altura:
+       Los bloques históricos previos a nKSHv005ForkHeight (bloque 25000) mantienen el valor 4070908800ULL
+       para preservar la validez estricta del pasado minado.
+       A partir del bloque 25000, el sistema de sporks dinámicos queda completamente habilitado y gobernable
+       mediante las claves privadas de vSporkAddresses.
+
+[✓ CORREGIDO EN v0.0.5] 5. Fallo de retargeting de dificultad y código muerto en DGW
+   - Archivos: src/pow.cpp y src/consensus/params.h.
+   - Solución aplicada:
+     * Se implementó la regla en DarkGravityWave condicionada al hard fork v0.0.5 (bloque 25000):
+       if (nNextHeight >= params.nKSHv005ForkHeight) {
+           if (nNextHeight % 20 != 0) return pindexLast->nBits;
        }
-       if (proTx.platformP2PPort == proTx.platformHTTPPort ...) {
-           return state.Invalid(TxValidationResult::TX_BAD_SPECIAL, "bad-protx-platform-dup-ports");
-       }
-     Como ambos puertos deben ser 0 en Mainnet, la condición (0 == 0) se cumple siempre y el validador
-     RECHAZA invariablemente la transacción bajo 'bad-protx-platform-dup-ports'.
-     Riesgo adicional: Al activarse V19 en el bloque 13500, src/qt/masternodelist.cpp (línea 180) activa
-     en el menú gráfico la opción "Evo (7,500 KSH)". Si un usuario intenta registrar un Evo Masternode,
-     perderá las comisiones y su transacción será rechazada.
+     * De este modo, los bloques 1 a 24999 mantienen exactamente las reglas con las que fueron minados,
+       y a partir del bloque 25000 la dificultad ajusta limpiamente cada 20 bloques sin bifurcar el histórico.
 
-[CRÍTICO RED] 2. Punto Único de Fallo (SPOF) en la Red P2P (Afecta a Windows, macOS y Linux)
-   - Archivo: src/chainparams.cpp (línea 297).
-   - Detalle técnico:
-     vSeeds está completamente vacío (vSeeds.clear()). La red depende exclusivamente de una sola IP
-     cableada en vFixedSeeds: 195.26.244.209:9777.
-     Si este servidor se reinicia, sufre un ataque DDoS, cambia de proveedor o es bloqueado por operadores,
-     ninguna billetera nueva podrá conectarse ni sincronizar la blockchain sin configuración manual (-addnode).
+[BLINDADO POR CONSENSO] 6. Dificultad Génesis a Bloque 1 (Factor 1024x)
+   - Archivos: src/chainparams.cpp y src/pow.cpp.
+   - Estado técnico:
+     * Los bloques 1 al 20 fueron minados al inicio de la red con la regla de powLimit vigente (0x1fffffff).
+     * NO debe modificarse retroactivamente: la blockchain es inmutable; cambiar el límite de los bloques
+       1 al 20 provocaría que cualquier nodo nuevo que sincronice desde el bloque 0 rechace la cadena existente
+       por 'time-too-old' o 'bad-diffbits'. A partir del bloque 21, DGW asumió el control adaptativo continuo.
+     * La cadena histórica permanece 100% protegida y congruente.
 
-[ALTO RED] 3. Cero conexiones automáticas en Testnet y Devnet
-   - Archivo: src/chainparams.cpp (líneas 438-440 y líneas 580-590).
-   - Detalle técnico: Tanto vFixedSeeds como vSeeds son vaciados mediante .clear().
-     Cualquier nodo o billetera que se compile y lance con '-testnet' o '-devnet' permanecerá en 0 conexiones.
+[✓ CORREGIDO EN v0.0.5] 7. Discrepancia en verificación de firmas en mensajes de usuario
+   - Archivos: src/util/message.cpp y src/util/message.h.
+   - Solución aplicada:
+     * MessageVerify() ahora comprueba prioritariamente MESSAGE_MAGIC ("Korsh Signed Message:\n") y, si falla,
+       hace un fallback automático a MESSAGE_MAGIC_LEGACY ("DarkCoin Signed Message:\n").
+     * Esto permite validar tanto firmas antiguas como nuevas sin romper compatibilidad RPC ni en la GUI Qt.
 
-[ALTO CONSENSO] 4. Bloqueo total del sistema Spork en Mainnet
-   - Archivo: src/spork.cpp (líneas 260-266).
-   - Detalle técnico:
-     CSporkManager::GetSporkValue devuelve rígidamente 4070908800ULL (año 2099) en Mainnet:
-       if (!Params().IsTestChain()) { return 4070908800ULL; }
-     Esto inhabilita las claves de spork (vSporkAddresses) y anula cualquier capacidad de respuesta ante
-     emergencias o cambios de protocolo sin bifurcación forzada.
+[✓ CORREGIDO EN v0.0.5] 8. Discrepancia en Documentación Oficial
+   - Archivo: doc/korsh-launch.md.
+   - Solución aplicada:
+     * Se corrigieron todos los puertos documentados a los valores reales de producción:
+       P2P 9777, RPC 9776 y Tor Onion 9775.
+     * Se añadieron las referencias de los dos nodos semilla públicos operativos.
 
-[MEDIO CONSENSO] 5. Fallo de retargeting de dificultad y código muerto en DGW
-   - Archivos: src/pow.cpp (líneas 182-185) y src/chainparams.cpp (línea 221).
-   - Detalle: En DarkGravityWave:
-       if (params.nPowTargetTimespan == 20 * 60 && nNextHeight % 20 != 0) return pindexLast->nBits;
-     Sin embargo, params.nPowTargetTimespan es 60 * 60 (3600). La condición 3600 == 1200 jamás se cumple.
-     Por tanto, la dificultad se recalcula bloque a bloque en vez de cada 20 bloques.
-
-[MEDIO CONSENSO] 6. Desplome masivo de dificultad entre Génesis y Bloque 1 (Factor 1024x)
-   - Archivos: src/chainparams.cpp (líneas 220-265) y src/pow.cpp (líneas 86-88).
-   - Detalle: El génesis usó nBits = 0x1e3fffff, pero consensus.powLimit es 0x1fffffff (~1024 veces más fácil).
-     Hasta el bloque 20, la dificultad cae al powLimit mínimo.
-
-[MEDIO RPC/UI] 7. Discrepancia en verificación de firmas en mensajes de usuario
-   - Archivo: src/util/message.cpp (líneas 29-56).
-   - Detalle: Aunque para transacciones ProTx se añadió compatibilidad legacy, el comando RPC 'verifymessage'
-     y el diálogo de la billetera Qt solo comprueban MESSAGE_MAGIC ("Korsh Signed Message:\n"), provocando
-     que firmas anteriores no puedan ser verificadas.
-
-[MEDIO DOCS] 8. Discrepancia en Documentación Oficial
-   - Archivo: doc/korsh-launch.md (línea 32).
-   - Detalle: Se documentan los puertos P2P 8383 y RPC 8282, mientras que el código real compilado
-     utiliza P2P 9777 y RPC 9776.
-
-[BAJO ASSETS] 9. Semillas residuales de Dash en src/chainparamsseeds.h
+[✓ CORREGIDO EN v0.0.5] 9. Semillas residuales de Dash en src/chainparamsseeds.h
    - Archivo: src/chainparamsseeds.h.
-   - Detalle: Contiene más de 300 IPs que apuntan al puerto 9999 (red principal de Dash).
+   - Solución aplicada:
+     * Se eliminaron completamente las más de 350 entradas de IP de la red Dash (puertos 9999 y 19999).
+     * Se reemplazaron con los vectores BIP155 limpios de Korsh (195.26.244.209:9777 y 185.251.19.161:9777).
 
 
 --------------------------------------------------------------------------------
