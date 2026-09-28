@@ -216,7 +216,7 @@ public:
         consensus.nKSHv040PowTargetSpacing = 60;
         consensus.nKSHv040SuperblockCycle = 10800;
         consensus.WithdrawalsHeight = 999999999;
-        consensus.nKSHv005ForkHeight = 25000; // Scheduled v0.0.5 hard fork (20-block retargeting, sporks governance)
+        consensus.nKSHv005ForkHeight = 14000; // Scheduled v0.0.5 hard fork (20-block retargeting, sporks governance)
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("00ffffffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 60 * 60;
