@@ -263,7 +263,7 @@ SporkValue CSporkManager::GetSporkValue(SporkId nSporkID) const
     // Prior to Korsh v0.0.5 hard fork, harden all sporks on Mainnet to year 2099.
     // At and after nKSHv005ForkHeight, spork governance becomes operational.
     if (!Params().IsTestChain()) {
-        const int nHeight = ::ChainActive().Height();
+        const int nHeight = chainActive.Height();
         if (nHeight >= 0 && nHeight < Params().GetConsensus().nKSHv005ForkHeight) {
             return 4070908800ULL;
         }
