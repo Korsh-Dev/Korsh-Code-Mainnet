@@ -761,8 +761,11 @@ private:
                             RecalcDiffsResult& result);
     std::vector<std::pair<uint256, CDeterministicMNListDiff>> RepairSnapshotPair(
         const CBlockIndex* from_index, const CBlockIndex* to_index, const CDeterministicMNList& from_snapshot,
-        const CDeterministicMNList& to_snapshot, BuildListFromBlockFunc build_list_func, RecalcDiffsResult& result);
+        const CDeterministicMNList& to_snapshot, BuildListFromBlockFunc build_list_func, RecalcDiffsResult& result,
+        CDeterministicMNList* rebuilt_list = nullptr);
     void WriteRepairedDiffs(const std::vector<std::pair<uint256, CDeterministicMNListDiff>>& recalculated_diffs,
                             RecalcDiffsResult& result) EXCLUSIVE_LOCKS_REQUIRED(!cs);
+    void WriteRepairedSnapshots(const std::vector<std::pair<uint256, CDeterministicMNList>>& rebuilt_snapshots,
+                                RecalcDiffsResult& result) EXCLUSIVE_LOCKS_REQUIRED(!cs);
 };
 #endif // BITCOIN_EVO_DETERMINISTICMNS_H
