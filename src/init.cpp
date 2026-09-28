@@ -2622,29 +2622,17 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     chainman.m_load_block = std::thread(&util::TraceThread, "loadblk", [=, &args, &chainman, &node] {
         ThreadImport(chainman, vImportFiles, args);
 
-        // force UpdatedBlockTip to initialize nCachedBlockHeight for DS, MN payments and budgets
-        // but don't call it directly to prevent triggering of other listeners like zmq etc.
-        // GetMainSignals().UpdatedBlockTip(::ChainActive().Tip());
-        g_ds_notification_interface->InitializeCurrentBlockTip();
-
-        {
-            // Get all UTXOs for each MN collateral in one go so that we can fill coin cache early
-            // and reduce further locking overhead for cs_main in other parts of code including GUI
-            LogPrintf("Filling coin cache with masternode UTXOs...\n");
-            LOCK(cs_main);
-            const auto start{SteadyClock::now()};
-            const auto mnList{node.dmnman->GetListAtChainTip()};
-            mnList.ForEachMN(/*onlyValid=*/false, [&](const auto& dmn) {
-                Coin coin;
-                GetUTXOCoin(chainman.ActiveChainstate(), dmn.collateralOutpoint, coin);
-            });
-            LogPrintf("Filling coin cache with masternode UTXOs: done in %dms\n", Ticks<std::chrono::milliseconds>(SteadyClock::now() - start));
-        }
-
-        if (fReindex || fReindexChainState) {
-            LogPrintf("Skipping evodb repair during reindex\n");
-            node.dmnman->CompleteRepair();  // Mark as repaired since we're rebuilding fresh
-        } else if (node.dmnman->IsRepaired() && !args.GetBoolArg("-forceevodbrepair", false)) {
+        // Run the evoDb verify/repair pass FIRST, before ANY other component in
+        // this thread (or any other startup component) reads the masternode list
+        // from disk: InitializeCurrentBlockTip below, the coin-cache fill and
+        // other subsystems all walk the list via GetListAtChainTip(). This heals
+        // incomplete/corrupted snapshots and diffs up front. Since the marker
+        // was bumped (R1 -> R2) every node runs this full pass once after
+        // upgrading. NOTE: after a reindex the replay has just rewritten
+        // diffs/snapshots; we still verify/repair once more here, and never
+        // mark the database as repaired without actually checking it.
+        if (node.dmnman->IsRepaired() && !args.GetBoolArg("-forceevodbrepair", false) &&
+            !fReindex && !fReindexChainState) {
             LogPrintf("Masternode list diffs are already repaired\n");
         } else {
             const CBlockIndex* start_index;
@@ -2686,6 +2674,25 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
                           result.diffs_recalculated, result.snapshots_verified,
                           Ticks<std::chrono::seconds>(SteadyClock::now() - start));
             }
+        }
+
+        // force UpdatedBlockTip to initialize nCachedBlockHeight for DS, MN payments and budgets
+        // but don't call it directly to prevent triggering of other listeners like zmq etc.
+        // GetMainSignals().UpdatedBlockTip(::ChainActive().Tip());
+        g_ds_notification_interface->InitializeCurrentBlockTip();
+
+        {
+            // Get all UTXOs for each MN collateral in one go so that we can fill coin cache early
+            // and reduce further locking overhead for cs_main in other parts of code including GUI
+            LogPrintf("Filling coin cache with masternode UTXOs...\n");
+            LOCK(cs_main);
+            const auto start{SteadyClock::now()};
+            const auto mnList{node.dmnman->GetListAtChainTip()};
+            mnList.ForEachMN(/*onlyValid=*/false, [&](const auto& dmn) {
+                Coin coin;
+                GetUTXOCoin(chainman.ActiveChainstate(), dmn.collateralOutpoint, coin);
+            });
+            LogPrintf("Filling coin cache with masternode UTXOs: done in %dms\n", Ticks<std::chrono::milliseconds>(SteadyClock::now() - start));
         }
 
         if (node.active_ctx) {
