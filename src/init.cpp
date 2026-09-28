@@ -2384,9 +2384,14 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     // evoDb will be rewritten wholesale, so the pass is skipped here and runs
     // on the next normal startup instead.
     if (!fReindex && !fReindexChainState) {
-        if (node.dmnman->IsRepaired() && !args.GetBoolArg("-forceevodbrepair", false)) {
-            LogPrintf("Masternode list diffs are already repaired\n");
-        } else {
+        // This pass runs on EVERY startup by design: evoDb writes from a live
+        // node are not guaranteed to survive a hard stop or a reorg that is
+        // interrupted mid-flight, and a single missing diff/snapshot aborts
+        // the wallet load below (observed as a systemd restart loop). The
+        // verify+heal costs seconds on this chain and keeps the node
+        // self-healing, so the repaired-marker is only recorded, never used
+        // to skip the pass.
+        {
             const CBlockIndex* start_index;
             const CBlockIndex* stop_index;
             {
