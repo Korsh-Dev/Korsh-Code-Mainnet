@@ -100,7 +100,7 @@ static QString stylesheetDirectory = defaultStylesheetDirectory;
 // The name of the traditional theme
 static const QString traditionalTheme = "Traditional";
 // The theme to set by default if settings are missing or incorrect
-static const QString defaultTheme = "Light";
+static const QString defaultTheme = "Dark";
 // The prefix a theme name should have if we want to apply dark colors and styles to it
 static const QString darkThemePrefix = "Dark";
 // The theme to set as a base one for non-traditional themes
@@ -121,10 +121,10 @@ static std::set<QWidget*> setRectsDisabled;
 static const std::map<ThemedColor, QColor> themedColors = {
     { ThemedColor::DEFAULT, QColor(85, 85, 85) },
     { ThemedColor::UNCONFIRMED, QColor(128, 128, 128) },
-    { ThemedColor::BLUE, QColor(127, 123, 255) },
+    { ThemedColor::BLUE, QColor(0, 204, 82) },
     { ThemedColor::ORANGE, QColor(199, 147, 4) },
     { ThemedColor::RED, QColor(168, 72, 50) },
-    { ThemedColor::GREEN, QColor(94, 140, 65) },
+    { ThemedColor::GREEN, QColor(0, 204, 82) },
     { ThemedColor::BAREADDRESS, QColor(140, 140, 140) },
     { ThemedColor::TX_STATUS_OPENUNTILDATE, QColor(64, 64, 255) },
     { ThemedColor::BACKGROUND_WIDGET, QColor(234, 234, 236) },
@@ -136,40 +136,40 @@ static const std::map<ThemedColor, QColor> themedColors = {
 };
 
 static const std::map<ThemedColor, QColor> themedDarkColors = {
-    { ThemedColor::DEFAULT, QColor(199, 199, 199) },
-    { ThemedColor::UNCONFIRMED, QColor(170, 170, 170) },
-    { ThemedColor::BLUE, QColor(127, 123, 255) },
-    { ThemedColor::ORANGE, QColor(199, 147, 4) },
-    { ThemedColor::RED, QColor(168, 72, 50) },
-    { ThemedColor::GREEN, QColor(94, 140, 65) },
-    { ThemedColor::BAREADDRESS, QColor(140, 140, 140) },
-    { ThemedColor::TX_STATUS_OPENUNTILDATE, QColor(64, 64, 255) },
-    { ThemedColor::BACKGROUND_WIDGET, QColor(45, 45, 46) },
-    { ThemedColor::BORDER_WIDGET, QColor(74, 74, 75) },
-    { ThemedColor::BACKGROUND_NETSTATS, QColor(45, 45, 46, 230) },
-    { ThemedColor::BORDER_NETSTATS, QColor(74, 74, 75) },
-    { ThemedColor::QR_PIXEL, QColor(199, 199, 199) },
-    { ThemedColor::ICON_ALTERNATIVE_COLOR, QColor(74, 74, 75) },
+    { ThemedColor::DEFAULT, QColor(226, 236, 229) },
+    { ThemedColor::UNCONFIRMED, QColor(123, 142, 132) },
+    { ThemedColor::BLUE, QColor(0, 204, 82) },
+    { ThemedColor::ORANGE, QColor(255, 176, 32) },
+    { ThemedColor::RED, QColor(255, 77, 77) },
+    { ThemedColor::GREEN, QColor(0, 204, 82) },
+    { ThemedColor::BAREADDRESS, QColor(123, 142, 132) },
+    { ThemedColor::TX_STATUS_OPENUNTILDATE, QColor(0, 204, 82) },
+    { ThemedColor::BACKGROUND_WIDGET, QColor(11, 16, 12) },
+    { ThemedColor::BORDER_WIDGET, QColor(26, 36, 29) },
+    { ThemedColor::BACKGROUND_NETSTATS, QColor(11, 16, 12, 230) },
+    { ThemedColor::BORDER_NETSTATS, QColor(26, 36, 29) },
+    { ThemedColor::QR_PIXEL, QColor(226, 236, 229) },
+    { ThemedColor::ICON_ALTERNATIVE_COLOR, QColor(26, 36, 29) },
 };
 
 static const std::map<ThemedStyle, QString> themedStyles = {
     { ThemedStyle::TS_INVALID, "border: 3px solid #a84832;" },
     { ThemedStyle::TS_ERROR, "color:#a84832;" },
     { ThemedStyle::TS_WARNING, "color:#999900;" },
-    { ThemedStyle::TS_SUCCESS, "color:#5e8c41;" },
-    { ThemedStyle::TS_COMMAND, "color:#7f7bff;" },
+    { ThemedStyle::TS_SUCCESS, "color:#00CC52;" },
+    { ThemedStyle::TS_COMMAND, "color:#00CC52;" },
     { ThemedStyle::TS_PRIMARY, "color:#333;" },
     { ThemedStyle::TS_SECONDARY, "color:#444;" },
 };
 
 static const std::map<ThemedStyle, QString> themedDarkStyles = {
-    { ThemedStyle::TS_INVALID, "border: 3px solid #a84832;" },
-    { ThemedStyle::TS_ERROR, "color:#a84832;" },
-    { ThemedStyle::TS_WARNING, "color:#999900;" },
-    { ThemedStyle::TS_SUCCESS, "color:#5e8c41;" },
-    { ThemedStyle::TS_COMMAND, "color:#7f7bff;" },
-    { ThemedStyle::TS_PRIMARY, "color:#c7c7c7;" },
-    { ThemedStyle::TS_SECONDARY, "color:#aaa;" },
+    { ThemedStyle::TS_INVALID, "border: 3px solid #ff4d4d;" },
+    { ThemedStyle::TS_ERROR, "color:#ff4d4d;" },
+    { ThemedStyle::TS_WARNING, "color:#ffb020;" },
+    { ThemedStyle::TS_SUCCESS, "color:#00CC52;" },
+    { ThemedStyle::TS_COMMAND, "color:#00CC52;" },
+    { ThemedStyle::TS_PRIMARY, "color:#E2ECE5;" },
+    { ThemedStyle::TS_SECONDARY, "color:#7B8E84;" },
 };
 
 QColor getThemedQColor(ThemedColor color)
