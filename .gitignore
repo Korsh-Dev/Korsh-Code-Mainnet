@@ -3,6 +3,15 @@
 todo.txt
 reset-files.bash
 
+# Internal deployment scripts and private audit files
+*.bat
+*.zip
+korsh_auditoria*.txt
+COMO_COMPILAR_TODO.md
+RESUMEN_CAMBIOS*.md
+wallet_new_design/
+
+
 *.tar.gz
 
 *.exe
