@@ -61,9 +61,9 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, HelpMode helpMode) :
         QString linkStyle = GUIUtil::getThemedStyleQString(GUIUtil::ThemedStyle::TS_COMMAND);
         QString korshFooter = "<br><br>"
             "<b>" + tr("Korsh resources") + "</b><br>"
-            + tr("Website") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/Korsh-Dev/Korsh-Testnet\">Korsh Core</a><br>"
-            + tr("Source code") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/Korsh-Dev/Korsh-Testnet\">github.com/Korsh-Dev/Korsh-Testnet</a><br>"
-            + tr("Block explorer") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/Korsh-Dev/Korsh-Testnet\">Korsh Core</a>";
+            + tr("Website") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/Korsh-Dev/Korsh-Code-Mainnet\">Korsh Core</a><br>"
+            + tr("Source code") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/Korsh-Dev/Korsh-Code-Mainnet\">github.com/Korsh-Dev/Korsh-Code-Mainnet</a><br>"
+            + tr("Block explorer") + ": <a style=\"" + linkStyle + "\" href=\"https://github.com/Korsh-Dev/Korsh-Code-Mainnet\">Korsh Core</a>";
 
         text = version + "\n" + QString::fromStdString(FormatParagraph(licenseInfo));
         ui->aboutMessage->setText(version + "<br><br>" + licenseInfoHTML + korshFooter);
@@ -151,7 +151,7 @@ For more information, see the <a style=\"%2\" href=\"%3\">%1 documentation</a>."
         )
         .arg(strCoinJoinName)
         .arg(GUIUtil::getThemedStyleQString(GUIUtil::ThemedStyle::TS_COMMAND))
-        .arg("https://github.com/Korsh-Dev/Korsh-Testnet")
+        .arg("https://github.com/Korsh-Dev/Korsh-Code-Mainnet")
         );
         ui->aboutMessage->setWordWrap(true);
         ui->helpMessage->setVisible(false);

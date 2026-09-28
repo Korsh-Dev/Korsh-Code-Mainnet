@@ -204,8 +204,8 @@ public:
         consensus.DIP0020Height = 999999999;
         consensus.DIP0024Height = 999999999;
         consensus.DIP0024QuorumsHeight = 999999999;
-        consensus.V19Height = 13500; // Scheduled fork — mainnet activation block (announced Sep 27, 2026)
-        consensus.V20Height = 999999999;
+        consensus.V19Height = 14000; // Scheduled mainnet fork — activates the masternode wizard fix
+        consensus.V20Height = 999999999; // V20 is never activated on Korsh Mainnet
         consensus.MN_RRHeight = 999999999;
         consensus.nKSHv014Height = 1; // Korsh 70/30 reward split active from the first block
         consensus.nKorshEvoActivationHeight = 999999999;
@@ -216,7 +216,7 @@ public:
         consensus.nKSHv040PowTargetSpacing = 60;
         consensus.nKSHv040SuperblockCycle = 10800;
         consensus.WithdrawalsHeight = 999999999;
-        consensus.nKSHv005ForkHeight = 14000; // Scheduled v0.0.5 hard fork (20-block retargeting, sporks governance)
+        consensus.nKSHv005ForkHeight = 999999999; // v0.0.5 retarget/sporks intentionally DISABLED on mainnet (never activates)
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("00ffffffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 60 * 60;

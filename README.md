@@ -4,7 +4,7 @@
   <img src="doc/korsh-logo.png" alt="Korsh (KSH)" width="150">
 </p>
 
-[![Release](https://img.shields.io/badge/release-v0.0.5-blue.svg)](https://github.com/Korsh-Dev/Korsh-Testnet/releases)
+[![Release](https://img.shields.io/badge/release-v0.0.5-blue.svg)](https://github.com/Korsh-Dev/Korsh-Code-Mainnet/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Korsh Core** is the reference implementation of Korsh (KSH), a decentralized, peer-to-peer cryptocurrency focused on security, fast settlement, ASIC-resistant CPU mining, and community governance.
@@ -73,8 +73,8 @@ sudo apt install -y build-essential libtool autotools-dev automake pkg-config \
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/Korsh-Dev/Korsh-Testnet.git
-cd Korsh-Testnet
+git clone https://github.com/Korsh-Dev/Korsh-Code-Mainnet.git
+cd Korsh-Code-Mainnet
 ```
 
 ### 3. Configure and Compile
