@@ -763,10 +763,16 @@ bool CSpecialTxProcessor::CheckCreditPoolDiffForBlock(const CBlock& block, const
     return true;
 }
 
+// Legacy rules of the pre-rebrand era (the :8383 P2P port and the DarkCoin message magic) are
+// only accepted while validating the historical part of the chain (registrations up to block
+// 3515). From the next block on, the whole network enforces :9777 and the Korsh magic, exactly
+// like the originally deployed v0.0.2 binaries, so new blocks are never split by this rule.
+static constexpr int LEGACY_RULES_MAX_HEIGHT{3515};
+
 template <typename ProTx>
-static bool CheckService(const ProTx& proTx, TxValidationState& state)
+static bool CheckService(const ProTx& proTx, bool fAllowLegacyPort, TxValidationState& state)
 {
-    switch (proTx.netInfo->Validate()) {
+    switch (proTx.netInfo->Validate(fAllowLegacyPort)) {
     case NetInfoStatus::BadAddress:
         return state.Invalid(TxValidationResult::TX_BAD_SPECIAL, "bad-protx-netinfo-addr");
     case NetInfoStatus::BadPort:
@@ -843,20 +849,23 @@ static bool CheckHashSig(const ProTx& proTx, const PKHash& pkhash, TxValidationS
 }
 
 template <typename ProTx>
-static bool CheckStringSig(const ProTx& proTx, const PKHash& pkhash, TxValidationState& state)
+static bool CheckStringSig(const ProTx& proTx, const PKHash& pkhash, bool fAllowLegacyMagic, TxValidationState& state)
 {
     std::string strError;
     if (CMessageSigner::VerifyMessage(ToKeyID(pkhash), proTx.vchSig, proTx.MakeSignString(), strError)) {
         return true;
     }
-    // Signatures created before the 0.0.2 rebrand used the old message magic. Accept them too so
-    // that historical special transactions (e.g. the masternode registration in block 3515) remain
-    // consensus-valid and fresh nodes can sync the whole chain.
-    CHashWriter ss(SER_GETHASH, 0);
-    ss << MESSAGE_MAGIC_LEGACY;
-    ss << proTx.MakeSignString();
-    if (CHashSigner::VerifyHash(ss.GetHash(), ToKeyID(pkhash), proTx.vchSig, strError)) {
-        return true;
+    // Signatures created before the 0.0.2 rebrand used the old message magic. They are only
+    // accepted while validating the historical part of the chain so that historical special
+    // transactions (e.g. the masternode registration in block 3515) remain consensus-valid
+    // without letting new transactions diverge from what the deployed binaries accept.
+    if (fAllowLegacyMagic) {
+        CHashWriter ss(SER_GETHASH, 0);
+        ss << MESSAGE_MAGIC_LEGACY;
+        ss << proTx.MakeSignString();
+        if (CHashSigner::VerifyHash(ss.GetHash(), ToKeyID(pkhash), proTx.vchSig, strError)) {
+            return true;
+        }
     }
     return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-protx-sig");
 }
@@ -937,6 +946,9 @@ bool CheckProRegTx(const CTransaction& tx, gsl::not_null<const CBlockIndex*> pin
         return false;
     }
 
+    // Legacy port/magic acceptance is limited to the historical chain (see LEGACY_RULES_MAX_HEIGHT).
+    const bool fAllowLegacyRules{pindexPrev->nHeight + 1 <= LEGACY_RULES_MAX_HEIGHT};
+
     const bool is_v24_active{DeploymentActiveAfter(pindexPrev, chainman, Consensus::DEPLOYMENT_V24)};
 
     // No longer allow legacy scheme masternode registration
@@ -946,7 +958,7 @@ bool CheckProRegTx(const CTransaction& tx, gsl::not_null<const CBlockIndex*> pin
 
     // It's allowed to set addr to 0, which will put the MN into PoSe-banned state and require a ProUpServTx to be
     // issues later. If any of both is set, it must be valid however
-    if (!opt_ptx->netInfo->IsEmpty() && !CheckService(*opt_ptx, state)) {
+    if (!opt_ptx->netInfo->IsEmpty() && !CheckService(*opt_ptx, fAllowLegacyRules, state)) {
         // pass the state returned by the function above
         return false;
     }
@@ -1049,7 +1061,7 @@ bool CheckProRegTx(const CTransaction& tx, gsl::not_null<const CBlockIndex*> pin
 
     if (keyForPayloadSig) {
         // collateral is not part of this ProRegTx, so we must verify ownership of the collateral
-        if (check_sigs && !CheckStringSig(*opt_ptx, *keyForPayloadSig, state)) {
+        if (check_sigs && !CheckStringSig(*opt_ptx, *keyForPayloadSig, fAllowLegacyRules, state)) {
             // pass the state returned by the function above
             return false;
         }
@@ -1072,7 +1084,8 @@ bool CheckProUpServTx(const CTransaction& tx, gsl::not_null<const CBlockIndex*> 
         return false;
     }
 
-    if (!CheckService(*opt_ptx, state)) {
+    const bool fAllowLegacyRules{pindexPrev->nHeight + 1 <= LEGACY_RULES_MAX_HEIGHT};
+    if (!CheckService(*opt_ptx, fAllowLegacyRules, state)) {
         // pass the state returned by the function above
         return false;
     }

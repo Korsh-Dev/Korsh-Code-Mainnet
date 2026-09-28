@@ -284,7 +284,7 @@ std::shared_ptr<NetInfoInterface> NetInfoInterface::MakeNetInfo(const uint16_t n
     return std::make_shared<MnNetInfo>();
 }
 
-NetInfoStatus MnNetInfo::ValidateService(const CService& service)
+NetInfoStatus MnNetInfo::ValidateService(const CService& service, bool fAllowLegacyPort)
 {
     if (!service.IsValid()) {
         return NetInfoStatus::BadAddress;
@@ -299,7 +299,7 @@ NetInfoStatus MnNetInfo::ValidateService(const CService& service)
     const uint16_t port{service.GetPort()};
     if (IsNodeOnMainnet()) {
         // Must use the mainnet port (or the legacy pre-rebrand mainnet port) on mainnet.
-        if (port != MainParams().GetDefaultPort() && port != LEGACY_MAINNET_P2P_PORT) {
+        if (port != MainParams().GetDefaultPort() && !(fAllowLegacyPort && port == LEGACY_MAINNET_P2P_PORT)) {
             return NetInfoStatus::BadPort;
         }
     } else if (port == MainParams().GetDefaultPort()) {
@@ -354,12 +354,12 @@ CService MnNetInfo::GetPrimary() const
     return CService{};
 }
 
-NetInfoStatus MnNetInfo::Validate() const
+NetInfoStatus MnNetInfo::Validate(bool fAllowLegacyPort) const
 {
     if (!m_addr.IsTriviallyValid()) {
         return NetInfoStatus::Malformed;
     }
-    return ValidateService(GetPrimary());
+    return ValidateService(GetPrimary(), fAllowLegacyPort);
 }
 
 UniValue MnNetInfo::ToJson(std::optional<NetInfoPurpose> purpose_opt) const
@@ -589,7 +589,7 @@ bool ExtNetInfo::HasEntries(NetInfoPurpose purpose) const
     return it != m_data.end() && !it->second.empty();
 }
 
-NetInfoStatus ExtNetInfo::Validate() const
+NetInfoStatus ExtNetInfo::Validate(bool /*fAllowLegacyPort*/) const
 {
     if (m_version == 0 || m_version > CURRENT_VERSION || m_data.empty()) {
         return NetInfoStatus::Malformed;

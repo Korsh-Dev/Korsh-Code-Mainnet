@@ -287,7 +287,7 @@ public:
     virtual bool CanStorePlatform() const = 0;
     virtual bool HasEntries(NetInfoPurpose purpose) const = 0;
     virtual bool IsEmpty() const = 0;
-    virtual NetInfoStatus Validate() const = 0;
+    virtual NetInfoStatus Validate(bool fAllowLegacyPort = false) const = 0;
     virtual UniValue ToJson(std::optional<NetInfoPurpose> purpose_opt = std::nullopt) const = 0;
     virtual std::string ToString() const = 0;
 
@@ -306,7 +306,7 @@ private:
     NetInfoEntry m_addr{};
 
 private:
-    static NetInfoStatus ValidateService(const CService& service);
+    static NetInfoStatus ValidateService(const CService& service, bool fAllowLegacyPort = false);
 
 public:
     MnNetInfo() = default;
@@ -343,7 +343,7 @@ public:
     bool HasEntries(NetInfoPurpose purpose) const override { return purpose == NetInfoPurpose::CORE_P2P && !IsEmpty(); }
     bool IsEmpty() const override { return m_addr.IsEmpty(); }
     bool CanStorePlatform() const override { return false; }
-    NetInfoStatus Validate() const override;
+    NetInfoStatus Validate(bool fAllowLegacyPort = false) const override;
     UniValue ToJson(std::optional<NetInfoPurpose> purpose_opt = std::nullopt) const override;
     std::string ToString() const override;
 
@@ -430,7 +430,7 @@ public:
     bool HasEntries(NetInfoPurpose purpose) const override;
     bool IsEmpty() const override { return m_version == CURRENT_VERSION && m_data.empty(); }
     bool CanStorePlatform() const override { return true; }
-    NetInfoStatus Validate() const override;
+    NetInfoStatus Validate(bool fAllowLegacyPort = false) const override;
     UniValue ToJson(std::optional<NetInfoPurpose> purpose_opt = std::nullopt) const override;
     std::string ToString() const override;
 
