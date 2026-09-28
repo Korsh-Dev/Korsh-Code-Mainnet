@@ -28,7 +28,7 @@ const std::string CLIENT_NAME("Korsh Core");
 #endif
 
 //! git will put "#define ARCHIVE_GIT_DESCRIPTION ..." on the next line inside archives. 
-#define ARCHIVE_GIT_DESCRIPTION "v0.4.1"
+#define ARCHIVE_GIT_DESCRIPTION "v0.0.5"
 
 #if CLIENT_VERSION_IS_RELEASE
     #define BUILD_DESC "v" PACKAGE_VERSION
@@ -93,7 +93,7 @@ std::string CopyrightHolders(const std::string& strPrefix, unsigned int nStartYe
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/ELPilotPR/Korsh-Core>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/Korsh-Dev/Korsh-Testnet>";
 
     return CopyrightHolders(_("Copyright (C)").translated, 2014, COPYRIGHT_YEAR) + "\n" +
            "\n" +

@@ -118,7 +118,7 @@ CAmount PlatformShare(const CAmount reward)
 
     std::vector<CTxOut> voutMasternodePayments;
     if (!GetBlockTxOuts(pindexPrev, blockSubsidy, feeReward, voutMasternodePayments)) {
-        LogPrintf("CMNPaymentsProcessor::%s -- ERROR! Failed to get payees for block at height %s\n", __func__, nBlockHeight);
+        LogPrintf("CMNPaymentsProcessor::%s -- ERROR! Failed to get payees for block at height %d\n", __func__, nBlockHeight);
         return true;
     }
 
