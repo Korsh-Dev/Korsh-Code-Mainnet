@@ -93,7 +93,7 @@ std::string CopyrightHolders(const std::string& strPrefix, unsigned int nStartYe
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/ELPilotPR/Korsh-Core>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/Korsh-Dev/Korsh-Testnet>";
 
     return CopyrightHolders(_("Copyright (C)").translated, 2014, COPYRIGHT_YEAR) + "\n" +
            "\n" +

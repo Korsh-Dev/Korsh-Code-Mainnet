@@ -1,15 +1,15 @@
 ================================================================================
 REPORTE TÉCNICO COMPLETO: AUDITORÍA DE BUGS, SCRAPEO GITHUB Y CONEXIONES REALES
-PROYECTO: KORSH CORE (KSH) - ACTUALIZADO A v0.0.4
-REPOSITORIO UPSTREAM: https://github.com/ELPilotPR/Korsh-Core
+PROYECTO: KORSH CORE (KSH) - ACTUALIZADO A v0.0.5
+REPOSITORIO OFICIAL: https://github.com/Korsh-Dev/Korsh-Testnet
 FECHA DE AUDITORÍA: 2026-09-28
 ================================================================================
 
 --------------------------------------------------------------------------------
-RESUMEN EJECUTIVO DEL SCRAPEO Y ESTADO DEL REPOSITORIO UPSTREAM (v0.0.4)
+RESUMEN EJECUTIVO Y AUDITORÍA DE CONSENSO DE LA VERSIÓN v0.0.5
 --------------------------------------------------------------------------------
-Se realizó un scrapeo integral y análisis de commit por commit de:
-  https://github.com/ELPilotPR/Korsh-Core
+Se realizó un análisis exhaustivo y auditoría de seguridad del código oficial de:
+  https://github.com/Korsh-Dev/Korsh-Testnet
 
 1. COMMITS Y ACTUALIZACIONES UPSTREAM INCORPORADAS:
    - 2bccfe5: fix(init): verify/heal evodb on every startup (self-healing against gaps); marker recorded but never skips the pass.
