@@ -2373,6 +2373,81 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
 
     ChainstateManager& chainman = *Assert(node.chainman);
 
+    // Run the evoDb verify/repair pass synchronously on the main thread, BEFORE
+    // any other startup component (masternode caches/indexes, wallets, ...)
+    // reads the masternode list from disk: all of them walk the list via
+    // GetListAtChainTip() / GetListForBlock() and would otherwise hit missing
+    // diffs/snapshots. The pass heals incomplete/corrupted snapshots and diffs
+    // and persists the rebuilt data. Since the repaired-marker was bumped
+    // (R1 -> R2) every node runs this full pass once after upgrading. During a
+    // reindex the chain is still being replayed by the import thread and the
+    // evoDb will be rewritten wholesale, so the pass is skipped here and runs
+    // on the next normal startup instead.
+    if (!fReindex && !fReindexChainState) {
+        // This pass runs on EVERY startup by design: evoDb writes from a live
+        // node are not guaranteed to survive a hard stop or a reorg that is
+        // interrupted mid-flight, and a single missing diff/snapshot aborts
+        // the wallet load below (observed as a systemd restart loop). The
+        // verify+heal costs seconds on this chain and keeps the node
+        // self-healing, so the repaired-marker is only recorded, never used
+        // to skip the pass.
+        {
+            const CBlockIndex* start_index;
+            const CBlockIndex* stop_index;
+            {
+                LOCK(cs_main);
+                const auto& consensus_params = Params().GetConsensus();
+                start_index = chainman.ActiveChain()[consensus_params.DIP0003Height];
+                stop_index = chainman.ActiveChain().Tip();
+            }
+
+            if (start_index && stop_index && start_index->nHeight < stop_index->nHeight) {
+                LogPrintf("Verifying and repairing masternode list diffs...\n");
+                const auto start{SteadyClock::now()};
+                // Create a callback that wraps CSpecialTxProcessor::BuildNewListFromBlock
+                auto build_list_func = [&node](const CBlock& block, const CBlockIndex* const pindexPrev,
+                                                       const CDeterministicMNList& prevList, const CCoinsViewCache& view,
+                                                       bool debugLogs, BlockValidationState& state,
+                                                       CDeterministicMNList& mnListRet) -> bool {
+                    return node.chain_helper->special_tx->RebuildListFromBlock(block, pindexPrev, prevList, view, debugLogs, state, mnListRet);
+                };
+                auto result = node.dmnman->RecalculateAndRepairDiffs(start_index, stop_index, chainman, build_list_func, true);
+
+                if (!result.verification_errors.empty()) {
+                    LogPrintf("WARNING: Verification errors:\n%s\n", Join(result.verification_errors, "\n"));
+                }
+
+                if (!result.repair_errors.empty()) {
+                    // Critical errors occurred - reindex required
+                    LogPrintf("Failed to repair masternode list diffs. Database corruption detected. " /* Continued */
+                              "Please restart with -reindex to rebuild the database.\n"
+                              "Errors:\n%s\n",
+                              Join(result.repair_errors, "\n"));
+                    StartShutdown();
+                    return false;
+                }
+                node.dmnman->CompleteRepair();
+                LogPrintf("Successfully repaired %d masternode list diffs, verified %d snapshots in %ds\n",
+                          result.diffs_recalculated, result.snapshots_verified,
+                          Ticks<std::chrono::seconds>(SteadyClock::now() - start));
+            }
+        }
+
+        {
+            // Get all UTXOs for each MN collateral in one go so that we can fill coin cache early
+            // and reduce further locking overhead for cs_main in other parts of code including GUI
+            LogPrintf("Filling coin cache with masternode UTXOs...\n");
+            LOCK(cs_main);
+            const auto start{SteadyClock::now()};
+            const auto mnList{node.dmnman->GetListAtChainTip()};
+            mnList.ForEachMN(/*onlyValid=*/false, [&](const auto& dmn) {
+                Coin coin;
+                GetUTXOCoin(chainman.ActiveChainstate(), dmn.collateralOutpoint, coin);
+            });
+            LogPrintf("Filling coin cache with masternode UTXOs: done in %dms\n", Ticks<std::chrono::milliseconds>(SteadyClock::now() - start));
+        }
+    }
+
     assert(!node.dstxman);
     node.dstxman = std::make_unique<CDSTXManager>(*node.chainlocks);
 
@@ -2626,67 +2701,6 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         // but don't call it directly to prevent triggering of other listeners like zmq etc.
         // GetMainSignals().UpdatedBlockTip(::ChainActive().Tip());
         g_ds_notification_interface->InitializeCurrentBlockTip();
-
-        {
-            // Get all UTXOs for each MN collateral in one go so that we can fill coin cache early
-            // and reduce further locking overhead for cs_main in other parts of code including GUI
-            LogPrintf("Filling coin cache with masternode UTXOs...\n");
-            LOCK(cs_main);
-            const auto start{SteadyClock::now()};
-            const auto mnList{node.dmnman->GetListAtChainTip()};
-            mnList.ForEachMN(/*onlyValid=*/false, [&](const auto& dmn) {
-                Coin coin;
-                GetUTXOCoin(chainman.ActiveChainstate(), dmn.collateralOutpoint, coin);
-            });
-            LogPrintf("Filling coin cache with masternode UTXOs: done in %dms\n", Ticks<std::chrono::milliseconds>(SteadyClock::now() - start));
-        }
-
-        if (fReindex || fReindexChainState) {
-            LogPrintf("Skipping evodb repair during reindex\n");
-            node.dmnman->CompleteRepair();  // Mark as repaired since we're rebuilding fresh
-        } else if (node.dmnman->IsRepaired() && !args.GetBoolArg("-forceevodbrepair", false)) {
-            LogPrintf("Masternode list diffs are already repaired\n");
-        } else {
-            const CBlockIndex* start_index;
-            const CBlockIndex* stop_index;
-            {
-                LOCK(cs_main);
-                const auto& consensus_params = Params().GetConsensus();
-                start_index = chainman.ActiveChain()[consensus_params.DIP0003Height];
-                stop_index = chainman.ActiveChain().Tip();
-            }
-
-            if (start_index && stop_index && start_index->nHeight < stop_index->nHeight) {
-                LogPrintf("Verifying and repairing masternode list diffs...\n");
-                const auto start{SteadyClock::now()};
-                // Create a callback that wraps CSpecialTxProcessor::BuildNewListFromBlock
-                auto build_list_func = [&node](const CBlock& block, const CBlockIndex* const pindexPrev,
-                                                       const CDeterministicMNList& prevList, const CCoinsViewCache& view,
-                                                       bool debugLogs, BlockValidationState& state,
-                                                       CDeterministicMNList& mnListRet) -> bool {
-                    return node.chain_helper->special_tx->RebuildListFromBlock(block, pindexPrev, prevList, view, debugLogs, state, mnListRet);
-                };
-                auto result = node.dmnman->RecalculateAndRepairDiffs(start_index, stop_index, chainman, build_list_func, true);
-
-                if (!result.verification_errors.empty()) {
-                    LogPrintf("WARNING: Verification errors:\n%s\n", Join(result.verification_errors, "\n"));
-                }
-
-                if (!result.repair_errors.empty()) {
-                    // Critical errors occurred - reindex required
-                    LogPrintf("Failed to repair masternode list diffs. Database corruption detected. " /* Continued */
-                              "Please restart with -reindex to rebuild the database.\n"
-                              "Errors:\n%s\n",
-                              Join(result.repair_errors, "\n"));
-                    StartShutdown();
-                    return;
-                }
-                node.dmnman->CompleteRepair();
-                LogPrintf("Successfully repaired %d masternode list diffs, verified %d snapshots in %ds\n",
-                          result.diffs_recalculated, result.snapshots_verified,
-                          Ticks<std::chrono::seconds>(SteadyClock::now() - start));
-            }
-        }
 
         if (node.active_ctx) {
             node.active_ctx->nodeman->Init(chainman.ActiveTip());
