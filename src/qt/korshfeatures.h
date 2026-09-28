@@ -26,9 +26,11 @@ namespace KorshFeatures {
  * Korsh marks "never" activation heights with 999999999 instead of INT_MAX, so
  * a plain comparison against INT_MAX would treat a disabled feature as enabled.
  */
-inline bool HeightReached(int activation_height)
+inline bool HeightReached(int activation_height, int current_height = -1)
 {
-    return activation_height < 999999999;
+    if (activation_height >= 999999999) return false;
+    if (current_height >= 0) return current_height >= activation_height;
+    return true; // Scheduled on this network
 }
 
 /** InstantSend needs a configured quorum type and its spork enabled. */
@@ -47,15 +49,17 @@ inline bool ChainLocksEnabled(interfaces::Node& node)
  * Governance proposals are only ever paid out of the superblock budget, so
  * without budget payments scheduled there is nothing governance can do.
  */
-inline bool GovernanceEnabled()
+inline bool GovernanceEnabled(int current_height = -1)
 {
-    return HeightReached(Params().GetConsensus().nBudgetPaymentsStartBlock);
+    return HeightReached(Params().GetConsensus().nBudgetPaymentsStartBlock, current_height);
 }
 
-/** Evo/Platform masternodes need a configured platform quorum type. */
+/** Evo/Platform masternodes need a configured platform quorum type and enabled platform ports. */
 inline bool EvoEnabled()
 {
-    return Params().GetConsensus().llmqTypePlatform != Consensus::LLMQType::LLMQ_NONE;
+    const auto& consensus = Params().GetConsensus();
+    return consensus.llmqTypePlatform != Consensus::LLMQType::LLMQ_NONE &&
+           Params().GetDefaultPlatformP2PPort() != 0;
 }
 
 } // namespace KorshFeatures

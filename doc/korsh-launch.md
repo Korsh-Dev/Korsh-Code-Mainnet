@@ -29,9 +29,9 @@ mkdir -p ~/.korsh
 ./bin/korsh-cli getblockchaininfo      # chain: main, blocks: 0
 ```
 
-Mainnet ports: **P2P 8383**, **RPC 8282**.
+Mainnet ports: **P2P 9777**, **RPC 9776**, **Tor Onion 9775**.
 
-**A public seed node is already running** at `195.26.244.209:8383` (same VPS as
+**Public seed nodes are already running** at `195.26.244.209:9777` and `185.251.19.161:9777`,
 the explorer), and the binaries from this release carry it as a fixed seed, so a
 fresh install connects on its own about a minute after starting. The machine runs
 `korshd` under systemd as the `korsh` user with the datadir in `/home/korsh/.korsh`;

@@ -807,6 +807,9 @@ static bool CheckPlatformFields(const ProTx& proTx, bool is_extended_addr, TxVal
     }
 
     if (::IsNodeOnMainnet()) {
+        if (::MainParams().GetDefaultPlatformP2PPort() == 0) {
+            return state.Invalid(TxValidationResult::TX_BAD_SPECIAL, "bad-protx-platform-disabled");
+        }
         if (proTx.platformP2PPort != ::MainParams().GetDefaultPlatformP2PPort()) {
             return state.Invalid(TxValidationResult::TX_BAD_SPECIAL, "bad-protx-platform-p2p-port");
         }

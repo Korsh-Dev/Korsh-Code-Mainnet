@@ -1,0 +1,213 @@
+================================================================================
+REPORTE TÉCNICO COMPLETO: AUDITORÍA DE BUGS, SCRAPEO GITHUB Y CONEXIONES REALES
+PROYECTO: KORSH CORE (KSH) - ACTUALIZADO A v0.0.4
+REPOSITORIO UPSTREAM: https://github.com/ELPilotPR/Korsh-Core
+FECHA DE AUDITORÍA: 2026-09-28
+================================================================================
+
+--------------------------------------------------------------------------------
+RESUMEN EJECUTIVO DEL SCRAPEO Y ESTADO DEL REPOSITORIO UPSTREAM (v0.0.4)
+--------------------------------------------------------------------------------
+Se realizó un scrapeo integral y análisis de commit por commit de:
+  https://github.com/ELPilotPR/Korsh-Core
+
+1. COMMITS Y ACTUALIZACIONES UPSTREAM INCORPORADAS:
+   - 2bccfe5: fix(init): verify/heal evodb on every startup (self-healing against gaps); marker recorded but never skips the pass.
+   - eee56f0: fix(init): run evodb verify/repair on the main thread before wallets/indexes.
+   - 2c12449: release: v0.0.4 — version bump (evodb reorg-crash fix).
+   - 620196c: fix(evodb): repair rebuilds from blocks; write missing snapshots; walk fails loudly.
+   - 9302027: release: v0.0.3 — activate V19 at mainnet block 13500 + version bump.
+   - 679fdb6: fix(qt): masternode wizard uses the network P2P port (9777 on mainnet) and blocks the legacy 8383.
+
+2. VERSIONES Y TAGS PUBLICADOS EN GITHUB:
+   - v0.0.1: Lanzamiento público inicial.
+   - v0.0.2: Identidad de red oficial (KSH), puertos 9777/9776 y magic bytes.
+   - v0.0.3: Activación del hard fork V19 en el bloque 13500 + corrección del asistente de masternodes.
+   - v0.0.4: Sistema de auto-reparación (self-healing) de evoDb en el hilo principal antes de cargar la billetera.
+
+3. ESTADO DE ISSUES EN GITHUB:
+   - Issue #1 (Abierto): "Consensus split: nodes built from 535140a accept legacy-port (8383) ProRegTx,
+     first-day v0.0.2 binaries reject it — blocks containing tx 93e58250… get orphaned".
+     Causa: Una transacción de registro de masternode con puerto 8383 (tx 93e58250...) emitida en Mainnet
+     provocó bloques huérfanos (alturas 8278, 8280, 8322). La solución upstream fue bloquear el puerto 8383
+     en el asistente gráfico Qt (commit 679fdb6) y forzar la actualización universal a v0.0.3/v0.0.4 mediante
+     el hard fork V19 en el bloque 13500.
+
+
+--------------------------------------------------------------------------------
+SECCIÓN 1: BUGS CORREGIDOS EN v0.0.3 Y v0.0.4 (RESUELTOS)
+--------------------------------------------------------------------------------
+
+[✓ RESUELTO] 1. Colapso por reinicios infinitos (systemd restart-loop) por corrupción en evoDb
+   - Archivos: src/init.cpp, src/evo/deterministicmns.cpp, src/evo/deterministicmns.h.
+   - Causa previa: Tras reorganizaciones de cadena o apagados forzosos, la base de datos de masternodes
+     (evoDb) quedaba con huecos (diffs o snapshots faltantes). Al iniciar, el hilo de verificación se
+     ejecutaba en segundo plano (loadblk), mientras que el hilo principal continuaba y ejecutaba
+     'Step 9: load wallet' (client->load()). La billetera intentaba leer la lista en la punta de la cadena
+     (GetListAtChainTip()), encontraba datos incompletos y abortaba el proceso inmediatamente.
+   - Corrección v0.0.4:
+     * El paso de verificación/reparación de evoDb se trasladó al hilo principal de AppInitMain ANTES
+       de iniciar carteras, índices o servicios P2P.
+     * Se ejecuta en CADA arranque del nodo (self-healing), tardando apenas 1-2 segundos.
+     * Si detecta un intervalo dañado, reconstruye los diffs y snapshots directamente desde los bloques
+       crudos en disco (blk*.dat) mediante WriteRepairedSnapshots y WriteRepairedDiffs.
+
+[✓ RESUELTO] 2. Crash durante reindexación en el Bloque Génesis (pprev == nullptr)
+   - Archivo: src/validation.cpp (línea 4557).
+   - Causa previa: En CChainState::AcceptBlock, ContextualCheckBlock se ejecutaba sobre pindex->pprev
+     sin comprobar si era nulo. En el bloque génesis, pprev es nullptr, generando violación de acceso.
+   - Corrección v0.0.4: Se agregó la guarda (pindex->pprev != nullptr && !ContextualCheckBlock(...)).
+
+[✓ RESUELTO] 3. Colisión de puertos en el Asistente Gráfico Qt de Masternodes
+   - Archivo: src/qt/masternodelist.cpp (líneas 191 y 322-327).
+   - Causa previa: El asistente gráfico pre-rellenaba el puerto del masternode con "8383" (puerto de la red vieja).
+     Los masternodes registrados con 8383 nunca podían ser contactados por los nodos v0.0.2 (que escuchan en 9777).
+   - Corrección v0.0.3/v0.0.4:
+     * El asistente ahora obtiene automáticamente el puerto oficial: QString::number(Params().GetDefaultPort()) (9777).
+     * La función validateInput() rechaza explícitamente cualquier puerto distinto al puerto oficial de la red.
+
+[✓ RESUELTO] 4. Programación del Hard Fork de Actualización de Consenso (V19)
+   - Archivo: src/chainparams.cpp (línea 207).
+   - Causa previa: consensus.V19Height estaba en 999999999 (desactivado indefinidamente).
+   - Corrección v0.0.3/v0.0.4: Fijado en el bloque 13500. A partir de este bloque se activa el esquema BLS
+     básico, permitiendo que la red sincronice homogéneamente y dejando obsoletos los binarios v0.0.1 y v0.0.2.
+
+
+--------------------------------------------------------------------------------
+SECCIÓN 2: BUGS Y VULNERABILIDADES QUE PERMANECEN ABIERTOS (PENDIENTES)
+--------------------------------------------------------------------------------
+
+[ALERTA CONSENSO] 1. Bloqueo obligatorio e imposibilidad de registrar Evo Masternodes en Mainnet
+   - Archivos: src/evo/specialtxman.cpp (líneas 809-828) y src/chainparams.cpp (líneas 257-258).
+   - Detalle técnico:
+     En src/chainparams.cpp:
+       nDefaultPlatformP2PPort = 0;
+       nDefaultPlatformHTTPPort = 0;
+     En src/evo/specialtxman.cpp (CheckPlatformFields):
+       if (::IsNodeOnMainnet()) {
+           if (proTx.platformP2PPort != ::MainParams().GetDefaultPlatformP2PPort()) return state.Invalid(..., "bad-protx-platform-p2p-port");
+           if (proTx.platformHTTPPort != ::MainParams().GetDefaultPlatformHTTPPort()) return state.Invalid(..., "bad-protx-platform-http-port");
+       }
+       if (proTx.platformP2PPort == proTx.platformHTTPPort ...) {
+           return state.Invalid(TxValidationResult::TX_BAD_SPECIAL, "bad-protx-platform-dup-ports");
+       }
+     Como ambos puertos deben ser 0 en Mainnet, la condición (0 == 0) se cumple siempre y el validador
+     RECHAZA invariablemente la transacción bajo 'bad-protx-platform-dup-ports'.
+     Riesgo adicional: Al activarse V19 en el bloque 13500, src/qt/masternodelist.cpp (línea 180) activa
+     en el menú gráfico la opción "Evo (7,500 KSH)". Si un usuario intenta registrar un Evo Masternode,
+     perderá las comisiones y su transacción será rechazada.
+
+[CRÍTICO RED] 2. Punto Único de Fallo (SPOF) en la Red P2P (Afecta a Windows, macOS y Linux)
+   - Archivo: src/chainparams.cpp (línea 297).
+   - Detalle técnico:
+     vSeeds está completamente vacío (vSeeds.clear()). La red depende exclusivamente de una sola IP
+     cableada en vFixedSeeds: 195.26.244.209:9777.
+     Si este servidor se reinicia, sufre un ataque DDoS, cambia de proveedor o es bloqueado por operadores,
+     ninguna billetera nueva podrá conectarse ni sincronizar la blockchain sin configuración manual (-addnode).
+
+[ALTO RED] 3. Cero conexiones automáticas en Testnet y Devnet
+   - Archivo: src/chainparams.cpp (líneas 438-440 y líneas 580-590).
+   - Detalle técnico: Tanto vFixedSeeds como vSeeds son vaciados mediante .clear().
+     Cualquier nodo o billetera que se compile y lance con '-testnet' o '-devnet' permanecerá en 0 conexiones.
+
+[ALTO CONSENSO] 4. Bloqueo total del sistema Spork en Mainnet
+   - Archivo: src/spork.cpp (líneas 260-266).
+   - Detalle técnico:
+     CSporkManager::GetSporkValue devuelve rígidamente 4070908800ULL (año 2099) en Mainnet:
+       if (!Params().IsTestChain()) { return 4070908800ULL; }
+     Esto inhabilita las claves de spork (vSporkAddresses) y anula cualquier capacidad de respuesta ante
+     emergencias o cambios de protocolo sin bifurcación forzada.
+
+[MEDIO CONSENSO] 5. Fallo de retargeting de dificultad y código muerto en DGW
+   - Archivos: src/pow.cpp (líneas 182-185) y src/chainparams.cpp (línea 221).
+   - Detalle: En DarkGravityWave:
+       if (params.nPowTargetTimespan == 20 * 60 && nNextHeight % 20 != 0) return pindexLast->nBits;
+     Sin embargo, params.nPowTargetTimespan es 60 * 60 (3600). La condición 3600 == 1200 jamás se cumple.
+     Por tanto, la dificultad se recalcula bloque a bloque en vez de cada 20 bloques.
+
+[MEDIO CONSENSO] 6. Desplome masivo de dificultad entre Génesis y Bloque 1 (Factor 1024x)
+   - Archivos: src/chainparams.cpp (líneas 220-265) y src/pow.cpp (líneas 86-88).
+   - Detalle: El génesis usó nBits = 0x1e3fffff, pero consensus.powLimit es 0x1fffffff (~1024 veces más fácil).
+     Hasta el bloque 20, la dificultad cae al powLimit mínimo.
+
+[MEDIO RPC/UI] 7. Discrepancia en verificación de firmas en mensajes de usuario
+   - Archivo: src/util/message.cpp (líneas 29-56).
+   - Detalle: Aunque para transacciones ProTx se añadió compatibilidad legacy, el comando RPC 'verifymessage'
+     y el diálogo de la billetera Qt solo comprueban MESSAGE_MAGIC ("Korsh Signed Message:\n"), provocando
+     que firmas anteriores no puedan ser verificadas.
+
+[MEDIO DOCS] 8. Discrepancia en Documentación Oficial
+   - Archivo: doc/korsh-launch.md (línea 32).
+   - Detalle: Se documentan los puertos P2P 8383 y RPC 8282, mientras que el código real compilado
+     utiliza P2P 9777 y RPC 9776.
+
+[BAJO ASSETS] 9. Semillas residuales de Dash en src/chainparamsseeds.h
+   - Archivo: src/chainparamsseeds.h.
+   - Detalle: Contiene más de 300 IPs que apuntan al puerto 9999 (red principal de Dash).
+
+
+--------------------------------------------------------------------------------
+SECCIÓN 3: CONEXIONES REALES Y AUDITADAS DE LA BILLETERA QT
+--------------------------------------------------------------------------------
+
+[3.1 RED P2P (PEER-TO-PEER)]
+- NODO SEMILLA FIJO (MAINNET):
+  * IP / Puerto: 195.26.244.209:9777
+  * Archivo fuente: src/chainparams.cpp:297 (vFixedSeeds)
+- PUERTOS P2P ESCUCHADOS Y CONECTADOS:
+  * Mainnet Oficial:  9777 / TCP (src/chainparams.cpp:255)
+  * Mainnet Legacy:   8383 / TCP (src/evo/netinfo.cpp:49) - Transición histórica
+  * Testnet Oficial: 19777 / TCP (src/chainparams.cpp:427)
+  * Devnet Oficial:  29777 / TCP (src/chainparams.cpp:588)
+  * Regtest Oficial: 39777 / TCP (src/chainparams.cpp:835)
+- MAGIC BYTES DE PAQUETES:
+  * Mainnet: 0xCB, 0x4B, 0x53, 0x48 (\xcbKSH)
+  * Testnet: 0xCB, 0x4B, 0x53, 0x54 (\xcbKST)
+  * Devnet:  0xCB, 0x4B, 0x53, 0x44 (\xcbKSD)
+  * Regtest: 0xCB, 0x4B, 0x53, 0x52 (\xcbKSR)
+
+[3.2 RED RPC LOCAL (CONTROL / MINERÍA / CLI)]
+- PUERTOS LOCALES JSON-RPC (TCP):
+  * Mainnet: 9776 (src/chainparamsbase.cpp:42)
+  * Testnet: 19776 (src/chainparamsbase.cpp:44)
+  * Devnet:  29776 (src/chainparamsbase.cpp:46)
+  * Regtest: 39776 (src/chainparamsbase.cpp:48)
+- Bind por defecto: 127.0.0.1 y ::1 (localhost).
+
+[3.3 PRIVACIDAD Y RED TOR ONION]
+- PUERTOS ONION INCOMING (TCP):
+  * Mainnet: 9775
+  * Testnet: 19775
+  * Devnet:  29775
+  * Regtest: 39775
+- Control Port sondeado: 127.0.0.1:9051 o 9151.
+- Proxy SOCKS5: 127.0.0.1:9050 o 9150.
+
+[3.4 CONEXIONES IPC Y COMPORTAMIENTO POR SISTEMA OPERATIVO]
+- WINDOWS:
+  * Utiliza Winsock2 (ws2_32.dll).
+  * Servidor IPC local: Named Pipe \\.\pipe\korsh-qt-[hash].
+  * Requiere apertura explícita del puerto TCP 9777 en Windows Defender Firewall para conexiones entrantes.
+- MACOS:
+  * Utiliza Sockets BSD POSIX.
+  * Interacciona con NSProcessInfo (AppNap) en src/qt/bitcoingui.cpp:1580 para evitar suspensión
+    mientras se ejecutan transacciones CoinJoin.
+- LINUX:
+  * Utiliza Sockets POSIX con backend epoll.
+  * Sockets UNIX en /tmp/ o ~/.korsh/ para instancia única.
+  * Notificaciones de escritorio mediante D-Bus (org.freedesktop.Notifications).
+
+
+--------------------------------------------------------------------------------
+SECCIÓN 4: PAQUETE DE DISEÑO LUXOR OBSIDIAN APLICADO EN EL CÓDIGO
+--------------------------------------------------------------------------------
+Los archivos modificados y garantizados en el código fuente de esta versión son:
+  1. src/qt/res/css/dark.css: Rediseño completo con paleta Luxor Obsidian (#050706) y Neon Green (#00CC52).
+  2. src/qt/guiutil.cpp: Tema Dark cargado por defecto al inicializar la aplicación.
+  3. src/qt/res/images/korsh_logo_toolbar.png: Logotipo horizontal con texto Korsh en alta resolución.
+  4. src/qt/res/images/korsh_logo_toolbar_blue.png: Variante gráfica de barra superior.
+  5. src/qt/res/icons/korsh.png: Icono principal de la aplicación y bandeja de sistema.
+
+================================================================================
+FIN DEL REPORTE - KORSH CORE v0.0.4
+================================================================================

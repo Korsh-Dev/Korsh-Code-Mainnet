@@ -48,15 +48,23 @@ MessageVerificationResult MessageVerify(
     }
 
     CPubKey pubkey;
-    if (!pubkey.RecoverCompact(MessageHash(message), *signature_bytes)) {
+    bool recovered = pubkey.RecoverCompact(MessageHash(message), *signature_bytes);
+    if (recovered && (CTxDestination(PKHash(pubkey)) == destination)) {
+        return MessageVerificationResult::OK;
+    }
+
+    // Try fallback to legacy magic ("DarkCoin Signed Message:\n") for backwards compatibility
+    if (pubkey.RecoverCompact(MessageHash(message, MESSAGE_MAGIC_LEGACY), *signature_bytes)) {
+        if (CTxDestination(PKHash(pubkey)) == destination) {
+            return MessageVerificationResult::OK;
+        }
+    }
+
+    if (!recovered) {
         return MessageVerificationResult::ERR_PUBKEY_NOT_RECOVERED;
     }
 
-    if (!(CTxDestination(PKHash(pubkey)) == destination)) {
-        return MessageVerificationResult::ERR_NOT_SIGNED;
-    }
-
-    return MessageVerificationResult::OK;
+    return MessageVerificationResult::ERR_NOT_SIGNED;
 }
 
 bool MessageSign(
@@ -75,10 +83,10 @@ bool MessageSign(
     return true;
 }
 
-uint256 MessageHash(const std::string& message)
+uint256 MessageHash(const std::string& message, const std::string& magic)
 {
     HashWriter hasher{};
-    hasher << MESSAGE_MAGIC << message;
+    hasher << magic << message;
 
     return hasher.GetHash();
 }

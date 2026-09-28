@@ -216,6 +216,7 @@ public:
         consensus.nKSHv040PowTargetSpacing = 60;
         consensus.nKSHv040SuperblockCycle = 10800;
         consensus.WithdrawalsHeight = 999999999;
+        consensus.nKSHv005ForkHeight = 25000; // Scheduled v0.0.5 hard fork (20-block retargeting, sporks governance)
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("00ffffffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 60 * 60;
@@ -288,13 +289,12 @@ public:
 
         nExtCoinType = 5;
 
-        // Fixed seeds: the first public Korsh node, hardcoded as an IP so a new
-        // install finds the network without -addnode while there is no domain
-        // for a DNS seed yet. The blob is BIP155 (network id, address, port),
-        // the layout contrib/seeds/generate-seeds.py emits: here
-        // 195.26.244.209:9777 (01 = IPv4, 04 = length, c3 1a f4 d1 = the
-        // address, 26 31 = port 9777 big-endian).
-        vFixedSeeds = std::vector<uint8_t>{0x01, 0x04, 0xc3, 0x1a, 0xf4, 0xd1, 0x26, 0x31};
+        // Fixed seeds: Hardcoded IPs in BIP155 format (network id, address, port).
+        // Includes primary seed 195.26.244.209:9777 and secondary seed 185.251.19.161:9777.
+        vFixedSeeds = std::vector<uint8_t>{
+            0x01, 0x04, 0xc3, 0x1a, 0xf4, 0xd1, 0x26, 0x31, // 195.26.244.209:9777
+            0x01, 0x04, 0xb9, 0xfb, 0x13, 0xa1, 0x26, 0x31  // 185.251.19.161:9777
+        };
 
         // Long living quorum params disabled on Korsh Mainnet (pure PoW)
         consensus.llmqTypeChainLocks = Consensus::LLMQType::LLMQ_NONE;
@@ -367,7 +367,7 @@ public:
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
         consensus.BIP34Height = 0;
-        consensus.BIP34Hash = uint256S("0x00000d1c0d49da7a3f8c90fb6cd46e2f50c7f22c04fec8c33a7c2184b7a1ebb0");
+        consensus.BIP34Hash = uint256(); // Set after genesis block calculation below
         consensus.BIP65Height = 0;
         consensus.BIP66Height = 0;
         consensus.BIP147Height = 0;
@@ -393,6 +393,7 @@ public:
         consensus.nKSHv040PowTargetSpacing = 120;
         consensus.nKSHv040SuperblockCycle = 10800;
         consensus.WithdrawalsHeight = 999999999;
+        consensus.nKSHv005ForkHeight = 1;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("00ffffffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 60 * 60;
@@ -433,6 +434,7 @@ public:
 
         genesis = CreateGenesisBlock(1771811560, 6047, 0x1e3fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
+        consensus.BIP34Hash = consensus.hashGenesisBlock;
         // Testnet genesis hash assertion removed - testnet is non-production
 
         vFixedSeeds.clear();
@@ -554,6 +556,7 @@ public:
         consensus.nKSHv040PowTargetSpacing = 120;
         consensus.nKSHv040SuperblockCycle = 12;
         consensus.WithdrawalsHeight = 2;   // withdrawals activated immediately on devnet
+        consensus.nKSHv005ForkHeight = 1;
         consensus.MinBIP9WarningHeight = 2 + 60; // withdrawals activation height + miner confirmation window
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
         consensus.nPowTargetTimespan = 60 * 60; // Korsh: 1 hour (match mainnet)
@@ -595,7 +598,7 @@ public:
         UpdateDevnetSubsidyAndDiffParametersFromArgs(args);
         genesis = CreateGenesisBlock(1771811700, 0, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == consensus.hashGenesisBlock); // devnet - non-production
+        consensus.BIP34Hash = consensus.hashGenesisBlock;
         // assert(genesis.hashMerkleRoot == uint256S("0x072861beb07d25c57fe602de96d33df74186b55f1ea430eba353ce3877e3b45f"));
 
         devnetGenesis = FindDevNetGenesisBlock(genesis, 50 * COIN);
@@ -799,6 +802,7 @@ public:
         consensus.nKSHv040PowTargetSpacing = 120;
         consensus.nKSHv040SuperblockCycle = 10;
         consensus.WithdrawalsHeight = 600;
+        consensus.nKSHv005ForkHeight = 1;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
         consensus.nPowTargetTimespan = 60 * 60; // Korsh: 1 hour (match mainnet)
@@ -1049,6 +1053,8 @@ static void MaybeUpdateHeights(const ArgsManager& args, Consensus::Params& conse
             consensus.nKSHShieldHeight = int{height};
         } else if (name == "ksh040") {
             consensus.nKSHv040Height = int{height};
+        } else if (name == "ksh005") {
+            consensus.nKSHv005ForkHeight = int{height};
         } else {
             throw std::runtime_error(strprintf("Invalid name (%s) for -testactivationheight=name@height.", arg));
         }

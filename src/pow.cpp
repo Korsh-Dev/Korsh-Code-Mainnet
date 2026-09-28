@@ -179,8 +179,13 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return bnPowLimit.GetCompact();
     }
 
-    // Korsh mainnet retargets only at each 20-block boundary.
-    if (params.nPowTargetTimespan == 20 * 60 && nNextHeight % 20 != 0) {
+    // Korsh v0.0.5 hard fork: retargets at each 20-block boundary from nKSHv005ForkHeight.
+    // Historical blocks below this height keep their block-by-block calculation to preserve the chain.
+    if (nNextHeight >= params.nKSHv005ForkHeight) {
+        if (nNextHeight % 20 != 0) {
+            return pindexLast->nBits;
+        }
+    } else if (params.nPowTargetTimespan == 20 * 60 && nNextHeight % 20 != 0) {
         return pindexLast->nBits;
     }
 

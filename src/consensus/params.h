@@ -171,6 +171,8 @@ struct Params {
     int nKSHv040SuperblockCycle;
     /** Block height at which small-network LLMQ quorums activate (LLMQ_10_60/10_75) */
     int nKSHSmallQuorumsHeight;
+    /** Block height at which Korsh v0.0.5 consensus hard fork activates */
+    int nKSHv005ForkHeight;
     /** Block height at which WITHDRAWALS (Deployment of quorum fix and higher limits for withdrawals) becomes active */
     int WithdrawalsHeight;
     /** Don't warn about unknown BIP 9 activations below this height.

@@ -17,6 +17,7 @@
 #include <util/message.h> // for MESSAGE_MAGIC
 #include <util/ranges.h>
 #include <util/string.h>
+#include <validation.h>
 
 #include <string>
 
@@ -259,9 +260,13 @@ bool CSporkManager::IsSporkActive(SporkId nSporkID) const
 
 SporkValue CSporkManager::GetSporkValue(SporkId nSporkID) const
 {
-    // Harden all sporks on Mainnet (all features disabled for pure PoW)
+    // Prior to Korsh v0.0.5 hard fork, harden all sporks on Mainnet to year 2099.
+    // At and after nKSHv005ForkHeight, spork governance becomes operational.
     if (!Params().IsTestChain()) {
-        return 4070908800ULL;
+        const int nHeight = ::ChainActive().Height();
+        if (nHeight >= 0 && nHeight < Params().GetConsensus().nKSHv005ForkHeight) {
+            return 4070908800ULL;
+        }
     }
 
     LOCK(cs);
