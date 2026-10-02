@@ -1283,6 +1283,7 @@ EXTRA_DIST = \
   $(CTAES_DIST)   \
   $(IMMER_DIST)   \
   $(LIBDASHBLS_DIST) \
+  rust/include/librustzcash.h \
   crypto/yespower/sha256.c \
   crypto/yespower/yespower-opt.c \
   crypto/yespower/yespower-platform.c
