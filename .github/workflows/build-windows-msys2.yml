@@ -255,6 +255,7 @@ jobs:
           # The Qt GUI keeps its event loop open for -version; verify its PE version and GUI subsystem instead.
 
           $datadir = Join-Path $env:RUNNER_TEMP "korsh-regtest-wallet-mode"
+          New-Item -ItemType Directory -Force -Path $datadir | Out-Null
           $daemon = Join-Path $bin "korshd.exe"
           $cli = Join-Path $bin "korsh-cli.exe"
           $baseDaemonArgs = @("-regtest", "-datadir=$datadir", "-server=1", "-listen=0", "-txindex=1", "-peerblockfilters=1", "-blockfilterindex=basic")
