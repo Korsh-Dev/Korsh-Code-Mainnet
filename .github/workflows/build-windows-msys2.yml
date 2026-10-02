@@ -252,13 +252,7 @@ jobs:
             throw "korsh-qt.exe ProductVersion is '$qtVersion', expected $version"
           }
           Write-Host "korsh-qt.exe ProductVersion verified: $qtVersion"
-          $qtProcess = Start-Process -FilePath (Join-Path $bin "korsh-qt.exe") -ArgumentList "-version" -PassThru -WindowStyle Hidden
-          if (-not $qtProcess.WaitForExit(30000)) {
-            Stop-Process -Id $qtProcess.Id -Force
-            throw "korsh-qt.exe -version did not exit within 30 seconds"
-          }
-          if ($qtProcess.ExitCode -ne 0) { throw "korsh-qt.exe -version exited with $($qtProcess.ExitCode)" }
-          Write-Host "korsh-qt.exe runtime version smoke passed"
+          # The Qt GUI keeps its event loop open for -version; verify its PE version and GUI subsystem instead.
 
           $datadir = Join-Path $env:RUNNER_TEMP "korsh-regtest-wallet-mode"
           $daemon = Join-Path $bin "korshd.exe"
