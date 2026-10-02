@@ -5,25 +5,25 @@ This is the Windows version of the old-school flow:
 If you want the shortest version with mostly Qt UI, use:
 
 - `doc/masternode-setup-smt-windows-qt.md`
-- Direct link: https://github.com/SmartiesCoin/Korsh/blob/main/doc/masternode-setup-smt-windows-qt.md
+- Direct link: https://github.com/Korsh-Dev/Korsh-Code-Mainnet/blob/main/doc/masternode-setup-smt-windows-qt.md
 
 1. Create collateral.
-2. Send `15000 KSH` to yourself.
+2. Send `1500 KSH` to yourself.
 3. Wait confirmations.
 4. Register MN.
 
 Chain values:
 
-- Regular MN collateral: `15000 KSH`
-- Evo collateral: `75000 KSH`
-- Mainnet port: `8383`
+- Regular MN collateral: `1500 KSH`
+- Evo masternodes: disabled on the current mainnet
+- Mainnet P2P port: `9777`
 - Required confirmations: `15`
 
 ## 1. Requirements
 
-- Korsh Core v0.0.5 installed on Windows.
+- Korsh Core v0.0.6 installed on Windows.
 - Wallet fully synced.
-- Public IP (if running from home) and port `8383` open in router/firewall.
+- Public IP (if running from home) and port `9777` open in router/firewall.
 - `korsh-cli.exe` available (from release zip).
 
 Data dir on Windows:
@@ -45,8 +45,8 @@ Use:
 ```ini
 server=1
 listen=1
-port=8383
-externalip=YOUR_PUBLIC_IP:8383
+port=9777
+externalip=YOUR_PUBLIC_IP:9777
 
 txindex=1
 prune=0
@@ -97,7 +97,7 @@ Put `$operatorSecret` into `korsh.conf` as `masternodeblsprivkey=...` and restar
 ## 5. Send collateral to yourself
 
 ```powershell
-$txid = & $CLI -datadir="$DATADIR" -rpcwallet=$WALLET sendtoaddress $collateralAddr 15000
+$txid = & $CLI -datadir="$DATADIR" -rpcwallet=$WALLET sendtoaddress $collateralAddr 1500
 $txid
 ```
 
@@ -128,7 +128,7 @@ Replace public IP:
 $mnIp = "YOUR_PUBLIC_IP"
 
 $protxHash = & $CLI -datadir="$DATADIR" -rpcwallet=$WALLET protx register `
-  "$collTxid" $collVout "[`"$mnIp:8383`"]" `
+  "$collTxid" $collVout "[`"$mnIp:9777`"]" `
   "$ownerAddr" "$operatorPub" "$votingAddr" `
   0 "$payoutAddr" "$feeAddr" $true
 
@@ -152,15 +152,15 @@ If you want fewer manual steps, you can fund + register in one call:
 ```powershell
 $mnIp = "YOUR_PUBLIC_IP"
 & $CLI -datadir="$DATADIR" -rpcwallet=$WALLET protx register_fund `
-  "$collateralAddr" "[`"$mnIp:8383`"]" `
+  "$collateralAddr" "[`"$mnIp:9777`"]" `
   "$ownerAddr" "$operatorPub" "$votingAddr" `
   0 "$payoutAddr" "$feeAddr" $true
 ```
 
 ## 10. Most common errors
 
-- Collateral is not exactly `15000 KSH`.
+- Collateral is not exactly `1500 KSH`.
 - Not enough confirmations.
 - Wrong `masternodeblsprivkey` (does not match operator pubkey in ProTx).
-- Port `8383` is closed.
+- Port `9777` is closed.
 - `externalip` is missing or wrong.

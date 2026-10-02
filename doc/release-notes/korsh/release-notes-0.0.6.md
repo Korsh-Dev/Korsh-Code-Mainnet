@@ -1,31 +1,25 @@
 # Korsh Core version v0.0.6
 
-Korsh Core `v0.0.6` is a maintenance release focused on Windows packaging reliability and masternode wallet-mode startup fixes.
+In one sentence: v0.0.6 lets you update an existing masternode's registered service port from the Qt wallet without registering it again or moving its collateral.
 
 ## Highlights
 
-- Fixed wallet+masternode startup restriction:
-  - Removed the hard startup error that blocked running a masternode with wallet enabled.
-  - `-masternodeblsprivkey` no longer forces a wallet-disabled startup path.
-- Version metadata corrected to `0.0.6` across Windows binaries:
-  - `korsh-qt.exe`
-  - `korshd.exe`
-  - `korsh-cli.exe`
-  - `korsh-tx.exe`
-  - `korsh-util.exe`
-  - `korsh-wallet.exe`
-- Windows portable package updated with required runtime dependencies:
-  - Includes Qt platform/plugins and mingw runtime DLLs.
-  - Includes previously missing DLLs reported by users (`libminiupnpc.dll`, `libevent-7.dll`, `libgmp-10.dll`, `libgcc_s_seh-1.dll`, and related runtime libs).
+- Added **Update service to the current network port** to the Masternodes context menu when the selected ProTx advertises an outdated endpoint.
+- The wallet submits `protx update_service` for the existing ProTx and leaves its payout address unchanged.
+- Fixed parsing of UTF-8-BOM-prefixed configuration files, including files whose first line is a comment.
+- Updated the active masternode guides to current mainnet settings: **1,500 KSH** collateral, **15 confirmations**, and **9777/tcp**. Evo masternodes remain disabled on the current mainnet.
+- Added regression coverage for service endpoint replacement and wallet availability when a node is started with `-masternodeblsprivkey`.
 
-## Smoke test summary (Windows portable)
+## Updating an existing masternode
 
-- Qt startup check: PASS
-- CLI/daemon version check (`v0.0.6`): PASS
-- Regtest wallet flow (create wallet, mine, send tx): PASS
-- Masternode wallet-mode startup regression check (no old startup block message, wallet loads with `-masternodeblsprivkey`): PASS
+Before submitting the service update, configure the masternode host to listen on port `9777` and allow that port through its firewall. In the wallet's **Masternodes** tab, right-click the affected entry and select **Update service to the current network port**. Review the old and new endpoints and confirm the transaction.
+
+The update requires the operator BLS key on the node submitting it, a loaded and unlocked wallet, and a confirmed spendable output to pay the fee. Do not register a second masternode for the same collateral.
+
+## Wallet balance and collateral
+
+The service update changes the registered endpoint only. It does not unlock or move masternode collateral, deregister the masternode, or restore a balance that is absent from the wallet. A local wallet lock can prevent an output from being selected for spending, but does not itself remove the output from the wallet's balance. If collateral is missing from the displayed balance, verify that its outpoint is still unspent and controlled by the loaded, synchronized wallet.
 
 ## Consensus and economics
 
-No consensus rule changes in `v0.0.6`.
-This is a stability/packaging release.
+No consensus, subsidy, or collateral rules changed in v0.0.6. This is a wallet/UI, configuration parsing, and documentation release; it does not require a chain reset or reindex.

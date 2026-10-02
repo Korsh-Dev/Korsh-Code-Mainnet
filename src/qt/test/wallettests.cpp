@@ -10,6 +10,7 @@
 #include <qt/bitcoinamountfield.h>
 #include <qt/bitcoinunits.h>
 #include <qt/clientmodel.h>
+#include <qt/masternodelist.h>
 #include <qt/optionsmodel.h>
 #include <qt/qvalidatedlineedit.h>
 #include <qt/sendcoinsdialog.h>
@@ -293,4 +294,12 @@ void WalletTests::walletTests()
     }
 #endif
     TestGUI(m_node);
+}
+
+void WalletTests::masternodeServicePortReplacement()
+{
+    QCOMPARE(MasternodeListUtils::ServiceWithPort("83.138.134.10:8383", 9777), QString{"83.138.134.10:9777"});
+    QCOMPARE(MasternodeListUtils::ServiceWithPort("[2001:db8::10]:8383", 9777), QString{"[2001:db8::10]:9777"});
+    QVERIFY(MasternodeListUtils::ServiceWithPort("not-a-service", 9777).isEmpty());
+    QVERIFY(MasternodeListUtils::ServiceWithPort("83.138.134.10:8383", 65536).isEmpty());
 }

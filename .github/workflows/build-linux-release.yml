@@ -26,8 +26,8 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             build-essential autoconf automake libtool pkg-config bsdmainutils python3 \
             ca-certificates curl zip \
-            libboost-all-dev libevent-dev libssl-dev libsodium-dev libdb++-dev \
-            libminiupnpc-dev libnatpmp-dev zlib1g-dev libgmp-dev \
+            libboost-all-dev libevent-dev libssl-dev libsodium-dev libdb++-dev libzmq3-dev \
+            libminiupnpc-dev libnatpmp-dev zlib1g-dev libgmp-dev python3-zmq \
             qtbase5-dev qttools5-dev-tools
 
       - name: Rust toolchain
@@ -59,25 +59,49 @@ jobs:
         run: |
           mkdir -p /tmp/k-smoke
           ./src/korshd -chain=main -datadir=/tmp/k-smoke -daemon=1 -server=1 -listen=0 -dnsseed=0
-          sleep 10
-          ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke getblockcount
+          ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke -rpcwait getblockcount
           ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke getblockhash 0
           ./src/korsh-cli -chain=main -datadir=/tmp/k-smoke stop
 
+      - name: Functional smoke test (wallet + masternode key)
+        run: python3 test/functional/test_runner.py --jobs=1 feature_masternode_params.py
+
+      - name: Functional smoke test (ZMQ notifications)
+        run: python3 test/functional/test_runner.py --jobs=1 interface_zmq.py
+
       - name: Package
         run: |
-          NAME=korsh-0.0.1-linux-x86_64
-          mkdir -p dist/$NAME/bin dist/$NAME/params
-          cp src/korshd src/korsh-cli src/korsh-tx src/korsh-wallet src/korsh-util src/qt/korsh-qt dist/$NAME/bin/
-          cp README.md COPYING dist/$NAME/
-          cp params/sapling-spend.params params/sapling-output.params dist/$NAME/params/ 2>/dev/null || true
-          strip dist/$NAME/bin/*
-          tar -C dist -czf korsh-0.0.1-linux-x86_64.tar.gz "$NAME"
-          sha256sum korsh-0.0.1-linux-x86_64.tar.gz
+          VERSION=$(python3 -c 'import re; d=dict(re.findall(r"^define\(_CLIENT_VERSION_(MAJOR|MINOR|BUILD),\s*([^)]+)\)", open("configure.ac").read(), re.M)); print(".".join(d[k] for k in ("MAJOR", "MINOR", "BUILD")))')
+          PACKAGE_NAME="korsh-${VERSION}-linux-x86_64"
+          PACKAGE_DIR="dist/${PACKAGE_NAME}"
+          ASSET="$GITHUB_WORKSPACE/korsh-${VERSION}-linux-x86_64.tar.gz"
+          mkdir -p "$PACKAGE_DIR/bin" "$PACKAGE_DIR/params"
+          cp src/korshd src/korsh-cli src/korsh-tx src/korsh-wallet src/korsh-util src/qt/korsh-qt "$PACKAGE_DIR/bin/"
+          cp params/sapling-spend.params params/sapling-output.params "$PACKAGE_DIR/params/"
+          cp doc/README_linux.txt "$PACKAGE_DIR/README.txt"
+          cp COPYING "$PACKAGE_DIR/COPYING"
+          test -s "$PACKAGE_DIR/params/sapling-spend.params"
+          test -s "$PACKAGE_DIR/params/sapling-output.params"
+          strip "$PACKAGE_DIR"/bin/*
+          for executable in "$PACKAGE_DIR"/bin/*; do
+            dependencies=$(ldd "$executable")
+            printf '%s\n' "$dependencies"
+            case "$dependencies" in *"not found"*) echo "Unresolved runtime dependency in $executable" >&2; exit 1 ;; esac
+            case "${executable##*/}" in
+              korshd|korsh-qt|korsh-wallet)
+                case "$dependencies" in *"libdb_cxx-5.3.so"*) ;; *) echo "Expected the existing Linux BDB 5.3 wallet backend in $executable" >&2; exit 1 ;; esac
+                ;;
+            esac
+            output=$(QT_QPA_PLATFORM=offscreen "$executable" -version 2>&1)
+            printf '%s\n' "$output"
+            case "$output" in *"v${VERSION}"*) ;; *) echo "Unexpected version from $executable" >&2; exit 1 ;; esac
+          done
+          tar -C "$PACKAGE_DIR" -czf "$ASSET" .
+          sha256sum "$ASSET"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: korsh-linux-x86_64
-          path: korsh-0.0.1-linux-x86_64.tar.gz
+          path: korsh-*-linux-x86_64.tar.gz
           if-no-files-found: error

@@ -4,8 +4,8 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test masternode parameter interactions.
 
-This test verifies that certain parameters are automatically enabled
-when a node is configured as a masternode via -masternodeblsprivkey.
+This test verifies that masternode parameters are automatically enabled and a
+loaded wallet remains available after restarting with -masternodeblsprivkey.
 """
 
 from test_framework.test_framework import BitcoinTestFramework
@@ -24,6 +24,9 @@ class MasternodeParamsTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2
+
+    def skip_test_if_missing_module(self):
+        self.skip_if_no_wallet()
 
     def run_test(self):
         self.log.info("Test that regular node has default settings")
@@ -45,6 +48,7 @@ class MasternodeParamsTest(BitcoinTestFramework):
         # Start a node with masternode key
         self.restart_node(1, extra_args=[f"-masternodeblsprivkey={bls_key}"])
         node1 = self.nodes[1]
+        assert node1.listwallets(), "Wallet support must remain available when masternode mode is enabled"
 
         # Masternode should have peerblockfilters enabled
         services = int(node1.getnetworkinfo()['localservices'], 16)
@@ -66,6 +70,7 @@ class MasternodeParamsTest(BitcoinTestFramework):
             "-blockfilterindex=0"
         ])
         node1 = self.nodes[1]
+        assert node1.listwallets(), "Explicit masternode filter settings must not disable the wallet"
 
         # Should not have COMPACT_FILTERS service
         services = int(node1.getnetworkinfo()['localservices'], 16)

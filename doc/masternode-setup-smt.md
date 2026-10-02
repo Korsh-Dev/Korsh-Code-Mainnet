@@ -5,21 +5,21 @@ This is the short version most miners want: send collateral to yourself, registe
 Windows users:
 
 - Use this guide: `doc/masternode-setup-smt-windows.md`
-- Direct link: https://github.com/SmartiesCoin/Korsh/blob/main/doc/masternode-setup-smt-windows.md
+- Direct link: https://github.com/Korsh-Dev/Korsh-Code-Mainnet/blob/main/doc/masternode-setup-smt-windows.md
 - Qt-first guide (minimal commands): `doc/masternode-setup-smt-windows-qt.md`
-- Direct link: https://github.com/SmartiesCoin/Korsh/blob/main/doc/masternode-setup-smt-windows-qt.md
+- Direct link: https://github.com/Korsh-Dev/Korsh-Code-Mainnet/blob/main/doc/masternode-setup-smt-windows-qt.md
 
 Network values:
 
-- Regular MN collateral: `15,000 KSH`
-- Evo collateral: `75,000 KSH`
-- Mainnet port: `8383`
+- Regular MN collateral: `1,500 KSH`
+- Evo masternodes: disabled on the current mainnet
+- Mainnet P2P port: `9777`
 - Collateral confirmations: `15`
 
 ## 1. Quick Reality Check
 
 - You **can** run MN + wallet in the same node process (single-wallet mode).
-- You **do not need** a VPS if your machine is reachable from internet (`8383/tcp` open + stable public IP).
+- You **do not need** a VPS if your machine is reachable from the internet (`9777/tcp` open + stable public IP).
 - Korsh uses deterministic masternodes (ProTx), so one registration tx is still required.
 
 ## 2. Minimal Config (Single Wallet)
@@ -30,8 +30,8 @@ Put this in `korsh.conf` on the machine that will run the masternode:
 server=1
 daemon=1
 listen=1
-port=8383
-externalip=YOUR_PUBLIC_IP:8383
+port=9777
+externalip=YOUR_PUBLIC_IP:9777
 
 txindex=1
 prune=0
@@ -76,7 +76,7 @@ Put `OPERATOR_SECRET` into `korsh.conf` as `masternodeblsprivkey=...` and restar
 ### Step B: Send collateral to yourself
 
 ```bash
-TXID=$($CLI -rpcwallet=$WALLET sendtoaddress "$COLLATERAL_ADDR" 15000)
+TXID=$($CLI -rpcwallet=$WALLET sendtoaddress "$COLLATERAL_ADDR" 1500)
 echo "$TXID"
 ```
 
@@ -97,7 +97,7 @@ echo "$COLL_TXID $COLL_VOUT"
 MN_IP="YOUR_PUBLIC_IP"
 
 PROTX_HASH=$($CLI -rpcwallet=$WALLET protx register \
-"$COLL_TXID" "$COLL_VOUT" "[\"$MN_IP:8383\"]" \
+"$COLL_TXID" "$COLL_VOUT" "[\"$MN_IP:9777\"]" \
 "$OWNER_ADDR" "$OPERATOR_PUB" "$VOTING_ADDR" \
 0 "$PAYOUT_ADDR" "$FEE_ADDR" true)
 
@@ -120,26 +120,25 @@ If you prefer one-call funding + registration, use:
 
 ```bash
 $CLI -rpcwallet=$WALLET protx register_fund \
-"$COLLATERAL_ADDR" "[\"$MN_IP:8383\"]" \
+"$COLLATERAL_ADDR" "[\"$MN_IP:9777\"]" \
 "$OWNER_ADDR" "$OPERATOR_PUB" "$VOTING_ADDR" \
 0 "$PAYOUT_ADDR" "$FEE_ADDR" true
 ```
 
 This auto-creates collateral in the same operation.
 
-## 5. Evo MN (If Needed)
+## 5. Fix an existing registration still using port 8383
 
-Evo is still available in `v0.0.5`:
+With Korsh Core `v0.0.6`, an existing ProTx can be updated without registering a second masternode or sending the collateral again. In the **Masternodes** tab, right-click the affected row and choose **Update service to the current network port**. The wallet submits the service update; make sure the masternode host is listening on port `9777` first. This requires its operator BLS key and a confirmed spendable wallet output for the fee. It does not unlock collateral or restore a missing wallet balance.
 
-- `protx register_evo`
-- `protx register_fund_evo`
+## 6. Evo MN
 
-Evo collateral is `75,000 KSH`.
+Evo masternodes are disabled on the current mainnet; use the regular masternode flow above.
 
-## 6. Top 5 Mistakes
+## 7. Top 5 Mistakes
 
-- Collateral is not exactly `15000 KSH`.
+- Collateral is not exactly `1500 KSH`.
 - Less than `15` confirmations.
 - `masternodeblsprivkey` does not match operator public key used in ProTx.
-- Port `8383` is closed.
+- Port `9777` is closed.
 - Node not reachable at `externalip`.

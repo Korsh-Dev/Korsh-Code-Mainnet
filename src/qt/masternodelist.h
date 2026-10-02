@@ -27,8 +27,40 @@ class MasternodeList;
 } // namespace Ui
 
 class ClientModel;
+class QAction;
 class QThread;
 class WalletModel;
+
+namespace MasternodeListUtils {
+inline QString ServiceWithPort(const QString& service, int port)
+{
+    if (port < 1 || port > 65535) {
+        return {};
+    }
+
+    const QString endpoint{service.trimmed()};
+    const int separator{endpoint.lastIndexOf(':')};
+    if (separator <= 0 || separator == endpoint.size() - 1) {
+        return {};
+    }
+
+    const QString host{endpoint.left(separator)};
+    bool current_port_ok{false};
+    const int current_port{endpoint.mid(separator + 1).toInt(&current_port_ok)};
+    if (!current_port_ok || current_port < 1 || current_port > 65535) {
+        return {};
+    }
+
+    const bool bracket_open{host.startsWith('[')};
+    const bool bracket_close{host.endsWith(']')};
+    if (bracket_open != bracket_close || (host.contains(':') && !bracket_open) ||
+        (bracket_open && (host.size() <= 2 || !host.mid(1, host.size() - 2).contains(':')))) {
+        return {};
+    }
+
+    return endpoint.left(separator + 1) + QString::number(port);
+}
+} // namespace MasternodeListUtils
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -94,6 +126,7 @@ private:
     MasternodeListSortFilterProxyModel* m_proxy_model{nullptr};
     MasternodeModel* m_model{nullptr};
     QMenu* contextMenuDIP3{nullptr};
+    QAction* m_updateServicePortAction{nullptr};
     QObject* m_worker{nullptr};
     QThread* m_thread{nullptr};
     QTimer* m_timer{nullptr};
@@ -118,6 +151,7 @@ private Q_SLOTS:
     void filterByVotingAddress();
     void handleMasternodeListChanged();
     void on_mnSetupWizardButton_clicked();
+    void updateServicePort();
     void on_checkBoxHideBanned_stateChanged(int state);
     void on_checkBoxOwned_stateChanged(int state);
     void on_comboBoxType_currentIndexChanged(int index);

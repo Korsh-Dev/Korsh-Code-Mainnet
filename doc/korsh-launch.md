@@ -12,9 +12,11 @@ release should carry.
   set), 60 s blocks, DGW retargeting every block with a 20-block window, 70/30
   miner/masternode split, 10,000,000 KSH cap, 2,500,000-block halving.
 - Genesis mined for those parameters and verified (mainnet `000017ec1f2f978429db70495ec7653aedca360e5f251bfe2a780ae5e731d7eb`,
-  regtest re-mined as well), no premine — mainnet sits at height 0.
-- Sapling zkSNARK parameters embedded in the binaries on all three platforms, so
-  no manual `params/` handling is needed anywhere.
+  regtest re-mined as well), with no premine.
+- Sapling zkSNARK parameters ship with every release package. The macOS app
+  stores them under `Korsh-Qt.app/Contents/Resources/params`; its CLI/daemon
+  archive also has a top-level `params/` directory. Other platform builds can
+  extract their embedded copies on first start.
 - GUI only offers what the network can run (no Governance / InstantSend /
   ChainLocks / Evo controls while quorums and budget payments are disabled).
 - Smoke set on the final build: `wallet_basic`, `mining_basic`, `rpc_help`,
@@ -24,25 +26,21 @@ release should carry.
 ## 1. Start the first node(s)
 
 ```sh
-mkdir -p ~/.korsh
+mkdir -p ~/.korshcore
 ./bin/korshd -daemon
 ./bin/korsh-cli getblockchaininfo      # chain: main, blocks: 0
 ```
 
 Mainnet ports: **P2P 9777**, **RPC 9776**, **Tor Onion 9775**.
 
-**Public seed nodes are already running** at `195.26.244.209:9777` and `185.251.19.161:9777`,
-the explorer), and the binaries from this release carry it as a fixed seed, so a
-fresh install connects on its own about a minute after starting. The machine runs
-`korshd` under systemd as the `korsh` user with the datadir in `/home/korsh/.korsh`;
-its RPC stays on localhost.
+Mainnet chain parameters contain fixed peer addresses `195.26.244.209:9777` and
+`185.251.19.161:9777`, plus the DNS seed hostname `seed.korsh.org`. If peer
+discovery is unavailable, start with `-addnode=<reachable-peer>:9777`. Keep RPC
+bound to localhost unless remote access is explicitly secured.
 
-On a minimal Debian/Ubuntu install the Linux tarball also needs its runtime
-libraries:
-
-```sh
-apt-get install -y libdb5.3t64 libdb5.3++t64 libminiupnpc17 libnatpmp1 libevent-2.1-7t64 libevent-pthreads-2.1-7t64
-```
+The v0.0.6 Linux archive includes a `README.txt` with the Ubuntu 22.04 runtime
+package list and glibc baseline. Other distributions need equivalent shared
+libraries; use `ldd` on the packaged executables to check the local runtime.
 
 ## 2. Mine the first blocks
 
@@ -59,12 +57,10 @@ for the previous r=32 parameters produce invalid blocks and will be rejected.
 
 ## 3. Let other nodes find the network
 
-The binaries ship with the first seed node hardcoded (`vFixedSeeds` in
-`src/chainparams.cpp`, BIP155 form of `195.26.244.209:8383`), so a new install
-needs no flags: roughly a minute after start the node loads the fixed seed and
-connects. There is no DNS seed yet, so if that node is retired the list has to be
-updated in a release; adding a DNS seed (or more fixed seeds) is a one-line change
-plus a rebuild.
+The binaries ship with two fixed peers and the DNS seed `seed.korsh.org`
+(`vFixedSeeds` and `vSeeds` in `src/chainparams.cpp`). If those endpoints change,
+update the chain parameters and release a new build; `-addnode` remains available
+for operators who need to supply a reachable peer manually.
 
 ## 3b. The block explorer
 

@@ -27,6 +27,7 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QHeaderView>
+#include <QItemSelectionModel>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMetaObject>
@@ -795,6 +796,10 @@ MasternodeList::MasternodeList(QWidget* parent) :
     contextMenuDIP3 = new QMenu(this);
     contextMenuDIP3->addAction(tr("Copy ProTx Hash"), this, &MasternodeList::copyProTxHash_clicked);
     contextMenuDIP3->addAction(tr("Copy Collateral Outpoint"), this, &MasternodeList::copyCollateralOutpoint_clicked);
+    contextMenuDIP3->addSeparator();
+    m_updateServicePortAction = contextMenuDIP3->addAction(
+        tr("Update service to the current network port"), this, &MasternodeList::updateServicePort);
+    m_updateServicePortAction->setVisible(false);
 
     QMenu* filterMenu = contextMenuDIP3->addMenu(tr("Filter by"));
     filterMenu->addAction(tr("Collateral Address"), this, &MasternodeList::filterByCollateralAddress);
@@ -860,8 +865,126 @@ void MasternodeList::showContextMenuDIP3(const QPoint& point)
 {
     QModelIndex index = ui->tableViewMasternodes->indexAt(point);
     if (index.isValid()) {
+        ui->tableViewMasternodes->selectionModel()->setCurrentIndex(
+            index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        const auto* entry = GetSelectedEntry();
+        const QString updated_service = entry
+            ? MasternodeListUtils::ServiceWithPort(entry->service(), Params().GetDefaultPort())
+            : QString{};
+        const bool needs_update = entry && !updated_service.isEmpty() && updated_service != entry->service();
+        m_updateServicePortAction->setVisible(needs_update);
+        m_updateServicePortAction->setEnabled(needs_update && walletModel);
         contextMenuDIP3->exec(QCursor::pos());
     }
+}
+
+void MasternodeList::updateServicePort()
+{
+    if (!walletModel) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Load a wallet before updating a masternode service."));
+        return;
+    }
+
+    const auto* entry = GetSelectedEntry();
+    if (!entry) {
+        return;
+    }
+
+    // Copy model values before opening modal dialogs, which run a nested event loop
+    // while the masternode list can refresh in the background.
+    const QString protx_hash{entry->proTxHash()};
+    const QString old_service{entry->service()};
+    const QString new_service{MasternodeListUtils::ServiceWithPort(old_service, Params().GetDefaultPort())};
+    if (new_service.isEmpty() || new_service == old_service) {
+        return;
+    }
+
+    const std::string operator_key{gArgs.GetArg("-masternodeblsprivkey", "")};
+    if (operator_key.empty()) {
+        QMessageBox::warning(this, tr("Masternode service"),
+                             tr("This node has no masternodeblsprivkey configured. Run Korsh on the masternode host with its operator key, then retry."));
+        return;
+    }
+
+    const QString confirmation = tr("Submit an on-chain service update?\n\nCurrent: %1\nNew: %2\n\n"
+                                    "The transaction fee will be paid from a spendable output in this wallet. "
+                                    "This updates the registered endpoint only; it does not unlock or transfer masternode collateral.\n\n"
+                                    "Make sure the masternode is listening on port %3 and that the port is reachable.")
+                                     .arg(old_service, new_service)
+                                     .arg(Params().GetDefaultPort());
+    if (QMessageBox::question(this, tr("Masternode service"), confirmation,
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) {
+        return;
+    }
+
+    auto unlock_context{walletModel->requestUnlock(false)};
+    if (!unlock_context.isValid()) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Wallet unlock was canceled or failed."));
+        return;
+    }
+
+    const QByteArray encoded_wallet{QUrl::toPercentEncoding(walletModel->getWalletName())};
+    const std::string wallet_uri{"/wallet/" + std::string(encoded_wallet.constData(), encoded_wallet.length())};
+    auto execute_wallet_rpc = [this, &wallet_uri](const std::string& method,
+                                                  const std::vector<std::string>& args,
+                                                  UniValue& result,
+                                                  QString& error) {
+        try {
+            result = walletModel->node().executeRpc(method, RPCConvertValues(method, args), wallet_uri);
+            return true;
+        } catch (const UniValue& rpc_error) {
+            error = ExtractRpcError(rpc_error);
+        } catch (const std::exception& exception) {
+            error = QString::fromStdString(exception.what());
+        }
+        return false;
+    };
+
+    QString error;
+    UniValue unspent;
+    if (!execute_wallet_rpc("listunspent", {"1", "9999999"}, unspent, error)) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Could not find a fee source: %1").arg(error));
+        return;
+    }
+    QString fee_source;
+    if (unspent.isArray()) {
+        for (size_t i = 0; i < unspent.size(); ++i) {
+            const UniValue& output = unspent[i];
+            const UniValue& spendable = output.find_value("spendable");
+            const UniValue& address = output.find_value("address");
+            if (spendable.isBool() && spendable.get_bool() && address.isStr() && !address.get_str().empty()) {
+                fee_source = QString::fromStdString(address.get_str());
+                break;
+            }
+        }
+    }
+    if (fee_source.isEmpty()) {
+        QMessageBox::warning(this, tr("Masternode service"),
+                             tr("This wallet has no confirmed spendable output available to pay the service-update fee."));
+        return;
+    }
+
+    UniValue txid;
+    const std::vector<std::string> args{
+        "update_service",
+        protx_hash.toStdString(),
+        new_service.toStdString(),
+        operator_key,
+        "", // Keep the registered operator payout address unchanged.
+        fee_source.toStdString(),
+    };
+    if (!execute_wallet_rpc("protx", args, txid, error)) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Service update failed: %1").arg(error));
+        return;
+    }
+    if (!txid.isStr()) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Unexpected response from protx update_service."));
+        return;
+    }
+
+    QMessageBox::information(this, tr("Masternode service"),
+                             tr("Service update submitted.\n\nTransaction ID:\n%1\n\nThe registered collateral remains locked until the masternode is deregistered or its collateral is otherwise released.")
+                                 .arg(QString::fromStdString(txid.get_str())));
 }
 
 void MasternodeList::handleMasternodeListChanged()

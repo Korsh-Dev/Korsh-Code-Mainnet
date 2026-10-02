@@ -16,15 +16,15 @@ Required commands:
 
 ## Quick network values
 
-- Regular MN collateral: `15000 KSH`
-- Evo MN collateral: `75000 KSH`
-- Mainnet port: `8383`
+- Regular MN collateral: `1500 KSH`
+- Evo masternodes: disabled on the current mainnet
+- Mainnet P2P port: `9777`
 
 ## Step 1. Requirements
 
-- Korsh Qt `v0.0.5` fully synced.
+- Korsh Qt `v0.0.6` fully synced.
 - Enough balance for collateral + fee.
-- Stable public IP and port `8383` open.
+- Stable public IP and port `9777` open.
 
 ## Step 2. Create addresses (Qt only)
 
@@ -74,8 +74,8 @@ Use this template (replace IP and BLS secret):
 ```ini
 server=1
 listen=1
-port=8383
-externalip=YOUR_PUBLIC_IP:8383
+port=9777
+externalip=YOUR_PUBLIC_IP:9777
 txindex=1
 prune=0
 masternodeblsprivkey=YOUR_BLS_SECRET
@@ -89,7 +89,7 @@ Save and restart Korsh Qt.
 Run this template in Qt Console (replace all placeholders):
 
 ```text
-protx register_fund "MN_COLLATERAL_ADDR" "[\"YOUR_PUBLIC_IP:8383\"]" "MN_OWNER_ADDR" "BLS_PUBLIC_KEY" "MN_VOTING_ADDR" 0 "MN_PAYOUT_ADDR" "MN_FEE_ADDR" true
+protx register_fund "MN_COLLATERAL_ADDR" "[\"YOUR_PUBLIC_IP:9777\"]" "MN_OWNER_ADDR" "BLS_PUBLIC_KEY" "MN_VOTING_ADDR" 0 "MN_PAYOUT_ADDR" "MN_FEE_ADDR" true
 ```
 
 Fields:

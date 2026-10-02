@@ -1,10 +1,8 @@
 name: Build Windows (MSYS2 / BDB 6.2 + Qt5)
 
 # Windows-native build using MSYS2 + MinGW-w64 on GitHub's windows-latest
-# runner. Produces fully-static korshd.exe / korsh-cli.exe /
-# korsh-qt.exe linked against Berkeley DB 6.2 (the MSYS2-packaged
-# version), matching the wallet.dat Btree v10 format that v0.1.9 / v0.2.x
-# Windows wallets were written in. No DLLs alongside.
+# runner. Produces a portable ZIP with all six release executables, linked
+# statically against Berkeley DB 6.2 and Qt5. No runtime DLLs are required.
 #
 # Triggers automatically on every v* tag — no manual rebuild needed at
 # release time. Runs alongside the standard Guix matrix so Linux/macOS
@@ -63,6 +61,12 @@ jobs:
           pkg-config --modversion libdb_cxx || true
           pacman -Qi mingw-w64-x86_64-db 2>/dev/null | head -5 || true
           ls /mingw64/qt5-static/bin/qmake.exe && /mingw64/qt5-static/bin/qmake.exe -v || true
+
+      - name: Resolve package version
+        run: |
+          VERSION=$(python -c 'import re; d=dict(re.findall(r"^define\(_CLIENT_VERSION_(MAJOR|MINOR|BUILD),\s*([^)]+)\)", open("configure.ac").read(), re.M)); print(".".join(d[k] for k in ("MAJOR", "MINOR", "BUILD")))')
+          echo "KORSH_VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Building Korsh Core v$VERSION"
 
       - name: autogen
         run: ./autogen.sh
@@ -155,7 +159,6 @@ jobs:
             --disable-tests \
             --disable-gui-tests \
             --disable-stacktraces \
-            --disable-zmq \
             --with-gui=qt5 \
             --with-qt-bindir=/mingw64/qt5-static/bin \
             --with-qt-incdir=/mingw64/qt5-static/include \
@@ -172,32 +175,145 @@ jobs:
       - name: make
         run: make -j2
 
-      - name: collect binaries
+      - name: Collect all six release executables
         run: |
-          mkdir -p artifacts/korsh-windows-msys2
-          cp src/korshd.exe       artifacts/korsh-windows-msys2/
-          cp src/korsh-cli.exe    artifacts/korsh-windows-msys2/
-          cp src/qt/korsh-qt.exe  artifacts/korsh-windows-msys2/
-          # strip debug symbols to get saner file sizes
-          strip artifacts/korsh-windows-msys2/korshd.exe      || true
-          strip artifacts/korsh-windows-msys2/korsh-cli.exe   || true
-          strip artifacts/korsh-windows-msys2/korsh-qt.exe    || true
-          ls -la artifacts/korsh-windows-msys2/
-          file artifacts/korsh-windows-msys2/*.exe
-          # Verify static link: should NOT contain libdb_cxx / Qt5*.dll references
-          echo ""
-          echo "=== DLL deps for korshd.exe (should be Win32 system only) ==="
-          strings artifacts/korsh-windows-msys2/korshd.exe | grep -iE "\\.dll$" | sort -u | head -20
-          echo ""
-          echo "=== DLL deps for korsh-qt.exe (should be Win32 system only) ==="
-          strings artifacts/korsh-windows-msys2/korsh-qt.exe | grep -iE "\\.dll$" | sort -u | head -30
-          echo ""
+          mkdir -p artifacts/korsh-windows-msys2/bin artifacts/korsh-windows-msys2/params
+          cp src/korshd.exe       artifacts/korsh-windows-msys2/bin/
+          cp src/korsh-cli.exe    artifacts/korsh-windows-msys2/bin/
+          cp src/korsh-tx.exe     artifacts/korsh-windows-msys2/bin/
+          cp src/korsh-util.exe   artifacts/korsh-windows-msys2/bin/
+          cp src/korsh-wallet.exe artifacts/korsh-windows-msys2/bin/
+          cp src/qt/korsh-qt.exe  artifacts/korsh-windows-msys2/bin/
+          cp params/sapling-spend.params params/sapling-output.params artifacts/korsh-windows-msys2/params/
+          for exe in artifacts/korsh-windows-msys2/bin/*.exe; do
+            strip "$exe"
+            file "$exe"
+          done
+          python - <<'PY'
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+
+          bins = sorted(Path("artifacts/korsh-windows-msys2/bin").glob("*.exe"))
+          if len(bins) != 6:
+              raise SystemExit(f"Expected six release executables, found {len(bins)}")
+          system32 = Path(os.environ["SystemRoot"]) / "System32"
+          for binary in bins:
+              output = subprocess.check_output(["objdump", "-p", str(binary)], text=True)
+              imports = re.findall(r"DLL Name:\s*(\S+)", output)
+              if binary.name == "korsh-qt.exe" and "Windows GUI" not in output:
+                  raise SystemExit("korsh-qt.exe is not linked as a Windows GUI subsystem application")
+              external = [dll for dll in imports
+                          if not dll.lower().startswith(("api-ms-win-", "ext-ms-win-"))
+                          and not (system32 / dll).is_file()]
+              if external:
+                  raise SystemExit(f"{binary.name} imports DLLs absent from Windows System32: {external}")
+              print(f"{binary.name}: {len(imports)} imports, all are Windows system DLLs")
+          PY
           echo "=== BDB version baked in ==="
-          (strings artifacts/korsh-windows-msys2/korshd.exe | grep -E "Berkeley DB [0-9]" | head -3) || true
+          python -c 'from pathlib import Path; import re; b=Path("artifacts/korsh-windows-msys2/bin/korshd.exe").read_bytes(); m=re.search(rb"Berkeley DB [0-9.]+", b); print(m.group(0).decode() if m else "No embedded BDB version string")'
+
+      - name: Assemble ZIP and smoke-test extracted package
+        shell: pwsh
+        run: |
+          $stage = Join-Path $env:GITHUB_WORKSPACE "artifacts\korsh-windows-msys2"
+          $bin = Join-Path $stage "bin"
+          $docs = Join-Path $stage "docs"
+          New-Item -ItemType Directory -Force -Path $docs | Out-Null
+          Copy-Item "doc/README_windows.txt" (Join-Path $stage "README.txt")
+          Copy-Item "COPYING" (Join-Path $stage "COPYING")
+          Copy-Item "doc/masternode-setup-smt-windows-qt.md" (Join-Path $docs "Masternode-Setup.md")
+          Copy-Item "doc/release-notes/korsh/release-notes-0.0.6.md" (Join-Path $docs "Release-Notes.md")
+
+          $zip = Join-Path $env:GITHUB_WORKSPACE "korsh-$env:KORSH_VERSION-win64.zip"
+          Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip -CompressionLevel Optimal -Force
+          $unpack = Join-Path $env:RUNNER_TEMP "korsh-release-smoke"
+          Expand-Archive -Path $zip -DestinationPath $unpack -Force
+          $bin = Join-Path $unpack "bin"
+          foreach ($param in @("sapling-spend.params", "sapling-output.params")) {
+            if (-not (Test-Path (Join-Path $unpack "params\$param"))) { throw "Missing Sapling parameter: $param" }
+          }
+          $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
+          $version = [string]$env:KORSH_VERSION
+
+          foreach ($name in @("korshd.exe", "korsh-cli.exe", "korsh-tx.exe", "korsh-util.exe", "korsh-wallet.exe")) {
+            $output = & (Join-Path $bin $name) -version 2>&1 | Out-String
+            if ($LASTEXITCODE -ne 0 -or $output -notmatch [regex]::Escape($version)) {
+              throw "Version smoke failed for $name (expected $version): $output"
+            }
+            Write-Host "$name version verified: $version"
+          }
+          $qtVersion = (Get-Item (Join-Path $bin "korsh-qt.exe")).VersionInfo.ProductVersion
+          if ($qtVersion -notmatch [regex]::Escape($version)) {
+            throw "korsh-qt.exe ProductVersion is '$qtVersion', expected $version"
+          }
+          Write-Host "korsh-qt.exe ProductVersion verified: $qtVersion"
+          $qtProcess = Start-Process -FilePath (Join-Path $bin "korsh-qt.exe") -ArgumentList "-version" -PassThru -WindowStyle Hidden
+          if (-not $qtProcess.WaitForExit(30000)) {
+            Stop-Process -Id $qtProcess.Id -Force
+            throw "korsh-qt.exe -version did not exit within 30 seconds"
+          }
+          if ($qtProcess.ExitCode -ne 0) { throw "korsh-qt.exe -version exited with $($qtProcess.ExitCode)" }
+          Write-Host "korsh-qt.exe runtime version smoke passed"
+
+          $datadir = Join-Path $env:RUNNER_TEMP "korsh-regtest-wallet-mode"
+          $daemon = Join-Path $bin "korshd.exe"
+          $cli = Join-Path $bin "korsh-cli.exe"
+          $baseDaemonArgs = @("-regtest", "-datadir=$datadir", "-server=1", "-listen=0", "-txindex=1", "-peerblockfilters=1", "-blockfilterindex=basic")
+          $rpcArgs = @("-regtest", "-datadir=$datadir", "-rpcwait")
+          $process = $null
+          try {
+            $process = Start-Process -FilePath $daemon -ArgumentList $baseDaemonArgs -PassThru -WindowStyle Hidden
+            & $cli @rpcArgs getblockcount | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "Regtest RPC did not become ready" }
+            & $cli @rpcArgs createwallet "release-smoke" | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "Wallet creation failed before masternode startup" }
+            $blsOutput = & $cli @rpcArgs bls generate
+            if ($LASTEXITCODE -ne 0) { throw "Could not generate a regtest BLS key" }
+            $blsInfo = $blsOutput | ConvertFrom-Json
+            if (-not $blsInfo.secret) { throw "BLS generation returned no secret" }
+            & $cli @rpcArgs stop | Out-Null
+            if ($LASTEXITCODE -ne 0 -or -not $process.WaitForExit(60000)) { throw "Initial regtest node did not stop cleanly" }
+
+            $masternodeArgs = $baseDaemonArgs + "-masternodeblsprivkey=$($blsInfo.secret)" + "-wallet=release-smoke"
+            $process = Start-Process -FilePath $daemon -ArgumentList $masternodeArgs -PassThru -WindowStyle Hidden
+            & $cli @rpcArgs getblockcount | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "Regtest node with masternode key did not become ready" }
+            $walletOutput = & $cli @rpcArgs listwallets
+            if ($LASTEXITCODE -ne 0) { throw "listwallets failed after masternode startup" }
+            $loadedWallets = @($walletOutput | ConvertFrom-Json)
+            if ($loadedWallets -notcontains "release-smoke") {
+              throw "Wallet did not load when starting with -masternodeblsprivkey"
+            }
+            $debugLog = Join-Path $datadir "regtest\debug.log"
+            $logText = Get-Content -Path $debugLog -Raw
+            if ($logText -notmatch "Using BerkeleyDB version Berkeley DB 6\.2") {
+              throw "Expected the existing Windows BDB 6.2 wallet backend; check $debugLog"
+            }
+            $walletArgs = @("-regtest", "-datadir=$datadir", "-rpcwallet=release-smoke", "-rpcwait")
+            $address = & $cli @walletArgs getnewaddress
+            if ($LASTEXITCODE -ne 0 -or -not $address) { throw "Wallet address creation failed" }
+            & $cli @walletArgs generatetoaddress 101 $address | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "Regtest mining failed" }
+            $balance = [double](& $cli @walletArgs getbalance)
+            if ($LASTEXITCODE -ne 0 -or $balance -le 0) { throw "Wallet balance did not increase after mining" }
+            $destination = & $cli @walletArgs getnewaddress
+            if ($LASTEXITCODE -ne 0 -or -not $destination) { throw "Destination address creation failed" }
+            $txid = & $cli @walletArgs sendtoaddress $destination 1
+            if ($LASTEXITCODE -ne 0 -or $txid.Length -ne 64) { throw "Wallet transaction smoke failed: $txid" }
+            Write-Host "Wallet + masternode-key regtest smoke passed; balance=$balance txid=$txid"
+          } finally {
+            if ($process -and -not $process.HasExited) {
+              & $cli @rpcArgs stop 2>$null | Out-Null
+              if (-not $process.WaitForExit(60000)) { Stop-Process -Id $process.Id -Force }
+            }
+          }
+          Write-Host "Portable ZIP created: $zip"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: korsh-windows-msys2
-          path: artifacts/korsh-windows-msys2/
+          path: korsh-${{ env.KORSH_VERSION }}-win64.zip
           retention-days: 30

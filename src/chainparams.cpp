@@ -272,10 +272,8 @@ public:
         // This is fine at runtime as we'll fall back to using them as an addrfetch if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
-        // No centralized bootstrap node is trusted by consensus. Nodes discover
-        // peers through DNS seeds supplied by the operator or explicit -addnode
-        // entries; this list is intentionally empty until Korsh seed infrastructure
-        // is deployed and verified.
+        // Peers are discovered through the configured DNS seed and the fixed peer
+        // addresses below. These bootstrap sources are not trusted by consensus.
         vSeeds.clear();
         vSeeds.emplace_back("seed.korsh.org");
 
