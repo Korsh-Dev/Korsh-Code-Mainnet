@@ -1640,8 +1640,9 @@ BOOST_AUTO_TEST_CASE(message_sign)
 
     const std::string message = "Trust no one";
 
+    // Deterministic signature for the current Korsh message magic.
     const std::string expected_signature =
-        "IIOzMDkvw3GtLWXkeEYRRRH53MOLHM44sJ428Nu4NNacTPJTGcKesMJ+3s3OadYK34tpSQIhu922EviNNWTsiQg=";
+        "ICys+Rl57iDPWpH72XRS/i0xi6Wy902kIpa16jmDcqxpHj6oxP/v+lhSVkiPG9oeQHd00ahsJ3ENWYJ9rYS2n64=";
 
     CKey privkey;
     std::string generated_signature;
