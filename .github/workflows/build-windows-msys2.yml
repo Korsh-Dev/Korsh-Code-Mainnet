@@ -260,7 +260,7 @@ jobs:
           $daemon = Join-Path $bin "korshd.exe"
           $cli = Join-Path $bin "korsh-cli.exe"
           $baseDaemonArgs = @("-regtest", "-datadir=$datadir", "-paramsdir=$paramsDir", "-server=1", "-listen=0", "-txindex=1", "-peerblockfilters=1", "-blockfilterindex=basic")
-          $rpcArgs = @("-regtest", "-datadir=$datadir", "-paramsdir=$paramsDir", "-rpcwait")
+          $rpcArgs = @("-regtest", "-datadir=$datadir", "-rpcwait")
           function Wait-RpcCookie {
             param($DataDir, $NodeProcess)
             $cookiePath = Join-Path (Join-Path $DataDir "regtest") ".cookie"
@@ -304,7 +304,7 @@ jobs:
             if ($logText -notmatch "Using BerkeleyDB version Berkeley DB 6\.2") {
               throw "Expected the existing Windows BDB 6.2 wallet backend; check $debugLog"
             }
-            $walletArgs = @("-regtest", "-datadir=$datadir", "-paramsdir=$paramsDir", "-rpcwallet=release-smoke", "-rpcwait")
+            $walletArgs = @("-regtest", "-datadir=$datadir", "-rpcwallet=release-smoke", "-rpcwait")
             $address = & $cli @walletArgs getnewaddress
             if ($LASTEXITCODE -ne 0 -or -not $address) { throw "Wallet address creation failed" }
             & $cli @walletArgs generatetoaddress 101 $address | Out-Null
