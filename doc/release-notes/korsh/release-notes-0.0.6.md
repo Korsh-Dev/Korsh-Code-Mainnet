@@ -20,6 +20,10 @@ The update requires the operator BLS key on the node submitting it, a loaded and
 
 The service update changes the registered endpoint only. It does not unlock or move masternode collateral, deregister the masternode, or restore a balance that is absent from the wallet. A local wallet lock can prevent an output from being selected for spending, but does not itself remove the output from the wallet's balance. If collateral is missing from the displayed balance, verify that its outpoint is still unspent and controlled by the loaded, synchronized wallet.
 
+## Wallet database compatibility
+
+The v0.0.6 packages retain the platform-specific Berkeley DB backends used by v0.0.5: 4.8.30 on macOS, 5.3 on Linux, and 6.2 on Windows. Opening the same `wallet.dat` across operating systems or converting it between these backends has not been tested. Back up before upgrading; do not share wallet files, private keys, or seed phrases when asking for balance help.
+
 ## Consensus and economics
 
 No consensus, subsidy, or collateral rules changed in v0.0.6. This is a wallet/UI, configuration parsing, and documentation release; it does not require a chain reset or reindex.

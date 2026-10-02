@@ -176,7 +176,7 @@ jobs:
             || (cat config.log; false)
 
       - name: make
-        run: make -j2
+        run: make -C src -j2 korshd.exe korsh-cli.exe korsh-tx.exe korsh-wallet.exe korsh-util.exe qt/korsh-qt.exe
 
       - name: Collect all six release executables
         run: |
