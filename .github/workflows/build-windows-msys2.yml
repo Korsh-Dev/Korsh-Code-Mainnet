@@ -234,8 +234,9 @@ jobs:
           $unpack = Join-Path $env:RUNNER_TEMP "korsh-release-smoke"
           Expand-Archive -Path $zip -DestinationPath $unpack -Force
           $bin = Join-Path $unpack "bin"
+          $paramsDir = Join-Path $unpack "params"
           foreach ($param in @("sapling-spend.params", "sapling-output.params")) {
-            if (-not (Test-Path (Join-Path $unpack "params\$param"))) { throw "Missing Sapling parameter: $param" }
+            if (-not (Test-Path (Join-Path $paramsDir $param))) { throw "Missing Sapling parameter: $param" }
           }
           $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
           $version = [string]$env:KORSH_VERSION
@@ -258,11 +259,22 @@ jobs:
           New-Item -ItemType Directory -Force -Path $datadir | Out-Null
           $daemon = Join-Path $bin "korshd.exe"
           $cli = Join-Path $bin "korsh-cli.exe"
-          $baseDaemonArgs = @("-regtest", "-datadir=$datadir", "-server=1", "-listen=0", "-txindex=1", "-peerblockfilters=1", "-blockfilterindex=basic")
-          $rpcArgs = @("-regtest", "-datadir=$datadir", "-rpcwait")
+          $baseDaemonArgs = @("-regtest", "-datadir=$datadir", "-paramsdir=$paramsDir", "-server=1", "-listen=0", "-txindex=1", "-peerblockfilters=1", "-blockfilterindex=basic")
+          $rpcArgs = @("-regtest", "-datadir=$datadir", "-paramsdir=$paramsDir", "-rpcwait")
+          function Wait-RpcCookie {
+            param($DataDir, $NodeProcess)
+            $cookiePath = Join-Path (Join-Path $DataDir "regtest") ".cookie"
+            $deadline = (Get-Date).AddSeconds(60)
+            while (-not (Test-Path $cookiePath)) {
+              if ($NodeProcess.HasExited) { throw "Regtest node exited before creating RPC cookie (exit=$($NodeProcess.ExitCode))" }
+              if ((Get-Date) -ge $deadline) { throw "Regtest RPC cookie was not created within 60 seconds: $cookiePath" }
+              Start-Sleep -Milliseconds 250
+            }
+          }
           $process = $null
           try {
             $process = Start-Process -FilePath $daemon -ArgumentList $baseDaemonArgs -PassThru -WindowStyle Hidden
+            Wait-RpcCookie $datadir $process
             & $cli @rpcArgs getblockcount | Out-Null
             if ($LASTEXITCODE -ne 0) { throw "Regtest RPC did not become ready" }
             & $cli @rpcArgs createwallet "release-smoke" | Out-Null
@@ -273,9 +285,12 @@ jobs:
             if (-not $blsInfo.secret) { throw "BLS generation returned no secret" }
             & $cli @rpcArgs stop | Out-Null
             if ($LASTEXITCODE -ne 0 -or -not $process.WaitForExit(60000)) { throw "Initial regtest node did not stop cleanly" }
+            $cookiePath = Join-Path (Join-Path $datadir "regtest") ".cookie"
+            if (Test-Path $cookiePath) { Remove-Item -Path $cookiePath -Force }
 
             $masternodeArgs = $baseDaemonArgs + "-masternodeblsprivkey=$($blsInfo.secret)" + "-wallet=release-smoke"
             $process = Start-Process -FilePath $daemon -ArgumentList $masternodeArgs -PassThru -WindowStyle Hidden
+            Wait-RpcCookie $datadir $process
             & $cli @rpcArgs getblockcount | Out-Null
             if ($LASTEXITCODE -ne 0) { throw "Regtest node with masternode key did not become ready" }
             $walletOutput = & $cli @rpcArgs listwallets
@@ -289,7 +304,7 @@ jobs:
             if ($logText -notmatch "Using BerkeleyDB version Berkeley DB 6\.2") {
               throw "Expected the existing Windows BDB 6.2 wallet backend; check $debugLog"
             }
-            $walletArgs = @("-regtest", "-datadir=$datadir", "-rpcwallet=release-smoke", "-rpcwait")
+            $walletArgs = @("-regtest", "-datadir=$datadir", "-paramsdir=$paramsDir", "-rpcwallet=release-smoke", "-rpcwait")
             $address = & $cli @walletArgs getnewaddress
             if ($LASTEXITCODE -ne 0 -or -not $address) { throw "Wallet address creation failed" }
             & $cli @walletArgs generatetoaddress 101 $address | Out-Null
