@@ -27,6 +27,14 @@ class FeatureIndexPruneTest(BitcoinTestFramework):
             [] + DEPLOYMENT_ARGS,
         ]
 
+    def stop_nodes(self, wait=0):
+        # Cache construction also calls this hook, with a non-pruned node.
+        for node in self.nodes:
+            expected_stderr = EXPECTED_STDERR_NO_GOV_PRUNE if "-prune=1" in (node.extra_args or []) else ""
+            node.stop_node(expected_stderr=expected_stderr, wait=wait, wait_until_stopped=False)
+        for node in self.nodes:
+            node.wait_until_stopped()
+
     def sync_index(self, height):
         expected_filter = {
             'basic block filter index': {'synced': True, 'best_block_height': height},
@@ -76,9 +84,10 @@ class FeatureIndexPruneTest(BitcoinTestFramework):
         for node in self.nodes[:2]:
             with node.assert_debug_log(['limited pruning to height 689']):
                 pruneheight_new = node.pruneblockchain(400)
-                # the prune heights used here and below are magic numbers that are determined by the
-                # thresholds at which block files wrap, so they depend on disk serialization and default block file size.
-                assert_equal(pruneheight_new, 367)
+                # Fast-prune files roll at >= 65536 bytes, including 8-byte record headers.
+                # Korsh's 251-byte genesis leaves room for height 368 in file 0;
+                # subsequent full files contain 368 of this fixture's 170-byte blocks.
+                assert_equal(pruneheight_new, 368)
 
         self.log.info("check if we can access the tips blockfilter and coinstats when we have pruned some blocks")
         tip = self.nodes[0].getbestblockhash()
@@ -113,7 +122,7 @@ class FeatureIndexPruneTest(BitcoinTestFramework):
         self.log.info("prune exactly up to the indices best blocks while the indices are disabled")
         for i in range(3):
             pruneheight_2 = self.nodes[i].pruneblockchain(1000)
-            assert_equal(pruneheight_2, 735)
+            assert_equal(pruneheight_2, 736)
             # Restart the nodes again with the indices activated
             self.restart_node(i, extra_args=self.extra_args[i], expected_stderr=EXPECTED_STDERR_NO_GOV_PRUNE)
 
@@ -148,7 +157,7 @@ class FeatureIndexPruneTest(BitcoinTestFramework):
         for node in self.nodes[:2]:
             with node.assert_debug_log(['limited pruning to height 2489']):
                 pruneheight_new = node.pruneblockchain(2500)
-                assert_equal(pruneheight_new, 2207)
+                assert_equal(pruneheight_new, 2208)
 
         self.log.info("ensure that prune locks don't prevent indices from failing in a reorg scenario")
         with self.nodes[0].assert_debug_log(['basic block filter index prune lock moved back to 2480']):

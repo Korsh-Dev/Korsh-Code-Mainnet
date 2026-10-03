@@ -591,8 +591,6 @@ RPCConsole::RPCConsole(interfaces::Node& node, QWidget* parent, Qt::WindowFlags 
     ui->btn_rescan1->setEnabled(false);
     ui->btn_rescan2->setEnabled(false);
 #ifdef ENABLE_WALLET
-    connect(ui->btn_rescan1, &QPushButton::clicked, this, &RPCConsole::walletRescan1);
-    connect(ui->btn_rescan2, &QPushButton::clicked, this, &RPCConsole::walletRescan2);
     connect(ui->WalletSelector, qOverload<int>(&QComboBox::currentIndexChanged), this, &RPCConsole::onWalletChanged);
 #endif // ENABLE_WALLET
     connect(ui->btn_reindex, &QPushButton::clicked, this, &RPCConsole::walletReindex);
@@ -837,7 +835,18 @@ void RPCConsole::setClientModel(ClientModel *model, int bestblock_height, int64_
 #ifdef ENABLE_WALLET
 void RPCConsole::setWalletController(WalletController* wallet_controller)
 {
+    assert(!m_wallet_controller);
+    assert(wallet_controller);
     m_wallet_controller = wallet_controller;
+    // Repair controls outlive the controller and its WalletModel children.
+    connect(ui->btn_rescan1, &QPushButton::clicked, wallet_controller, [this] { walletRescan1(); });
+    connect(ui->btn_rescan2, &QPushButton::clicked, wallet_controller, [this] { walletRescan2(); });
+    connect(wallet_controller, &QObject::destroyed, this, [this] {
+        m_wallet_controller = nullptr;
+        m_last_wallet_model = nullptr;
+        ui->WalletSelector->clear();
+        onWalletChanged();
+    });
 }
 
 void RPCConsole::addWallet(WalletModel * const walletModel)

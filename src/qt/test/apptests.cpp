@@ -6,11 +6,14 @@
 
 #include <chainparams.h>
 #include <key.h>
+#include <interfaces/node.h>
+#include <univalue.h>
 #include <qt/bitcoin.h>
 #include <qt/bitcoingui.h>
 #include <qt/guiutil_font.h>
 #include <qt/networkstyle.h>
 #include <qt/rpcconsole.h>
+#include <qt/walletframe.h>
 #include <shutdown.h>
 #include <test/util/setup_common.h>
 #include <validation.h>
@@ -20,7 +23,13 @@
 #endif
 
 #include <QAction>
+#include <QComboBox>
+#include <QPushButton>
 #include <QLineEdit>
+#include <QMenu>
+#include <QPointer>
+#include <QTimer>
+#include <QDialog>
 #include <QRegularExpression>
 #include <QScopedPointer>
 #include <QSettings>
@@ -80,13 +89,85 @@ void AppTests::appTests()
     QScopedPointer<const NetworkStyle> style(
         NetworkStyle::instantiate(Params().NetworkIDString()));
     m_app.createWindow(style.data());
+    BitcoinGUI* window{nullptr};
+    const auto window_connection = connect(&m_app, &BitcoinApplication::windowShown, this, [&window](BitcoinGUI* shown) { window = shown; });
     connect(&m_app, &BitcoinApplication::windowShown, this, &AppTests::guiTests);
     expectCallback("guiTests");
     QSettings().setValue("fAppearanceSetupDone", true); // skip appearance setup
     m_app.baseInitialize();
     m_app.requestInitialize();
     m_app.exec();
+    disconnect(window_connection);
+#ifdef ENABLE_WALLET
+    QVERIFY(window);
+    QVERIFY(window->getWalletController());
+    auto* console = window->findChild<RPCConsole*>();
+    QVERIFY(console);
+    auto* wallet_selector = console->findChild<QComboBox*>("WalletSelector");
+    QVERIFY(wallet_selector);
+    UniValue wallet_args{UniValue::VARR};
+    wallet_args.push_back("shutdown-regression");
+    m_app.node().executeRpc("createwallet", wallet_args, "");
+    QTRY_VERIFY(wallet_selector->count() > 1);
+    auto* wallet_frame = window->findChild<WalletFrame*>();
+    QVERIFY(wallet_frame && wallet_frame->currentWalletModel());
+    auto* rescan1 = console->findChild<QPushButton*>("btn_rescan1");
+    auto* rescan2 = console->findChild<QPushButton*>("btn_rescan2");
+    QVERIFY(rescan1 && rescan2);
+    QVERIFY(rescan1->isEnabled() && rescan2->isEnabled());
+    QList<QAction*> controller_actions;
+    QMenu* open_menu{nullptr};
+    const QStringList action_names{
+        BitcoinGUI::tr("Open Wallet"), BitcoinGUI::tr("Create Wallet…"),
+        BitcoinGUI::tr("Restore Wallet…"), BitcoinGUI::tr("Close Wallet…"),
+        BitcoinGUI::tr("Close All Wallets…")};
+    for (QAction* action : window->findChildren<QAction*>()) {
+        if (action_names.contains(action->text())) controller_actions.append(action);
+        if (action->text() == BitcoinGUI::tr("Open Wallet")) open_menu = action->menu();
+    }
+    QCOMPARE(controller_actions.size(), action_names.size());
+    QVERIFY(open_menu);
+    // Exercise the real callback while its controller is alive first.
+    QVERIFY(QMetaObject::invokeMethod(open_menu, "aboutToShow", Qt::DirectConnection));
+    QVERIFY(!open_menu->isEmpty());
+    QPointer<QAction> old_entry{open_menu->actions().front()};
+#endif
     m_app.requestShutdown();
+#ifdef ENABLE_WALLET
+    // Keep shutdown cleanup running even when a regression assertion fails.
+    [&] {
+        QVERIFY(!window->getWalletController());
+        // Cocoa can emit menu-opening notifications even for hidden/disabled menus
+        // while the GUI survives the controller. Reproduce that ordering directly.
+        QVERIFY(QMetaObject::invokeMethod(open_menu, "aboutToShow", Qt::DirectConnection));
+        QVERIFY(old_entry.isNull());
+        QVERIFY(open_menu->isEmpty());
+        // Disabled actions are not a lifetime barrier: also deliver late signals
+        // directly to every sibling controller action, bypassing QAction::trigger().
+        bool dialog_opened{false};
+        QTimer reject_dialogs;
+        connect(&reject_dialogs, &QTimer::timeout, this, [&dialog_opened] {
+            for (QWidget* widget : QApplication::topLevelWidgets()) {
+                if (auto* dialog = qobject_cast<QDialog*>(widget)) {
+                    if (dialog->isVisible()) { dialog_opened = true; dialog->reject(); }
+                }
+            }
+        });
+        reject_dialogs.start(10);
+        for (QAction* action : controller_actions) {
+            QVERIFY(!action->isEnabled());
+            QVERIFY(QMetaObject::invokeMethod(action, "triggered", Qt::DirectConnection, Q_ARG(bool, false)));
+        }
+        for (QPushButton* button : {rescan1, rescan2}) {
+            QVERIFY(!button->isEnabled());
+            QVERIFY(QMetaObject::invokeMethod(button, "clicked", Qt::DirectConnection, Q_ARG(bool, false)));
+        }
+        QVERIFY(!wallet_selector->currentData().isValid());
+        QVERIFY(!wallet_frame->currentWalletModel());
+        reject_dialogs.stop();
+        QVERIFY(!dialog_opened);
+    }();
+#endif
     m_app.exec();
 
     // Reset global state to avoid interfering with later tests.

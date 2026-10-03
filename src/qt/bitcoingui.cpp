@@ -545,72 +545,6 @@ void BitcoinGUI::createActions()
         connect(usedSendingAddressesAction, &QAction::triggered, walletFrame, &WalletFrame::usedSendingAddresses);
         connect(usedReceivingAddressesAction, &QAction::triggered, walletFrame, &WalletFrame::usedReceivingAddresses);
         connect(openAction, &QAction::triggered, this, &BitcoinGUI::openClicked);
-        connect(m_open_wallet_menu, &QMenu::aboutToShow, [this] {
-            m_open_wallet_menu->clear();
-            for (const std::pair<const std::string, bool>& i : m_wallet_controller->listWalletDir()) {
-                const std::string& path = i.first;
-                QString name = path.empty() ? QString("["+tr("default wallet")+"]") : QString::fromStdString(path);
-                // An single ampersand in the menu item's text sets a shortcut for this item.
-                // Single & are shown when && is in the string. So replace & with &&.
-                name.replace(QChar('&'), QString("&&"));
-                QAction* action = m_open_wallet_menu->addAction(name);
-
-                if (i.second) {
-                    // This wallet is already loaded
-                    action->setEnabled(false);
-                    continue;
-                }
-
-                connect(action, &QAction::triggered, [this, path] {
-                    auto activity = new OpenWalletActivity(m_wallet_controller, this);
-                    connect(activity, &OpenWalletActivity::opened, this, &BitcoinGUI::setCurrentWallet, Qt::QueuedConnection);
-                    connect(activity, &OpenWalletActivity::opened, rpcConsole, &RPCConsole::setCurrentWallet, Qt::QueuedConnection);
-                    activity->open(path);
-                });
-            }
-            if (m_open_wallet_menu->isEmpty()) {
-                QAction* action = m_open_wallet_menu->addAction(tr("No wallets available"));
-                action->setEnabled(false);
-            }
-        });
-        connect(m_restore_wallet_action, &QAction::triggered, [this] {
-            //: Name of the wallet data file format.
-            QString name_data_file = tr("Wallet Data");
-
-            //: The title for Restore Wallet File Windows
-            QString title_windows = tr("Load Wallet Backup");
-
-            QString backup_file = GUIUtil::getOpenFileName(this, title_windows, QString(), name_data_file + QLatin1String(" (*.dat)"), nullptr);
-            if (backup_file.isEmpty()) return;
-
-            bool wallet_name_ok;
-            /*: Title of pop-up window shown when the user is attempting to
-                restore a wallet. */
-            QString title = tr("Restore Wallet");
-            //: Label of the input field where the name of the wallet is entered.
-            QString label = tr("Wallet Name");
-            QString wallet_name = QInputDialog::getText(this, title, label, QLineEdit::Normal, "", &wallet_name_ok);
-            if (!wallet_name_ok || wallet_name.isEmpty()) return;
-
-            auto activity = new RestoreWalletActivity(m_wallet_controller, this);
-            connect(activity, &RestoreWalletActivity::restored, this, &BitcoinGUI::setCurrentWallet, Qt::QueuedConnection);
-            connect(activity, &RestoreWalletActivity::restored, rpcConsole, &RPCConsole::setCurrentWallet, Qt::QueuedConnection);
-
-            auto backup_file_path = fs::PathFromString(backup_file.toStdString());
-            activity->restore(backup_file_path, wallet_name.toStdString());
-        });
-        connect(m_close_wallet_action, &QAction::triggered, [this] {
-            m_wallet_controller->closeWallet(walletFrame->currentWalletModel(), this);
-        });
-        connect(m_create_wallet_action, &QAction::triggered, [this] {
-            auto activity = new CreateWalletActivity(m_wallet_controller, this);
-            connect(activity, &CreateWalletActivity::created, this, &BitcoinGUI::setCurrentWallet);
-            connect(activity, &CreateWalletActivity::created, rpcConsole, &RPCConsole::setCurrentWallet);
-            activity->create();
-        });
-        connect(m_close_all_wallets_action, &QAction::triggered, [this] {
-            m_wallet_controller->closeAllWallets(this);
-        });
 
         connect(m_mask_values_action, &QAction::toggled, this, &BitcoinGUI::setPrivacy);
     }
@@ -960,6 +894,76 @@ void BitcoinGUI::setWalletController(WalletController* wallet_controller, bool s
 
     m_wallet_controller = wallet_controller;
 
+    // The GUI and native menus outlive the controller during shutdown. Bind
+    // every controller action (including dynamically created menu entries) to
+    // its lifetime, not to the lifetime of the QAction/QMenu sender.
+    connect(m_open_wallet_menu, &QMenu::aboutToShow, wallet_controller, [this, wallet_controller] {
+        m_open_wallet_menu->clear();
+        for (const std::pair<const std::string, bool>& i : m_wallet_controller->listWalletDir()) {
+            const std::string& path = i.first;
+            QString name = path.empty() ? QString("["+tr("default wallet")+"]") : QString::fromStdString(path);
+            // An single ampersand in the menu item's text sets a shortcut for this item.
+            // Single & are shown when && is in the string. So replace & with &&.
+            name.replace(QChar('&'), QString("&&"));
+            QAction* action = m_open_wallet_menu->addAction(name);
+
+            if (i.second) {
+                // This wallet is already loaded
+                action->setEnabled(false);
+                continue;
+            }
+
+            connect(action, &QAction::triggered, wallet_controller, [this, path] {
+                auto activity = new OpenWalletActivity(m_wallet_controller, this);
+                connect(activity, &OpenWalletActivity::opened, this, &BitcoinGUI::setCurrentWallet, Qt::QueuedConnection);
+                connect(activity, &OpenWalletActivity::opened, rpcConsole, &RPCConsole::setCurrentWallet, Qt::QueuedConnection);
+                activity->open(path);
+            });
+        }
+        if (m_open_wallet_menu->isEmpty()) {
+            QAction* action = m_open_wallet_menu->addAction(tr("No wallets available"));
+            action->setEnabled(false);
+        }
+    });
+    connect(m_restore_wallet_action, &QAction::triggered, wallet_controller, [this] {
+        //: Name of the wallet data file format.
+        QString name_data_file = tr("Wallet Data");
+
+        //: The title for Restore Wallet File Windows
+        QString title_windows = tr("Load Wallet Backup");
+
+        QString backup_file = GUIUtil::getOpenFileName(this, title_windows, QString(), name_data_file + QLatin1String(" (*.dat)"), nullptr);
+        if (backup_file.isEmpty()) return;
+
+        bool wallet_name_ok;
+        /*: Title of pop-up window shown when the user is attempting to
+            restore a wallet. */
+        QString title = tr("Restore Wallet");
+        //: Label of the input field where the name of the wallet is entered.
+        QString label = tr("Wallet Name");
+        QString wallet_name = QInputDialog::getText(this, title, label, QLineEdit::Normal, "", &wallet_name_ok);
+        if (!wallet_name_ok || wallet_name.isEmpty()) return;
+
+        auto activity = new RestoreWalletActivity(m_wallet_controller, this);
+        connect(activity, &RestoreWalletActivity::restored, this, &BitcoinGUI::setCurrentWallet, Qt::QueuedConnection);
+        connect(activity, &RestoreWalletActivity::restored, rpcConsole, &RPCConsole::setCurrentWallet, Qt::QueuedConnection);
+
+        auto backup_file_path = fs::PathFromString(backup_file.toStdString());
+        activity->restore(backup_file_path, wallet_name.toStdString());
+    });
+    connect(m_close_wallet_action, &QAction::triggered, wallet_controller, [this] {
+        m_wallet_controller->closeWallet(walletFrame->currentWalletModel(), this);
+    });
+    connect(m_create_wallet_action, &QAction::triggered, wallet_controller, [this] {
+        auto activity = new CreateWalletActivity(m_wallet_controller, this);
+        connect(activity, &CreateWalletActivity::created, this, &BitcoinGUI::setCurrentWallet);
+        connect(activity, &CreateWalletActivity::created, rpcConsole, &RPCConsole::setCurrentWallet);
+        activity->create();
+    });
+    connect(m_close_all_wallets_action, &QAction::triggered, wallet_controller, [this] {
+        m_wallet_controller->closeAllWallets(this);
+    });
+
     m_create_wallet_action->setEnabled(true);
     m_open_wallet_action->setEnabled(true);
     m_open_wallet_action->setMenu(m_open_wallet_menu);
@@ -970,6 +974,14 @@ void BitcoinGUI::setWalletController(WalletController* wallet_controller, bool s
     connect(wallet_controller, &WalletController::destroyed, this, [this] {
         // wallet_controller gets destroyed manually, but it leaves our member copy dangling
         m_wallet_controller = nullptr;
+        m_open_wallet_menu->clear();
+        m_create_wallet_action->setEnabled(false);
+        m_open_wallet_action->setEnabled(false);
+        m_restore_wallet_action->setEnabled(false);
+        // WalletModels are children of the controller. Drop their views and
+        // selector data before those models are destroyed as well.
+        removeAllWallets();
+        m_wallet_selector->clear();
     });
 
     rpcConsole->setWalletController(wallet_controller);

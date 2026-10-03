@@ -42,7 +42,7 @@ MAX_BLOOM_FILTER_SIZE = 36000
 MAX_BLOOM_HASH_FUNCS = 50
 
 COIN = 100000000  # 1 smt in satoshis
-MAX_MONEY = 100000000 * COIN
+MAX_MONEY = 10_000_000 * COIN  # Match src/consensus/amount.h.
 
 BIP125_SEQUENCE_NUMBER = 0xfffffffd  # Sequence number that is BIP 125 opt-in and BIP 68-opt-out -- not used in KSH
 SEQUENCE_FINAL = 0xffffffff  # Sequence number that disables nLockTime if set for every input of a tx
