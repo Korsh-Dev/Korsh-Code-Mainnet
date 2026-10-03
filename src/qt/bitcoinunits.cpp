@@ -45,7 +45,7 @@ QString BitcoinUnits::name(Unit unit)
 
 QString BitcoinUnits::description(Unit unit)
 {
-    const QString coin_name{Params().NetworkIDString() == CBaseChainParams::MAIN ? "Korsh" : "Test Korsh"};
+    QString coin_name{Params().NetworkIDString() == CBaseChainParams::MAIN ? "Korsh" : "Test Korsh"};
     switch (unit) {
     case Unit::KSH:  return coin_name;
     case Unit::mKSH: return QString("Milli-%1 (1 / 1" THIN_SP_UTF8 "000)").arg(coin_name);

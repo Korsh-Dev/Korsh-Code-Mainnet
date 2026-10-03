@@ -66,7 +66,9 @@ python3 "${CLANG_TIDY_CACHE_PY}" --zero-stats 2>&1 || true
 
 cd "${BASE_ROOT_DIR}/build-ci/korsh-${BUILD_TARGET}/src"
 
-if ! ( run-clang-tidy -clang-tidy-binary="${CLANG_TIDY_CACHE}" -quiet "${MAKEJOBS}" | tee tmp.tidy-out.txt ); then
+# clang-tidy cannot parse assembler inputs. Keep them in the compilation database
+# for the build, and exclude only .s/.S translation units from this analysis.
+if ! ( run-clang-tidy -clang-tidy-binary="${CLANG_TIDY_CACHE}" -source-filter='^(?!.*\.[sS]$)' -quiet "${MAKEJOBS}" | tee tmp.tidy-out.txt ); then
   grep -C5 "error: " tmp.tidy-out.txt
   echo "^^^ ⚠️ Failure generated from clang-tidy"
   false

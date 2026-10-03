@@ -198,7 +198,79 @@ jobs:
           bash ci/korsh/test_windows_acl.sh "$fixture_parent" privileged
 
       - name: make
-        run: make -C src -j2 korshd.exe korsh-cli.exe korsh-tx.exe korsh-wallet.exe korsh-util.exe qt/korsh-qt.exe
+        run: |
+          set -euo pipefail
+          diagnostics="$GITHUB_WORKSPACE/windows-build-diagnostics"
+          mkdir -p "$diagnostics"
+          # Identify the driver and installed runtime, not just the target libraries.
+          {
+            printf 'MSYSTEM=%s\nPATH=%s\n' "$MSYSTEM" "$PATH"
+            type -a gcc g++ ld
+            gcc -v
+            g++ -v
+            pacman -Q
+            driver=$(command -v g++)
+            if [[ -f "$driver.exe" ]]; then driver="$driver.exe"; fi
+            sha256sum "$driver"
+            objdump -p "$driver"
+          } > "$diagnostics/toolchain.log" 2>&1
+          cat "$diagnostics/toolchain.log"
+          # Snapshots cannot establish peak usage or prove an allocation failure.
+          snapshot() {
+            local label=$1
+            if ! powershell.exe -NoProfile -NonInteractive -Command '
+              $ErrorActionPreference = "Stop"
+              [ordered]@{
+                TimestampUtc = [DateTime]::UtcNow.ToString("o")
+                Memory = Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory |
+                  Select-Object AvailableBytes,CommittedBytes,CommitLimit,PercentCommittedBytesInUse
+                OS = Get-CimInstance Win32_OperatingSystem |
+                  Select-Object Version,BuildNumber,TotalVisibleMemorySize,FreePhysicalMemory,TotalVirtualMemorySize,FreeVirtualMemory
+                SystemCRT = @("msvcrt.dll", "ucrtbase.dll") | ForEach-Object {
+                  (Get-Item (Join-Path "$env:SystemRoot\System32" $_)).VersionInfo |
+                    Select-Object FileName,FileVersion,ProductVersion
+                }
+                Pagefile = @(Get-CimInstance Win32_PageFileUsage |
+                  Select-Object Name,AllocatedBaseSize,CurrentUsage,PeakUsage)
+              } | ConvertTo-Json -Depth 4
+            ' > "$diagnostics/$label.json" 2>&1; then
+              echo "::warning::Memory snapshot $label failed; see diagnostic artifact"
+            fi
+            cat "$diagnostics/$label.json"
+          }
+          targets=(korshd.exe korsh-cli.exe korsh-tx.exe korsh-wallet.exe korsh-util.exe qt/korsh-qt.exe)
+          run_make() {
+            local label=$1 jobs=$2
+            snapshot "before-$label"
+            set +e
+            make -C src -j"$jobs" V=1 "${targets[@]}" 2>&1 | tee "$diagnostics/$label.log"
+            statuses=("${PIPESTATUS[@]}")
+            set -e
+            make_status=${statuses[0]}
+            printf 'make=%s tee=%s\n' "$make_status" "${statuses[1]}" > "$diagnostics/$label.exit"
+            snapshot "after-$label"
+            # A lost/truncated evidence log is not a successful build attempt.
+            if (( statuses[1] != 0 )); then exit "${statuses[1]}"; fi
+          }
+          run_make parallel 2
+          if (( make_status != 0 )); then
+            # One incremental serial replay ONLY for the observed driver-init error.
+            # No clean/reconfigure/flag changes: reuse the same objects and archives.
+            if grep -Eq $'^g[+][+][.]exe: fatal error: atexit failed\r?$' "$diagnostics/parallel.log"; then
+              echo "::warning::GCC driver initialization failed; preserving initial exit/log and replaying once serially"
+              run_make serial 1
+            fi
+          fi
+          exit "$make_status"
+
+      - name: Upload Windows build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-diagnostics
+          path: windows-build-diagnostics/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Collect all six release executables
         run: |

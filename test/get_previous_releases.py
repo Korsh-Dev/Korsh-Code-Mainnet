@@ -136,7 +136,7 @@ def download_binary(tag, args) -> int:
         platform = "osx64"
     tarball = 'dashcore-{tag}-{platform}.tar.gz'.format(
         tag=tag[1:], platform=platform)
-    tarballUrl = 'https://github.com/dashpay/korsh/{bin_path}/{tarball}'.format(
+    tarballUrl = 'https://github.com/dashpay/dash/{bin_path}/{tarball}'.format(
         bin_path=bin_path, tarball=tarball)
 
     print('Fetching: {tarballUrl}'.format(tarballUrl=tarballUrl))
