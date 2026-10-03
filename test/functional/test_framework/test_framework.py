@@ -1723,7 +1723,8 @@ class DashTestFramework(BitcoinTestFramework):
         node_p2p_port = p2p_port(idx)
         platform_node_id = hash160(b'%d' % rnd).hex() if rnd is not None else hash160(b'%d' % node_p2p_port).hex()
         addrs_platform_p2p = node_p2p_port + 101
-        addrs_platform_https = node_p2p_port + 102
+        # Keep HTTPS in a separate range: adjacent node indices have adjacent P2P ports.
+        addrs_platform_https = node_p2p_port + 201
 
         outputs = {mn.collateral_address: mn.get_collateral_value(), mn.fundsAddr: 1}
         collateral_txid = self.nodes[0].sendmany("", outputs)

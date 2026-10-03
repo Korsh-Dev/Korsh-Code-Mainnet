@@ -107,6 +107,12 @@ void AppTests::appTests()
     QVERIFY(wallet_selector);
     UniValue wallet_args{UniValue::VARR};
     wallet_args.push_back("shutdown-regression");
+#ifndef USE_BDB
+    // SQLite-only builds need a descriptor wallet and an explicit startup flag.
+    for (int i = 0; i < 4; ++i) wallet_args.push_back(NullUniValue);
+    wallet_args.push_back(true); // descriptors
+    wallet_args.push_back(false); // load_on_startup
+#endif
     m_app.node().executeRpc("createwallet", wallet_args, "");
     QTRY_VERIFY(wallet_selector->count() > 1);
     auto* wallet_frame = window->findChild<WalletFrame*>();

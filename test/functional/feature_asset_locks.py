@@ -57,6 +57,8 @@ class AssetLocksTest(DashTestFramework):
         self.set_dash_test_params(2, 0, [[
                 "-whitelist=127.0.0.1",
                 "-llmqtestinstantsenddip0024=llmq_test_instantsend",
+                # Exercise both sides of the V24 boundary in test_v24_fork.
+                "-vbparams=v24:0:999999999999:750",
         ]] * 2, evo_count=2)
         self.mn_rr_height = 560
 
@@ -451,7 +453,10 @@ class AssetLocksTest(DashTestFramework):
         for inode in self.nodes:
             inode.invalidateblock(block_asset_unlock)
         self.validate_credit_pool_balance(locked)
-        self.generate_batch(25)
+        # The rewound tip must remain recent enough for P2P direct fetch (20 blocks).
+        # No new transaction needs the usual ten-minute mempool aging here.
+        self.bump_mocktime(1)
+        self.generate(node, 25)
         self.validate_credit_pool_balance(locked)
         for inode in self.nodes:
             inode.reconsiderblock(block_to_reconsider)
@@ -637,9 +642,9 @@ class AssetLocksTest(DashTestFramework):
         owner_reward = bt['masternode'][1]['amount']
         operator_reward = bt['masternode'][2]['amount'] if len(bt['masternode']) == 3 else 0
         all_mn_rewards = platform_reward + owner_reward + operator_reward
-        assert_equal(all_mn_rewards, bt['coinbasevalue'] * 3 // 4)  # 75/25 mn/miner reward split
+        assert_equal(all_mn_rewards, bt['coinbasevalue'] * 3 // 10)  # Korsh's 30/70 mn/miner reward split
         assert_equal(platform_reward, all_mn_rewards * 375 // 1000)  # 0.375 platform share
-        assert_equal(platform_reward, 112592247)
+        assert_equal(platform_reward, 45036898)  # 37.5% of Korsh's 30% share at height 560
         assert_equal(locked, self.get_credit_pool_balance())
         self.generate(node, 1)
         locked += platform_reward
