@@ -11,6 +11,9 @@
 /** Abort with a message */
 bool AbortNode(const std::string& strMessage, bilingual_str user_message = bilingual_str{});
 
+/** Whether AbortNode has been called in any thread. Never cleared during this process. */
+bool NodeAborted();
+
 /** Initialize shutdown state. This must be called before using either StartShutdown(),
  * AbortShutdown() or WaitForShutdown(). Calling ShutdownRequested() is always safe.
  */

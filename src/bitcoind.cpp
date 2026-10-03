@@ -251,7 +251,9 @@ static bool AppInit(NodeContext& node, int argc, char* argv[])
     Interrupt(node);
     Shutdown(node);
 
-    return fRet;
+    // Read fatal status after shutdown has joined worker threads and flushed
+    // state: AbortNode can be called after successful initialization or in teardown.
+    return fRet && !NodeAborted();
 }
 
 MAIN_FUNCTION

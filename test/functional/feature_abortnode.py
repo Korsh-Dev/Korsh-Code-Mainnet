@@ -11,7 +11,7 @@
 """
 
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import get_datadir_path
+from test_framework.util import assert_equal, get_datadir_path
 import os
 
 
@@ -39,11 +39,25 @@ class AbortNodeTest(BitcoinTestFramework):
             self.connect_nodes(0, 1)
             self.generate(self.nodes[1], 1, sync_fun=self.no_op)
 
-            # Check that node0 aborted
-            self.log.info("Waiting for crash")
-            self.nodes[0].wait_until_stopped(timeout=200)
+            # This is an asynchronous fatal error after RPC initialization, not
+            # an ordinary stop. Check the real daemon process exit directly.
+            self.log.info("Waiting for fatal shutdown")
+            node = self.nodes[0]
+            assert node.process is not None
+            return_code = node.process.wait(timeout=200)
+            self.log.info(f"Fatal shutdown exit status: {return_code}")
+            assert_equal(return_code, 1)
+            node.running = False
+            node.process = None
+            node.rpc_connected = False
+            node.rpc = None
         self.log.info("Node crashed - now verifying restart fails")
         self.nodes[0].assert_start_raises_init_error()
+
+        # An ordinary RPC stop must still succeed; synchronous init errors must
+        # still fail. The stop helper checks the real process returned zero.
+        self.stop_node(1)
+        self.nodes[1].assert_start_raises_init_error(extra_args=["-definitely-invalid-option"])
 
 
 if __name__ == '__main__':

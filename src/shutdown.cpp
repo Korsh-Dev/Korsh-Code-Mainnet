@@ -21,8 +21,18 @@
 #include <condition_variable>
 #endif
 
+// A fatal error remains latched for the lifetime of the process, even if a
+// shutdown request is subsequently cleared during initialization.
+static std::atomic<bool> g_node_aborted{false};
+
+bool NodeAborted()
+{
+    return g_node_aborted.load();
+}
+
 bool AbortNode(const std::string& strMessage, bilingual_str user_message)
 {
+    g_node_aborted.store(true);
     SetMiscWarning(Untranslated(strMessage));
     LogPrintf("*** %s\n", strMessage);
     if (user_message.empty()) {
