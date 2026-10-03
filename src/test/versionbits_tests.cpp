@@ -463,4 +463,107 @@ BOOST_AUTO_TEST_CASE(versionbits_computeblockversion)
     }
 }
 
+BOOST_AUTO_TEST_CASE(versionbits_v24_overflow)
+{
+    ArgsManager args;
+    const auto chain_params = CreateChainParams(args, CBaseChainParams::REGTEST);
+    const auto& params = chain_params->GetConsensus();
+    constexpr auto dep = Consensus::DEPLOYMENT_V24;
+    BOOST_REQUIRE_EQUAL(params.vDeployments[dep].nWindowSize, 10);
+    BOOST_REQUIRE_EQUAL(params.vDeployments[dep].nThresholdMin, 6);
+    const int32_t signal = VERSIONBITS_TOP_BITS | VersionBitsCache::Mask(params, dep);
+
+    // 14655^2 * 10 is the first overflowing int product. Keep the real
+    // regtest V24 parameters and exercise both statistics and transitions.
+    for (const int attempt : {14654, 14655, 14656}) {
+        for (const int count : {5, 6}) {
+            VersionBitsTester chain;
+            VersionBitsCache incremental, cold;
+            const auto first = chain.Mine(10, 0, VERSIONBITS_TOP_BITS).Tip();
+            BOOST_CHECK(incremental.State(first, params, dep) == ThresholdState::STARTED);
+            const int start = (attempt + 1) * 10;
+            const auto before = chain.Mine(start, 0, VERSIONBITS_TOP_BITS).Tip();
+            BOOST_CHECK(incremental.State(before, params, dep) == ThresholdState::STARTED);
+            BOOST_CHECK_EQUAL(incremental.Statistics(before, params, dep).threshold, 6);
+            BOOST_CHECK_EQUAL(cold.Statistics(before, params, dep).threshold, 6);
+            chain.Mine(start + 10 - count, 0, VERSIONBITS_TOP_BITS);
+            const auto boundary = chain.Mine(start + 10, 0, signal).Tip();
+            const auto expected = count == 6 ? ThresholdState::LOCKED_IN : ThresholdState::STARTED;
+            BOOST_CHECK(incremental.State(boundary, params, dep) == expected);
+            cold.Clear();
+            BOOST_CHECK(cold.State(boundary, params, dep) == expected);
+            const auto after = chain.Mine(start + 20, 0, VERSIONBITS_TOP_BITS).Tip();
+            BOOST_CHECK(incremental.State(after, params, dep) ==
+                        (count == 6 ? ThresholdState::ACTIVE : ThresholdState::STARTED));
+            // Rewind to the common ancestor, then evaluate the descendant
+            // again, both with populated caches and after a cache reset.
+            BOOST_CHECK(incremental.State(before, params, dep) == ThresholdState::STARTED);
+            incremental.Clear();
+            BOOST_CHECK(incremental.State(boundary, params, dep) == expected);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(versionbits_threshold_defined_results)
+{
+    ArgsManager args;
+    const auto chain_params = CreateChainParams(args, CBaseChainParams::REGTEST);
+    constexpr auto dep = Consensus::DEPLOYMENT_V24;
+    for (const int period : {10, 120, 4032}) {
+        auto params = chain_params->GetConsensus();
+        auto& deployment = params.vDeployments[dep];
+        deployment.nWindowSize = period;
+        deployment.nThresholdStart = period == 10 ? 8 : period == 120 ? 96 : 3226;
+        deployment.nThresholdMin = period == 10 ? 6 : period == 120 ? 72 : 2420;
+        VersionBitsTester chain;
+        VersionBitsCache cache;
+        // All original products are representable here, including both sides
+        // of the floor boundary. Preserve division order and truncation.
+        for (int attempt = 0; attempt <= 11; ++attempt) {
+            const auto tip = chain.Mine((attempt + 1) * period, 0, VERSIONBITS_TOP_BITS).Tip();
+            const int64_t original = deployment.nThresholdStart - attempt * attempt * period / 100 / deployment.nFalloffCoeff;
+            BOOST_CHECK_EQUAL(cache.Statistics(tip, params, dep).threshold,
+                              std::max(deployment.nThresholdMin, original));
+        }
+        // The three constant-threshold bypasses must remain unchanged.
+        for (int bypass = 0; bypass < 3; ++bypass) {
+            auto constant_params = params;
+            auto& constant = constant_params.vDeployments[dep];
+            if (bypass == 0) constant.nThresholdStart = 0;
+            if (bypass == 1) constant.nThresholdMin = 0;
+            if (bypass == 2) constant.nFalloffCoeff = 0;
+            VersionBitsCache constant_cache;
+            BOOST_CHECK_EQUAL(constant_cache.Statistics(chain.Tip(), constant_params, dep).threshold,
+                              bypass == 0 ? params.nRuleChangeActivationThreshold : deployment.nThresholdStart);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(versionbits_mainnet_testnet_inactive)
+{
+    ArgsManager args;
+    // These options must not change canonical mainnet/testnet deployments.
+    args.ForceSetArg("-vbparams", "v24:0:999999999999:0:10:8:6:5:0");
+    for (const auto& network : {CBaseChainParams::MAIN, CBaseChainParams::TESTNET}) {
+        const auto chain_params = CreateChainParams(args, network);
+        const auto& params = chain_params->GetConsensus();
+        VersionBitsCache cache;
+        VersionBitsTester chain;
+        for (const int height : {0, 4032, 8065}) {
+            const auto tip = chain.Mine(height, 2000000000, VERSIONBITS_TOP_BITS | 0x1fffffff).Tip();
+            BOOST_CHECK_EQUAL(cache.ComputeBlockVersion(tip, params), VERSIONBITS_TOP_BITS);
+            for (int i = 0; i < Consensus::MAX_VERSION_BITS_DEPLOYMENTS; ++i) {
+                const auto dep = static_cast<Consensus::DeploymentPos>(i);
+                const auto& deployment = params.vDeployments[dep];
+                BOOST_REQUIRE_EQUAL(deployment.nStartTime, Consensus::BIP9Deployment::NEVER_ACTIVE);
+                BOOST_CHECK(cache.State(tip, params, dep) == ThresholdState::FAILED);
+                BOOST_CHECK_EQUAL(cache.StateSinceHeight(tip, params, dep), 0);
+                BOOST_CHECK_EQUAL(cache.Statistics(tip, params, dep).threshold,
+                                  deployment.nThresholdStart == 0 ? params.nRuleChangeActivationThreshold : deployment.nThresholdStart);
+            }
+            cache.Clear();
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()

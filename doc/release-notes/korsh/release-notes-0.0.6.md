@@ -26,4 +26,6 @@ The v0.0.6 packages retain the platform-specific Berkeley DB backends used by v0
 
 ## Consensus and economics
 
-No consensus, subsidy, or collateral rules changed in v0.0.6. This is a wallet/UI, configuration parsing, and documentation release; it does not require a chain reset or reindex.
+Canonical mainnet and testnet consensus, subsidy, collateral, genesis, and activation parameters are unchanged. No chain reset or reindex is required on those networks.
+
+The versionbits falling-threshold calculation now widens to 64 bits before multiplication, fixing signed overflow in long-running STARTED deployments (including regtest V24). All previously defined arithmetic results are preserved. Mainnet and testnet deployments remain NEVER_ACTIVE, so their consensus behavior is unchanged. Existing devnets or custom networks that reached the old overflow region may differ from old binaries, whose arithmetic was undefined; review their parameters and history and coordinate compatibility before upgrading them.
