@@ -1639,6 +1639,15 @@ if test "$RUST_TARGET" = ""; then
     i?86-*mingw*)
       RUST_TARGET="i686-pc-windows-gnu"
       ;;
+    arm*-linux-gnueabihf)
+      RUST_TARGET="arm-unknown-linux-gnueabihf"
+      ;;
+    x86_64-apple-darwin*)
+      RUST_TARGET="x86_64-apple-darwin"
+      ;;
+    aarch64-apple-darwin*)
+      RUST_TARGET="aarch64-apple-darwin"
+      ;;
   esac
 fi
 
@@ -1655,6 +1664,9 @@ if test "$RUST_TARGET" != ""; then
       ;;
     i686-pc-windows-gnu)
       RUST_CARGO_ENV="CARGO_TARGET_I686_PC_WINDOWS_GNU_LINKER=${RUST_TOOL_PREFIX}gcc CC_i686_pc_windows_gnu=${RUST_TOOL_PREFIX}gcc CXX_i686_pc_windows_gnu=${RUST_TOOL_PREFIX}g++ AR_i686_pc_windows_gnu=${RUST_TOOL_PREFIX}ar"
+      ;;
+    arm-unknown-linux-gnueabihf)
+      RUST_CARGO_ENV="CARGO_TARGET_ARM_UNKNOWN_LINUX_GNUEABIHF_LINKER=${RUST_TOOL_PREFIX}gcc CC_arm_unknown_linux_gnueabihf=${RUST_TOOL_PREFIX}gcc CXX_arm_unknown_linux_gnueabihf=${RUST_TOOL_PREFIX}g++ AR_arm_unknown_linux_gnueabihf=${RUST_TOOL_PREFIX}ar"
       ;;
   esac
 fi

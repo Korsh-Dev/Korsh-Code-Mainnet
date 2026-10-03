@@ -146,6 +146,7 @@ BITCOIN_QT_H = \
   qt/guiutil_font.h \
   qt/initexecutor.h \
   qt/intro.h \
+  qt/korshfeatures.h \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
   qt/macos_appnap.h \
@@ -350,6 +351,8 @@ QT_RES_IMAGES = \
   qt/res/images/checkbox_partly_checked_hover_dark.png \
   qt/res/images/checkbox_partly_checked_hover_light.png \
   qt/res/images/checkbox_partly_checked_light.png \
+  qt/res/images/korsh_logo_toolbar.png \
+  qt/res/images/korsh_logo_toolbar_blue.png \
   qt/res/images/radio_checked_dark.png \
   qt/res/images/radio_checked_disabled_dark.png \
   qt/res/images/radio_checked_disabled_light.png \

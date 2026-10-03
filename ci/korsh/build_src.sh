@@ -47,7 +47,7 @@ if [ "${RUN_TIDY}" = "true" ]; then
   MAYBE_TOKEN="--"
 fi
 
-bash -c "${MAYBE_BEAR} ${MAYBE_TOKEN} make ${MAKEJOBS} ${GOAL}" || ( echo "Build failure. Verbose build follows." && make "$GOAL" V=1 ; false )
+bash -c "${MAYBE_BEAR} ${MAYBE_TOKEN} make ${MAKEJOBS} ${GOAL}" || ( echo "Build failure. Verbose build follows." && bash -c "make ${GOAL} V=1" ; false )
 
 ccache --version | head -n 1 && ccache --show-stats
 
