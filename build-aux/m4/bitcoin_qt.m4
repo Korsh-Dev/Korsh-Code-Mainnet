@@ -190,8 +190,7 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
       dnl require the support archive when Qt's headers enable the feature,
       dnl and keep it after the QPA plugin for static link ordering.
       AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-          #include <QtGui/qtguiconfig.h>
-          #include <QtCore/qglobal.h>
+          #include <QtGui/qtguiglobal.h>
           #if !QT_CONFIG(vulkan)
           #error Qt Vulkan support is disabled
           #endif
