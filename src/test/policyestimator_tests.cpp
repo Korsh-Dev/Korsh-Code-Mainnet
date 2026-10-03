@@ -2,16 +2,21 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <clientversion.h>
 #include <policy/fees.h>
 #include <policy/policy.h>
+#include <streams.h>
 #include <test/util/txmempool.h>
 #include <txmempool.h>
 #include <uint256.h>
+#include <util/system.h>
 #include <util/time.h>
 
 #include <test/util/setup_common.h>
 
 #include <boost/test/unit_test.hpp>
+
+#include <limits>
 
 BOOST_FIXTURE_TEST_SUITE(policyestimator_tests, ChainTestingSetup)
 
@@ -179,6 +184,173 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     for (int i = 2; i < 9; i++) { // At 9, the original estimate was already at the bottom (b/c scale = 2)
         BOOST_CHECK(feeEst.estimateFee(i).GetFeePerK() < origFeeEst[i-1] - deltaFee);
     }
+}
+
+namespace {
+// All files and constructor reads are confined to ChainTestingSetup's datadir.
+std::vector<unsigned char> WriteEstimates(const CBlockPolicyEstimator& estimator)
+{
+    AutoFile file{fsbridge::fopen(gArgs.GetDataDirNet() / "estimator-roundtrip.dat", "w+b")};
+    BOOST_REQUIRE(!file.IsNull());
+    BOOST_REQUIRE(estimator.Write(file));
+    BOOST_REQUIRE_EQUAL(std::fflush(file.Get()), 0);
+    const long size = std::ftell(file.Get());
+    BOOST_REQUIRE(size > 0);
+    std::rewind(file.Get());
+    std::vector<unsigned char> bytes(size);
+    BOOST_REQUIRE_EQUAL(std::fread(bytes.data(), 1, bytes.size(), file.Get()), bytes.size());
+    return bytes;
+}
+
+bool ReadEstimates(CBlockPolicyEstimator& estimator, const std::vector<unsigned char>& bytes)
+{
+    AutoFile file{fsbridge::fopen(gArgs.GetDataDirNet() / "estimator-input.dat", "w+b")};
+    BOOST_REQUIRE(!file.IsNull());
+    BOOST_REQUIRE_EQUAL(std::fwrite(bytes.data(), 1, bytes.size(), file.Get()), bytes.size());
+    BOOST_REQUIRE_EQUAL(std::fflush(file.Get()), 0);
+    std::rewind(file.Get());
+    return estimator.Read(file);
+}
+
+std::vector<CAmount> EstimateSnapshot(const CBlockPolicyEstimator& estimator)
+{
+    std::vector<CAmount> result;
+    for (const auto horizon : {FeeEstimateHorizon::SHORT_HALFLIFE, FeeEstimateHorizon::MED_HALFLIFE, FeeEstimateHorizon::LONG_HALFLIFE}) {
+        const auto rate = estimator.estimateRawFee(12, 0.95, horizon).GetFeePerK();
+        BOOST_REQUIRE(rate > 0);
+        result.push_back(rate);
+    }
+    for (bool conservative : {false, true}) {
+        for (int target : {2, 6, 12, 48, 100, 1008}) {
+            FeeCalculation calc;
+            const auto rate = estimator.estimateSmartFee(target, &calc, conservative).GetFeePerK();
+            BOOST_REQUIRE(rate > 0);
+            result.push_back(rate);
+            result.push_back(calc.returnedTarget);
+        }
+    }
+    return result;
+}
+
+void SetEstimateInt(std::vector<unsigned char>& bytes, size_t offset, uint32_t value)
+{
+    BOOST_REQUIRE(bytes.size() >= offset + 4);
+    WriteLE32(bytes.data() + offset, value);
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(PopulatedFeeEstimatePersistence)
+{
+    CBlockPolicyEstimator source;
+    TestMemPoolEntryHelper helper;
+    CMutableTransaction tx;
+    tx.vin.resize(1);
+    tx.vout.resize(1);
+    tx.vin[0].scriptSig = CScript() << std::vector<unsigned char>(128, 'X');
+    // Every observation is confirmed; no unserialized mempool counters remain.
+    for (unsigned int height = 0; height < 200; ++height) {
+        std::vector<CTxMemPoolEntry> entries;
+        entries.reserve(40);
+        for (unsigned int i = 0; i < 40; ++i) {
+            tx.vin[0].prevout.n = height * 40 + i;
+            entries.push_back(helper.Fee(2000 + 100 * i).Height(height).FromTx(tx));
+            source.processTransaction(entries.back(), true);
+        }
+        std::vector<const CTxMemPoolEntry*> block;
+        for (const auto& entry : entries) block.push_back(&entry);
+        source.processBlock(height + 1, block);
+    }
+    source.FlushUnconfirmed();
+    const auto expected = EstimateSnapshot(source);
+    const auto original = WriteEstimates(source);
+    BOOST_REQUIRE_EQUAL(ReadLE32(original.data()), 140100U);
+    BOOST_CHECK_EQUAL(ReadLE32(original.data() + 4), CLIENT_VERSION);
+    CBlockPolicyEstimator restored;
+    BOOST_REQUIRE(ReadEstimates(restored, original));
+    BOOST_CHECK(EstimateSnapshot(restored) == expected);
+    // Newly collected history and reserialized historical history take opposite
+    // Write branches, but must preserve identical bytes/target availability.
+    BOOST_CHECK(WriteEstimates(restored) == original);
+    CBlockPolicyEstimator twice;
+    BOOST_REQUIRE(ReadEstimates(twice, WriteEstimates(restored)));
+    BOOST_CHECK(EstimateSnapshot(twice) == expected);
+
+    // Synthetic historical/future writer metadata, not foreign-chain fixtures.
+    // The required format, not the writer's release number, governs acceptance.
+    for (int writer : {5, 6, 140100, 220103, std::numeric_limits<int>::max()}) {
+        auto bytes = original;
+        SetEstimateInt(bytes, 4, writer);
+        CBlockPolicyEstimator target;
+        BOOST_REQUIRE(ReadEstimates(target, bytes));
+        BOOST_CHECK(EstimateSnapshot(target) == expected);
+        BOOST_CHECK(WriteEstimates(target) == original);
+    }
+    const auto assert_unchanged = [&](const std::vector<unsigned char>& bytes, bool accepted) {
+        BOOST_CHECK_EQUAL(ReadEstimates(restored, bytes), accepted);
+        BOOST_CHECK(WriteEstimates(restored) == original);
+        BOOST_CHECK(EstimateSnapshot(restored) == expected);
+    };
+    for (int required : {140101, std::numeric_limits<int>::max()}) {
+        auto bytes = original;
+        SetEstimateInt(bytes, 0, required);
+        assert_unchanged(bytes, false);
+        bytes.resize(8); // Reject even before the common height/payload is read.
+        assert_unchanged(bytes, false);
+    }
+    for (int required : {6, 140099}) {
+        auto bytes = original;
+        SetEstimateInt(bytes, 0, required);
+        bytes.resize(12); // Existing unsupported-old behavior: true, no import.
+        assert_unchanged(bytes, true);
+        bytes.pop_back();
+        assert_unchanged(bytes, false);
+    }
+    for (size_t length : {size_t{0}, size_t{7}, size_t{11}, size_t{19}, original.size() / 2, original.size() - 1}) {
+        assert_unchanged({original.begin(), original.begin() + length}, false);
+    }
+    auto corrupt = original;
+    SetEstimateInt(corrupt, 12, 201); // historical first > historical best
+    assert_unchanged(corrupt, false);
+    corrupt = original;
+    SetEstimateInt(corrupt, 16, 201); // historical best > current best
+    assert_unchanged(corrupt, false);
+    corrupt = original;
+    corrupt[20] = 1; // invalid bucket count
+    assert_unchanged(corrupt, false);
+
+    // Locate each horizon in the unchanged layout using integer representations
+    // of the encoded doubles. Corruption late in the file must not import the
+    // earlier, already parsed horizons either.
+    DataStream stream{original};
+    stream.ignore(20);
+    std::vector<uint64_t> buckets;
+    stream >> buckets;
+    for (int horizon = 0; horizon < 3; ++horizon) {
+        BOOST_TEST_CONTEXT("serialized horizon " << horizon) {
+            const size_t start = original.size() - stream.size();
+            uint64_t decay;
+            unsigned int scale;
+            std::vector<uint64_t> averages, counts;
+            std::vector<std::vector<uint64_t>> confirms, failures;
+            stream >> decay >> scale >> averages >> counts;
+            const size_t matrix = original.size() - stream.size();
+            stream >> confirms >> failures;
+            corrupt = original;
+            WriteLE64(corrupt.data() + start, 0); // invalid zero decay
+            assert_unchanged(corrupt, false);
+            corrupt = original;
+            SetEstimateInt(corrupt, start + 8, 0); // invalid zero scale
+            assert_unchanged(corrupt, false);
+            corrupt = original;
+            // The existing horizons have one-byte CompactSize row counts.
+            BOOST_REQUIRE(confirms.size() < 253);
+            BOOST_REQUIRE(original[matrix] == confirms.size());
+            corrupt[matrix + 1] = 1; // mismatched first confirmation row
+            assert_unchanged(corrupt, false);
+            assert_unchanged({original.begin(), original.begin() + start + 12}, false);
+        }
+    }
+    BOOST_CHECK(stream.empty());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

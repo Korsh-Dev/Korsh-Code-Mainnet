@@ -14,6 +14,7 @@ and by having a higher relay fee on node 4.
 '''
 
 import time
+from unittest.mock import patch
 
 from test_framework.test_framework import DashTestFramework
 from test_framework.util import set_node_times
@@ -149,6 +150,15 @@ class LLMQ_IS_RetroactiveSigning(DashTestFramework):
         self.test_session_timeout(True)
 
 
+    def generate_without_mempool(self, node, nblocks, sync_fun=None):
+        # generateblock retains required quorum commitments, but includes only
+        # explicitly supplied mempool transactions. Keep the timed-out sessions'
+        # transactions unmined while constructing the replacement quorums.
+        address = node.getnewaddress()
+        blocks = [self.generateblock(node, address, [], sync_fun=self.no_op)['hash'] for _ in range(nblocks)]
+        sync_fun() if sync_fun else self.sync_all()
+        return blocks
+
     def test_session_timeout(self, do_cycle_llmqs):
         set_node_times(self.nodes, self.mocktime)
         self.isolate_node(3)
@@ -187,18 +197,35 @@ class LLMQ_IS_RetroactiveSigning(DashTestFramework):
         self.assert_no_instantlock(txid_all_nodes, self.nodes[0])
         self.assert_no_instantlock(txid_single_node, self.nodes[0])
         if do_cycle_llmqs:
-            self.mine_cycle_quorum()
-            self.mine_cycle_quorum()
+            # Session expiry already exceeds Korsh's 60-second safe-mining
+            # timeout. Ordinary generation would mine these transactions and
+            # trigger retroactive signing before the negative assertions.
+            with patch.object(self, 'generate', self.generate_without_mempool):
+                self.mine_cycle_quorum()
+                self.mine_cycle_quorum()
             self.wait_for_chainlocked_block_all_nodes(self.nodes[0].getbestblockhash(), timeout=30)
 
+            assert txid_all_nodes in self.nodes[0].getrawmempool()
+            assert txid_single_node in self.nodes[0].getrawmempool()
             time.sleep(5)
             self.assert_no_instantlock(txid_all_nodes, self.nodes[0])
             self.assert_no_instantlock(txid_single_node, self.nodes[0])
-        # Make node 0 consider the TX as safe
-        self.bump_mocktime(10 * 60 + 1)
-        block = self.generate(self.nodes[0], 1, sync_fun=self.no_op)[0]
-        assert txid_all_nodes in self.nodes[0].getblock(block, 1)['tx']
-        assert txid_single_node in self.nodes[0].getblock(block, 1)['tx']
+        # A ChainLock can satisfy instantlock without a real IS lock and remove
+        # pending retroactive signing. Keep it disabled until both IS locks exist.
+        self.nodes[0].sporkupdate("SPORK_19_CHAINLOCKS_ENABLED", 4000000000)
+        self.wait_for_sporks_same()
+        try:
+            # Make node 0 consider the TX as safe
+            self.bump_mocktime(10 * 60 + 1)
+            block = self.generate(self.nodes[0], 1, sync_fun=self.no_op)[0]
+            assert txid_all_nodes in self.nodes[0].getblock(block, 1)['tx']
+            assert txid_single_node in self.nodes[0].getblock(block, 1)['tx']
+            for txid in (txid_all_nodes, txid_single_node):
+                self.log.info(f"Expecting internal InstantLock for {txid}")
+                self.wait_until(lambda: self.nodes[0].getrawtransaction(txid, True)["instantlock_internal"], timeout=60)
+        finally:
+            self.nodes[0].sporkupdate("SPORK_19_CHAINLOCKS_ENABLED", 0)
+            self.wait_for_sporks_same()
         self.wait_for_chainlocked_block_all_nodes(block)
 
 if __name__ == '__main__':
