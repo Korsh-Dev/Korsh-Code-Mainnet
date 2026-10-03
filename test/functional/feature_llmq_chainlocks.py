@@ -198,7 +198,9 @@ class LLMQChainLocksTest(DashTestFramework):
         assert int(self.nodes[0].getblock(bad_tip)["chainwork"], 16) > int(self.nodes[1].getblock(good_tip)["chainwork"], 16)
         self.restart_node(0)
         self.nodes[0].invalidateblock(good_fork)
-        self.restart_node(0)
+        # This recovery requires VerifyDB's failure-flag reconsideration, not
+        # Korsh's default fast startup (whose recovery is only performed once).
+        self.restart_node(0, extra_args=(self.nodes[0].extra_args or []) + ["-checkblocks=6", "-checklevel=3"])
         self.wait_until(lambda: self.nodes[0].getbestblockhash() == good_tip, timeout=5)
 
         self.log.info("Isolate a node and let it create some transactions which won't get IS locked")
