@@ -33,7 +33,11 @@ cd build-ci
 bash -c "../configure $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG" || ( cat config.log && false)
 make distdir VERSION="$BUILD_TARGET"
 
+# DIST_CARGO currently omits the lockfile. Preserve the reviewed dependency
+# graph rather than resolving newer crates each time CI builds the distdir.
+cp ../Cargo.lock "korsh-$BUILD_TARGET/Cargo.lock"
 cd "korsh-$BUILD_TARGET"
+cargo metadata --locked --format-version 1 > /dev/null
 bash -c "./configure $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG" || ( cat config.log && false)
 
 # This step influences compilation and therefore will always be a part of the

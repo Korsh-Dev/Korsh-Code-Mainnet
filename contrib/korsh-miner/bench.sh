@@ -3,6 +3,7 @@
 # selftest digest: that proves it computes exactly the consensus hash. Stop other miners first.
 #
 #   contrib/korsh-miner/bench.sh [--threads N] [--seconds S]
+export LC_ALL=C
 set -u
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 yp="$here/../../src/crypto/yespower"

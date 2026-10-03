@@ -36,7 +36,7 @@ def find_conf(explicit):
 
 def read_conf(path):
     out = {}
-    for line in open(path):
+    for line in open(path, encoding="utf8"):
         line = line.split("#", 1)[0].strip()
         if "=" in line:
             k, v = line.split("=", 1)

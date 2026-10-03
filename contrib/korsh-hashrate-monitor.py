@@ -120,9 +120,8 @@ def main():
     args = ap.parse_args()
 
     history = []
-    alerted = False
     if os.path.exists(args.csv):
-        with open(args.csv) as fh:
+        with open(args.csv, encoding="utf8") as fh:
             rows = fh.read().strip().splitlines()[1:]
         for row in rows[-args.window:]:
             try:
@@ -131,7 +130,7 @@ def main():
                 pass
 
     new_file = not os.path.exists(args.csv)
-    csv_fh = open(args.csv, "a")
+    csv_fh = open(args.csv, "a", encoding="utf8")
     if new_file:
         csv_fh.write("time,hashrate,difficulty,height,connections\n")
         csv_fh.flush()
@@ -155,7 +154,6 @@ def main():
             if history:
                 recent = sorted(history)[len(history) // 2]
                 if recent > 0 and hr < recent * (1 - args.drop_pct / 100.0):
-                    alerted = True
                     notify("Korsh hashrate drop",
                            f"network hashrate {fmt_hashrate(hr)} is {args.drop_pct:.0f}%+ below the "
                            f"recent median {fmt_hashrate(recent)} at height {data['height']}",

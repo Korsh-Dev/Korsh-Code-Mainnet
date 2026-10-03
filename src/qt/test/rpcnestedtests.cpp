@@ -4,6 +4,7 @@
 
 #include <qt/test/rpcnestedtests.h>
 
+#include <chainparams.h>
 #include <interfaces/node.h>
 #include <rpc/server.h>
 #include <qt/rpcconsole.h>
@@ -82,7 +83,10 @@ void RPCNestedTests::rpcNestedTests()
     QVERIFY(result == result2);
 
     RPCConsole::RPCExecuteCommandLine(m_node, result, "getblock(getbestblockhash())[tx][0]", &filtered);
-    QVERIFY(result == "233980ab7b1153d283b0d20e9a7901fe4a5e1d9355f6b67b5d42d60a9d8a8caf");
+    // Test nested RPC filtering against the fixture's genesis, not a chain-specific literal.
+    const auto& genesis = Params().GenesisBlock();
+    QVERIFY(!genesis.vtx.empty());
+    QCOMPARE(QString::fromStdString(result), QString::fromStdString(genesis.vtx.front()->GetHash().GetHex()));
     QVERIFY(filtered == "getblock(getbestblockhash())[tx][0]");
 
     RPCConsole::RPCParseCommandLine(nullptr, result, "importprivkey", false, &filtered);

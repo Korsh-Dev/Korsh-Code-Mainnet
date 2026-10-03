@@ -82,10 +82,10 @@ DEFAULT_DESCENDANT_LIMIT = 25  # default max number of in-mempool descendants
 MAX_OP_RETURN_RELAY = 83
 
 MAGIC_BYTES = {
-    "mainnet": b"\xe4\xba\x93\xc7",   # mainnet
-    "testnet3": b"\xf2\xd3\xb4\xe5",  # testnet3
-    "regtest": b"\xfb\xd2\xb8\xe1",   # regtest
-    "devnet": b"\xd6\xa1\xf0\xc3",    # devnet
+    "mainnet": b"\xcb\x4b\x53\x48",   # Korsh mainnet
+    "testnet3": b"\xcb\x4b\x53\x54",  # Korsh testnet
+    "regtest": b"\xcb\x4b\x53\x52",   # Korsh regtest
+    "devnet": b"\xcb\x4b\x53\x44",    # Korsh devnet
 }
 
 def sha256(s):

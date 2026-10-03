@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef KORSH_QT_KORSHFEATURES_H
-#define KORSH_QT_KORSHFEATURES_H
+#ifndef BITCOIN_QT_KORSHFEATURES_H
+#define BITCOIN_QT_KORSHFEATURES_H
 
 #include <chainparams.h>
 #include <consensus/params.h>
@@ -64,4 +64,4 @@ inline bool EvoEnabled()
 
 } // namespace KorshFeatures
 
-#endif // KORSH_QT_KORSHFEATURES_H
+#endif // BITCOIN_QT_KORSHFEATURES_H

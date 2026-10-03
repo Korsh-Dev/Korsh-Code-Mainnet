@@ -175,6 +175,28 @@ jobs:
             LDFLAGS="-static -static-libgcc -static-libstdc++ -L/mingw64/qt5-static/lib -L/mingw64/qt5-static/share/qt5/plugins/platforms -L/mingw64/qt5-static/share/qt5/plugins/styles" \
             || (cat config.log; false)
 
+      # These gates compile the actual header independently of --disable-tests.
+      # Native NTFS only: the cross/Wine job cannot replace either gate.
+      - name: Native NTFS ACL core regression (no fixture privileges required)
+        env:
+          ACL_QT_LINKAGE: static
+        run: |
+          export PKG_CONFIG_PATH=/mingw64/qt5-static/lib/pkgconfig:/mingw64/lib/pkgconfig
+          export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/mingw64/include
+          fixture_parent=$(cygpath -u "$RUNNER_TEMP")
+          bash ci/korsh/test_windows_acl.sh "$fixture_parent" core
+
+      - name: Native NTFS ACL privileged fixtures (mandatory, no skips)
+        # The hosted Windows administrator token must have restore/symlink
+        # privileges. Only the child test process enables them; failure is fatal.
+        env:
+          ACL_QT_LINKAGE: static
+        run: |
+          export PKG_CONFIG_PATH=/mingw64/qt5-static/lib/pkgconfig:/mingw64/lib/pkgconfig
+          export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/mingw64/include
+          fixture_parent=$(cygpath -u "$RUNNER_TEMP")
+          bash ci/korsh/test_windows_acl.sh "$fixture_parent" privileged
+
       - name: make
         run: make -C src -j2 korshd.exe korsh-cli.exe korsh-tx.exe korsh-wallet.exe korsh-util.exe qt/korsh-qt.exe
 

@@ -29,11 +29,14 @@ class DIP3Test(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.disable_mocktime = True
         self.supports_cli = False
+        # Korsh collateral funding needs more than the inherited 135 blocks.
+        self.dip3_activation = 200
+        self.dip3_enforcement = 215
 
         self.extra_args = [
             "-budgetparams=10:10:10",
             "-sporkkey=cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK",
-            "-dip3params=135:150",
+            f"-dip3params={self.dip3_activation}:{self.dip3_enforcement}",
         ]
 
 
@@ -47,7 +50,8 @@ class DIP3Test(BitcoinTestFramework):
 
     def start_controller_node(self):
         self.log.info("starting controller node")
-        self.start_node(0, extra_args=self.extra_args)
+        # The default onion listener is otherwise shared by every regtest node.
+        self.start_node(0, extra_args=self.extra_args + [f'-bind=127.0.0.1:{p2p_port(0) + 20000}=onion'])
         for node in self.nodes[1:]:
             if node is not None and node.process is not None:
                 self.connect_nodes(node.index, 0)
@@ -58,9 +62,9 @@ class DIP3Test(BitcoinTestFramework):
             self.generate(self.nodes[0], 10, sync_fun=self.no_op) # generate enough for collaterals
         self.log.info("controller node has {} korsh".format(self.nodes[0].getbalance()))
 
-        # Make sure we're below block 135 (which activates dip3)
+        # Funding and the collateral confirmation must precede activation.
         self.log.info("testing rejection of ProTx before dip3 activation")
-        assert self.nodes[0].getblockchaininfo()['blocks'] < 135
+        assert self.nodes[0].getblockcount() + 1 < self.dip3_activation
 
         mns: List[MasternodeInfo] = []
 
@@ -70,9 +74,8 @@ class DIP3Test(BitcoinTestFramework):
         self.create_mn_collateral(self.nodes[0], before_dip3_mn)
         mns.append(before_dip3_mn)
 
-        # block 150 starts enforcing DIP3 MN payments
-        self.generate(self.nodes[0], 150 - self.nodes[0].getblockcount(), sync_fun=self.no_op)
-        assert self.nodes[0].getblockcount() == 150
+        self.generate(self.nodes[0], self.dip3_enforcement - self.nodes[0].getblockcount(), sync_fun=self.no_op)
+        assert_equal(self.nodes[0].getblockcount(), self.dip3_enforcement)
 
         self.log.info("mining final block for DIP3 activation")
         self.generate(self.nodes[0], 1, sync_fun=self.no_op)
@@ -258,7 +261,10 @@ class DIP3Test(BitcoinTestFramework):
         if len(self.nodes) <= mn.nodeIdx:
             self.add_nodes(mn.nodeIdx - len(self.nodes) + 1)
             assert len(self.nodes) == mn.nodeIdx + 1
-        self.start_node(mn.nodeIdx, extra_args = self.extra_args + ['-masternodeblsprivkey=%s' % mn.keyOperator])
+        self.start_node(mn.nodeIdx, extra_args=self.extra_args + [
+            '-masternodeblsprivkey=%s' % mn.keyOperator,
+            f'-bind=127.0.0.1:{p2p_port(mn.nodeIdx) + 20000}=onion',
+        ])
         force_finish_mnsync(mn.get_node(self))
         self.connect_nodes(mn.nodeIdx, 0)
         self.sync_all()

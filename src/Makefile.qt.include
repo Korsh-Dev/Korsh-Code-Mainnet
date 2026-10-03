@@ -150,6 +150,7 @@ BITCOIN_QT_H = \
   qt/macnotificationhandler.h \
   qt/macos_appnap.h \
   qt/masternodelist.h \
+  qt/masternodewizardconfig.h \
   qt/masternodemodel.h \
   qt/mnemonicverificationdialog.h \
   qt/modaloverlay.h \

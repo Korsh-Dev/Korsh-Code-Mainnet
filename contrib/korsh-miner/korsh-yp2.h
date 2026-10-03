@@ -1,5 +1,5 @@
-#ifndef KORSH_YP2_H
-#define KORSH_YP2_H
+#ifndef BITCOIN_KORSH_MINER_KORSH_YP2_H
+#define BITCOIN_KORSH_MINER_KORSH_YP2_H
 
 #include <stdint.h>
 
@@ -13,4 +13,4 @@ int korsh_yp2_supported(void);
  */
 int korsh_yespower_hash2(const uint8_t *in0, const uint8_t *in1, uint8_t *out0, uint8_t *out1);
 
-#endif
+#endif // BITCOIN_KORSH_MINER_KORSH_YP2_H

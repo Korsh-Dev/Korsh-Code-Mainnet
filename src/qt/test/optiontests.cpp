@@ -45,6 +45,9 @@ void OptionTests::migrateSettings()
     settings.setValue("addrSeparateProxyTor", "onion:234");
 
     settings.sync();
+    QCOMPARE(settings.status(), QSettings::NoError);
+    QCOMPARE(QSettings().value("nDatabaseCache").toInt(), 600);
+    QCOMPARE(QSettings().value("fListen"), QVariant(false));
 
     OptionsModel options{m_node};
     bilingual_str error;
@@ -104,6 +107,9 @@ void OptionTests::parametersInteraction()
 
     QSettings settings;
     settings.setValue("fListen", false);
+    settings.sync();
+    QCOMPARE(settings.status(), QSettings::NoError);
+    QCOMPARE(QSettings().value("fListen"), QVariant(false));
 
     bilingual_str error;
     QVERIFY(OptionsModel{m_node}.Init(error));

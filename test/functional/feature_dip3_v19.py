@@ -52,6 +52,8 @@ class DIP3V19Test(DashTestFramework):
         self.extra_args = [[
             '-deprecatedrpc=legacy_mn',
             '-testactivationheight=v19@200',
+            # Keep later rules from rejecting the pre-v19 legacy registrations.
+            '-vbparams=v24:999999999999:999999999999',
         ]] * 6
         self.set_dash_test_params(6, 5, evo_count=2, extra_args=self.extra_args)
 

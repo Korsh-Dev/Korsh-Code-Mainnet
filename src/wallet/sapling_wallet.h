@@ -25,6 +25,8 @@ class CWalletTx;
 
 using SaplingIncomingViewingKeyMap = std::map<libzcash::SaplingPaymentAddress, libzcash::SaplingIncomingViewingKey>;
 
+// Except during construction, callers must hold the parent wallet's cs_wallet.
+// Lock annotations are on the definitions because CWallet is incomplete here.
 class SaplingWallet
 {
 public:

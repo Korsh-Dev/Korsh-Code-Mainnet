@@ -26,14 +26,6 @@ SAPLING_PATH=$(cd "$(dirname "$0")" && pwd)
 SHA256CMD="$(command -v sha256sum || echo shasum)"
 SHA256ARGS="$(command -v sha256sum >/dev/null || echo '-a 256')"
 
-pushd () {
-    command pushd "$@" > /dev/null
-}
-
-popd () {
-    command popd > /dev/null
-}
-
 function install_params {
     local filename="$1"
     local output="$2"

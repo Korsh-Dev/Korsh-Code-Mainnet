@@ -254,6 +254,12 @@ dist_noinst_SCRIPTS = autogen.sh
 
 EXTRA_DIST = $(DIST_SHARE) $(DIST_CONTRIB) $(DIST_CARGO) $(WINDOWS_PACKAGING) $(OSX_PACKAGING) $(BIN_CHECKS)
 
+# Standalone native NTFS regression is shipped even with Qt/tests disabled.
+# Run via its argument-aware wrapper, not Automake TESTS without a fixture path.
+EXTRA_DIST += src/qt/test/masternodewizard_windows_acl_test.cpp \
+    ci/korsh/test_windows_acl.sh \
+    doc/windows-acl-regression.md
+
 EXTRA_DIST += \
     test/functional \
     test/fuzz

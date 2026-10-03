@@ -50,7 +50,7 @@ bool DeserializeSaplingSpendingKey(const CKeyingMaterial& secret, libzcash::Sapl
     }
 }
 
-void AppendCommitmentToWalletWitnesses(CWallet& wallet, const uint256& cmu)
+void AppendCommitmentToWalletWitnesses(CWallet& wallet, const uint256& cmu) EXCLUSIVE_LOCKS_REQUIRED(wallet.cs_wallet)
 {
     AssertLockHeld(wallet.cs_wallet);
     for (auto& [txid, wtx] : wallet.mapWallet) {
@@ -63,7 +63,7 @@ void AppendCommitmentToWalletWitnesses(CWallet& wallet, const uint256& cmu)
 
 } // namespace
 
-libzcash::SaplingPaymentAddress SaplingWallet::GenerateNewAddress(const std::string& label)
+libzcash::SaplingPaymentAddress SaplingWallet::GenerateNewAddress(const std::string& label) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     (void)label;
     AssertLockHeld(m_wallet.cs_wallet);
@@ -81,7 +81,7 @@ libzcash::SaplingPaymentAddress SaplingWallet::GenerateNewAddress(const std::str
     throw std::runtime_error("failed to generate a unique Sapling address");
 }
 
-bool SaplingWallet::AddSpendingKey(const libzcash::SaplingExtendedSpendingKey& sk, int64_t create_time, WalletBatch* batch)
+bool SaplingWallet::AddSpendingKey(const libzcash::SaplingExtendedSpendingKey& sk, int64_t create_time, WalletBatch* batch) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
 
@@ -114,7 +114,7 @@ bool SaplingWallet::AddSpendingKey(const libzcash::SaplingExtendedSpendingKey& s
     return db.WriteSaplingPaymentAddress(address, ivk);
 }
 
-bool SaplingWallet::LoadSpendingKey(const libzcash::SaplingExtendedSpendingKey& sk)
+bool SaplingWallet::LoadSpendingKey(const libzcash::SaplingExtendedSpendingKey& sk) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     const auto extfvk = sk.ToXFVK();
@@ -125,7 +125,7 @@ bool SaplingWallet::LoadSpendingKey(const libzcash::SaplingExtendedSpendingKey& 
     return true;
 }
 
-bool SaplingWallet::LoadCryptedSpendingKey(const libzcash::SaplingExtendedFullViewingKey& extfvk, const std::vector<unsigned char>& crypted_secret)
+bool SaplingWallet::LoadCryptedSpendingKey(const libzcash::SaplingExtendedFullViewingKey& extfvk, const std::vector<unsigned char>& crypted_secret) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     const auto ivk = extfvk.fvk.in_viewing_key();
@@ -135,21 +135,21 @@ bool SaplingWallet::LoadCryptedSpendingKey(const libzcash::SaplingExtendedFullVi
     return true;
 }
 
-bool SaplingWallet::LoadKeyMetadata(const libzcash::SaplingIncomingViewingKey& ivk, const CKeyMetadata& meta)
+bool SaplingWallet::LoadKeyMetadata(const libzcash::SaplingIncomingViewingKey& ivk, const CKeyMetadata& meta) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     m_key_metadata[ivk] = meta;
     return true;
 }
 
-bool SaplingWallet::LoadPaymentAddress(const libzcash::SaplingPaymentAddress& address, const libzcash::SaplingIncomingViewingKey& ivk)
+bool SaplingWallet::LoadPaymentAddress(const libzcash::SaplingPaymentAddress& address, const libzcash::SaplingIncomingViewingKey& ivk) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     m_incoming_viewing_keys[address] = ivk;
     return true;
 }
 
-bool SaplingWallet::EncryptKeys(const CKeyingMaterial& master_key, WalletBatch& batch)
+bool SaplingWallet::EncryptKeys(const CKeyingMaterial& master_key, WalletBatch& batch) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
 
@@ -171,7 +171,7 @@ bool SaplingWallet::EncryptKeys(const CKeyingMaterial& master_key, WalletBatch& 
     return true;
 }
 
-bool SaplingWallet::CheckDecryptionKey(const CKeyingMaterial& master_key) const
+bool SaplingWallet::CheckDecryptionKey(const CKeyingMaterial& master_key) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     for (const auto& [extfvk, crypted_secret] : m_crypted_spending_keys) {
@@ -185,13 +185,13 @@ bool SaplingWallet::CheckDecryptionKey(const CKeyingMaterial& master_key) const
     return true;
 }
 
-bool SaplingWallet::HaveSpendingKey(const libzcash::SaplingExtendedFullViewingKey& extfvk) const
+bool SaplingWallet::HaveSpendingKey(const libzcash::SaplingExtendedFullViewingKey& extfvk) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     return m_spending_keys.count(extfvk) != 0 || m_crypted_spending_keys.count(extfvk) != 0;
 }
 
-bool SaplingWallet::HaveSpendingKeyForPaymentAddress(const libzcash::SaplingPaymentAddress& address) const
+bool SaplingWallet::HaveSpendingKeyForPaymentAddress(const libzcash::SaplingPaymentAddress& address) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     libzcash::SaplingIncomingViewingKey ivk;
@@ -200,7 +200,7 @@ bool SaplingWallet::HaveSpendingKeyForPaymentAddress(const libzcash::SaplingPaym
     return GetFullViewingKey(ivk, extfvk) && HaveSpendingKey(extfvk);
 }
 
-Optional<libzcash::SaplingExtendedSpendingKey> SaplingWallet::GetSpendingKey(const libzcash::SaplingExtendedFullViewingKey& extfvk) const
+Optional<libzcash::SaplingExtendedSpendingKey> SaplingWallet::GetSpendingKey(const libzcash::SaplingExtendedFullViewingKey& extfvk) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
 
@@ -219,7 +219,7 @@ Optional<libzcash::SaplingExtendedSpendingKey> SaplingWallet::GetSpendingKey(con
     return sk;
 }
 
-bool SaplingWallet::GetSpendingKeyForPaymentAddress(const libzcash::SaplingPaymentAddress& address, libzcash::SaplingExtendedSpendingKey& sk_out) const
+bool SaplingWallet::GetSpendingKeyForPaymentAddress(const libzcash::SaplingPaymentAddress& address, libzcash::SaplingExtendedSpendingKey& sk_out) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     libzcash::SaplingIncomingViewingKey ivk;
@@ -231,7 +231,7 @@ bool SaplingWallet::GetSpendingKeyForPaymentAddress(const libzcash::SaplingPayme
     return true;
 }
 
-bool SaplingWallet::GetIncomingViewingKey(const libzcash::SaplingPaymentAddress& address, libzcash::SaplingIncomingViewingKey& ivk_out) const
+bool SaplingWallet::GetIncomingViewingKey(const libzcash::SaplingPaymentAddress& address, libzcash::SaplingIncomingViewingKey& ivk_out) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     auto it = m_incoming_viewing_keys.find(address);
@@ -240,7 +240,7 @@ bool SaplingWallet::GetIncomingViewingKey(const libzcash::SaplingPaymentAddress&
     return true;
 }
 
-bool SaplingWallet::GetFullViewingKey(const libzcash::SaplingIncomingViewingKey& ivk, libzcash::SaplingExtendedFullViewingKey& extfvk_out) const
+bool SaplingWallet::GetFullViewingKey(const libzcash::SaplingIncomingViewingKey& ivk, libzcash::SaplingExtendedFullViewingKey& extfvk_out) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     auto it = m_full_viewing_keys.find(ivk);
@@ -249,7 +249,7 @@ bool SaplingWallet::GetFullViewingKey(const libzcash::SaplingIncomingViewingKey&
     return true;
 }
 
-void SaplingWallet::GetPaymentAddresses(std::set<libzcash::SaplingPaymentAddress>& addresses) const
+void SaplingWallet::GetPaymentAddresses(std::set<libzcash::SaplingPaymentAddress>& addresses) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     for (const auto& [address, ivk] : m_incoming_viewing_keys) {
@@ -257,7 +257,7 @@ void SaplingWallet::GetPaymentAddresses(std::set<libzcash::SaplingPaymentAddress
     }
 }
 
-std::pair<mapSaplingNoteData_t, SaplingIncomingViewingKeyMap> SaplingWallet::FindMySaplingNotes(const CTransaction& tx) const
+std::pair<mapSaplingNoteData_t, SaplingIncomingViewingKeyMap> SaplingWallet::FindMySaplingNotes(const CTransaction& tx) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     if (!tx.HasShieldedPayload()) return {};
@@ -291,7 +291,7 @@ std::pair<mapSaplingNoteData_t, SaplingIncomingViewingKeyMap> SaplingWallet::Fin
     return {note_data, viewing_keys_to_add};
 }
 
-bool SaplingWallet::ApplySaplingData(CWalletTx& wtx, WalletBatch* batch)
+bool SaplingWallet::ApplySaplingData(CWalletTx& wtx, WalletBatch* batch) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     bool changed = false;
@@ -316,7 +316,7 @@ bool SaplingWallet::ApplySaplingData(CWalletTx& wtx, WalletBatch* batch)
     return changed;
 }
 
-void SaplingWallet::RescanWalletTransactions()
+void SaplingWallet::RescanWalletTransactions() EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     const auto start{SteadyClock::now()};
@@ -346,7 +346,7 @@ void SaplingWallet::RescanWalletTransactions()
         Ticks<std::chrono::milliseconds>(SteadyClock::now() - start));
 }
 
-bool SaplingWallet::HasSaplingNotes() const
+bool SaplingWallet::HasSaplingNotes() const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     for (const auto& [txid, wtx] : m_wallet.mapWallet) {
@@ -357,7 +357,7 @@ bool SaplingWallet::HasSaplingNotes() const
     return false;
 }
 
-void SaplingWallet::ClearWitnesses()
+void SaplingWallet::ClearWitnesses() EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     m_nullifiers_to_notes.clear();
@@ -370,7 +370,7 @@ void SaplingWallet::ClearWitnesses()
     }
 }
 
-bool SaplingWallet::RebuildWitnesses(std::string* error)
+bool SaplingWallet::RebuildWitnesses(std::string* error) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     if (!HasSaplingNotes()) return true;
@@ -433,13 +433,13 @@ bool SaplingWallet::RebuildWitnesses(std::string* error)
     return true;
 }
 
-void SaplingWallet::AddToSaplingSpends(const uint256& nullifier, const uint256& wtxid)
+void SaplingWallet::AddToSaplingSpends(const uint256& nullifier, const uint256& wtxid) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     m_sapling_spends.emplace(nullifier, wtxid);
 }
 
-bool SaplingWallet::IsSaplingSpendFromMe(const CTransaction& tx) const
+bool SaplingWallet::IsSaplingSpendFromMe(const CTransaction& tx) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     if (!tx.HasShieldedPayload()) return false;
@@ -449,7 +449,7 @@ bool SaplingWallet::IsSaplingSpendFromMe(const CTransaction& tx) const
     return false;
 }
 
-bool SaplingWallet::IsSaplingSpent(const SaplingOutPoint& op) const
+bool SaplingWallet::IsSaplingSpent(const SaplingOutPoint& op) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     for (const auto& [nullifier, note_op] : m_nullifiers_to_notes) {
@@ -458,7 +458,7 @@ bool SaplingWallet::IsSaplingSpent(const SaplingOutPoint& op) const
     return false;
 }
 
-bool SaplingWallet::IsSaplingSpent(const uint256& nullifier) const
+bool SaplingWallet::IsSaplingSpent(const uint256& nullifier) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     auto range = m_sapling_spends.equal_range(nullifier);
@@ -477,7 +477,7 @@ void SaplingWallet::GetFilteredNotes(std::vector<SaplingNoteEntry>& notes,
                                      const Optional<libzcash::SaplingPaymentAddress>& address,
                                      int min_depth,
                                      bool ignore_spent,
-                                     bool require_spending_key)
+                                     bool require_spending_key) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     std::string error;
@@ -506,7 +506,7 @@ void SaplingWallet::GetFilteredNotes(std::vector<SaplingNoteEntry>& notes,
 
 void SaplingWallet::GetSpendableNotes(std::vector<SaplingSpendableNoteEntry>& notes,
                                       const Optional<libzcash::SaplingPaymentAddress>& address,
-                                      int min_depth)
+                                      int min_depth) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     std::string error;
@@ -533,7 +533,7 @@ void SaplingWallet::GetSpendableNotes(std::vector<SaplingSpendableNoteEntry>& no
     }
 }
 
-CAmount SaplingWallet::GetBalance(const Optional<libzcash::SaplingPaymentAddress>& address, int min_depth, bool ignore_unspendable)
+CAmount SaplingWallet::GetBalance(const Optional<libzcash::SaplingPaymentAddress>& address, int min_depth, bool ignore_unspendable) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     std::vector<SaplingNoteEntry> notes;
@@ -547,7 +547,7 @@ CAmount SaplingWallet::GetBalance(const Optional<libzcash::SaplingPaymentAddress
 
 bool SaplingWallet::AddPaymentAddress(const libzcash::SaplingPaymentAddress& address,
                                       const libzcash::SaplingIncomingViewingKey& ivk,
-                                      WalletBatch* batch)
+                                      WalletBatch* batch) EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     m_incoming_viewing_keys.insert_or_assign(address, ivk);
@@ -556,7 +556,7 @@ bool SaplingWallet::AddPaymentAddress(const libzcash::SaplingPaymentAddress& add
     return db.WriteSaplingPaymentAddress(address, ivk);
 }
 
-Optional<libzcash::SaplingNote> SaplingWallet::DecryptNote(const CTransaction& tx, const SaplingOutPoint& op, const SaplingNoteData& nd) const
+Optional<libzcash::SaplingNote> SaplingWallet::DecryptNote(const CTransaction& tx, const SaplingOutPoint& op, const SaplingNoteData& nd) const EXCLUSIVE_LOCKS_REQUIRED(m_wallet.cs_wallet)
 {
     AssertLockHeld(m_wallet.cs_wallet);
     if (!nd.ivk || op.n >= tx.sapData.vShieldedOutput.size()) return nullopt;

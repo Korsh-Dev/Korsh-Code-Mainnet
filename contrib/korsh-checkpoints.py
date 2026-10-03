@@ -69,7 +69,7 @@ def main():
     text = "\n".join(entries)
     print(text)
     if args.out:
-        with open(args.out, "w") as fh:
+        with open(args.out, "w", encoding="utf8") as fh:
             fh.write(text + "\n")
         print(f"# written to {args.out}", file=sys.stderr)
     return 0

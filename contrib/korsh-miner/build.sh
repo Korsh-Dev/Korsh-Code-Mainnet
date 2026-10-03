@@ -12,6 +12,7 @@
 # korsh-miner includes an optional two-way interleaved Yespower kernel (korsh-yp2.c). If it cannot be compiled on your
 # system the miner is built without it and uses the reference kernel only.
 # shellcheck disable=SC2086  # CFLAGS and LIBS are intentionally word-split
+export LC_ALL=C
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 yp="$here/../../src/crypto/yespower"

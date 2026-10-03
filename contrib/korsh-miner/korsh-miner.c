@@ -1040,11 +1040,10 @@ int main(int argc, char **argv)
     char user[128] = "", pass[128] = "", port[16] = "9776";
     const char *home = getenv("HOME");
     char path[512];
-    const char *cand[1] = {"%s/.korsh/korsh.conf"};
     int ok = 0;
     if (conf) ok = read_conf(conf, user, sizeof user, pass, sizeof pass, port, sizeof port) == 0;
-    for (int i = 0; !conf && !ok && i < 3; i++) {
-        snprintf(path, sizeof path, cand[i], home ? home : "");
+    if (!conf) {
+        snprintf(path, sizeof path, "%s/.korsh/korsh.conf", home ? home : "");
         ok = read_conf(path, user, sizeof user, pass, sizeof pass, port, sizeof port) == 0;
     }
     if (!ok) { fprintf(stderr, "no korsh.conf found; use --conf\n"); return 2; }

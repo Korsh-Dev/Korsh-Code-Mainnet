@@ -1523,8 +1523,7 @@ std::vector<std::pair<uint256, CDeterministicMNListDiff>> CDeterministicMNManage
         // of truth and repair-mode callers write the rebuilt snapshot back to disk,
         // healing the corrupted/missing stored data instead of aborting.
         if (!to_snapshot.GetBlockHash().IsNull() && !current_list.IsEqual(to_snapshot)) {
-            LogPrintf("CDeterministicMNManager::%s -- NOTE: rebuilt list between heights %d and %d differs from "
-                      "the previously stored snapshot; rebuilt data will replace it\n",
+            LogPrintf("CDeterministicMNManager::%s -- NOTE: rebuilt list between heights %d and %d differs from the previously stored snapshot; rebuilt data will replace it\n",
                       __func__, from_index->nHeight, to_index->nHeight);
         }
 

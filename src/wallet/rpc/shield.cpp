@@ -348,7 +348,7 @@ void SelectTransparentInputs(CWallet& wallet,
                              const CCoinControl& coin_control,
                              CAmount target,
                              std::vector<COutput>& selected,
-                             CAmount& selected_value)
+                             CAmount& selected_value) EXCLUSIVE_LOCKS_REQUIRED(wallet.cs_wallet)
 {
     selected.clear();
     selected_value = 0;

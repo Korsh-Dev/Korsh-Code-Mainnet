@@ -25,6 +25,8 @@
 #include <QApplication>
 #include <QDebug>
 #include <QObject>
+#include <QSettings>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include <functional>
@@ -81,7 +83,23 @@ int main(int argc, char* argv[])
         setenv("QT_QPA_PLATFORM", "minimal", 0 /* overwrite */);
     #endif
 
+    // Keep settings alive until after the application is destroyed. NativeFormat
+    // uses the Windows registry, which HOME/APPDATA cannot isolate. Redirect both
+    // scopes so even NetworkStyle changing the application name stays isolated.
+    QTemporaryDir settings_dir;
+    if (!settings_dir.isValid()) {
+        qCritical("Unable to create isolated Qt test settings directory");
+        return 1;
+    }
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settings_dir.path());
+    QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, settings_dir.path());
+
     BitcoinApplication app;
+    // Unlike GuiMain(), this entry point does not set an organization. An empty
+    // organization makes native Windows QSettings fail with AccessError.
+    app.setOrganizationName("Korsh-Qt-test");
+    app.setOrganizationDomain("Korsh-Qt-test");
     app.setApplicationName("Korsh-Qt-test");
     app.createNode(*init);
 

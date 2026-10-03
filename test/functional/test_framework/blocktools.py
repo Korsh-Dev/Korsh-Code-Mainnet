@@ -237,9 +237,15 @@ def filter_tip_keys(chaintips):
         filtered_tips.append({k: tip[k] for k in check_keys})
     return filtered_tips
 
-# Identical to GetMasternodePayment in C++ code
+# Mirrors GetMasternodePayment with the default regtest activation heights.
 # TODO: remove it or make **proper** tests for various height
 def get_masternode_payment(nHeight, blockValue, fV20Active):
+    # Korsh rules precede the inherited Dash reallocations, including V20.
+    if nHeight >= 999999999:
+        return blockValue * 4 // 5
+    if nHeight >= 1:
+        return blockValue * 3 // 10
+
     ret = int(blockValue / 5)
 
     nMNPIBlock = 350
@@ -312,6 +318,15 @@ def get_masternode_payment(nHeight, blockValue, fV20Active):
     return int(blockValue * vecPeriods[nCurrentPeriod] / 1000)
 
 class TestFrameworkBlockTools(unittest.TestCase):
+    def test_korsh_regtest_masternode_payment(self):
+        # Regtest enables ksh014 at height 1; ksh030 is disabled by default.
+        # Include the fee-bearing reward from the deterministic-MN reorg.
+        for height in (1, 239, 350, 432, 1000):
+            for reward in (1, 9, 10, 41785814287):
+                for v20_active in (False, True):
+                    with self.subTest(height=height, reward=reward, v20=v20_active):
+                        assert_equal(get_masternode_payment(height, reward, v20_active), reward * 3 // 10)
+
     def test_create_coinbase(self):
         height = 20
         coinbase_tx = create_coinbase(height=height)

@@ -38,6 +38,10 @@ jobs:
   build-src:
     name: Build source
     runs-on: ${{ inputs.runs-on }}
+    env:
+      # The locked Sapling dependencies use Rust 2024 (Cargo >= 1.85).
+      # Override rust-toolchain's floating stable selection in this job.
+      RUSTUP_TOOLCHAIN: 1.85.1
     outputs:
       key:  ${{ steps.bundle.outputs.key }}
     container:
@@ -60,6 +64,12 @@ jobs:
           echo "HOST=${HOST}" >> $GITHUB_OUTPUT
           echo "PR_BASE_SHA=${{ github.event.pull_request.base.sha || '' }}" >> $GITHUB_OUTPUT
         shell: bash
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+        with:
+          toolchain: 1.85.1
+          targets: ${{ inputs.build-target == 'win64' && 'x86_64-pc-windows-gnu' || '' }}
 
       - name: Restore SDKs cache
         uses: actions/cache/restore@v4

@@ -5,11 +5,16 @@
 #include <qt/masternodelist.h>
 #include <qt/forms/ui_masternodelist.h>
 #include <qt/korshfeatures.h>
+#include <qt/masternodewizardconfig.h>
 
 #include <coins.h>
 #include <evo/deterministicmns.h>
 #include <evo/dmn_types.h>
 #include <fs.h>
+#include <index/txindex.h>
+#include <governance/governance.h>
+#include <net.h>
+#include <net_processing.h>
 #include <rpc/client.h>
 #include <saltedhasher.h>
 #include <util/system.h>
@@ -27,6 +32,7 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QHeaderView>
+#include <QHostAddress>
 #include <QItemSelectionModel>
 #include <QLabel>
 #include <QLineEdit>
@@ -34,7 +40,7 @@
 #include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QProcess>
-#include <QRandomGenerator>
+
 #include <QScrollArea>
 #include <QPushButton>
 #include <QRegularExpression>
@@ -47,9 +53,9 @@
 
 #include <univalue.h>
 
-#include <fstream>
+
 #include <set>
-#include <string_view>
+
 #include <vector>
 
 namespace {
@@ -67,12 +73,6 @@ QString ExtractRpcError(const UniValue& err)
     return QString::fromStdString(err.write());
 }
 
-std::string_view TrimLeft(std::string_view line)
-{
-    const size_t first{line.find_first_not_of(" \t")};
-    return first == std::string_view::npos ? std::string_view{} : line.substr(first);
-}
-
 class MasternodeSetupWizard final : public QWizard
 {
 public:
@@ -80,6 +80,7 @@ public:
 
 protected:
     void accept() override;
+    void reject() override;
 
 private:
     enum class MnType {
@@ -105,6 +106,11 @@ private:
     QLineEdit* m_bls_public{nullptr};
     QPlainTextEdit* m_summary{nullptr};
     bool m_restart_required{false};
+    bool m_sent{false};
+    bool m_busy{false};
+    QString m_raw_transaction;
+    QString m_txid;
+    QString m_recovery_path;
     int m_review_page_id{-1};
 
     [[nodiscard]] MnType currentType() const
@@ -133,10 +139,13 @@ private:
 
     [[nodiscard]] QString serviceAddress() const
     {
-        return QString("%1:%2").arg(m_ip->text().trimmed(), m_port->text().trimmed());
+        QString host = m_ip->text().trimmed();
+        if (host.contains(':') && !host.startsWith('[')) host = '[' + host + ']';
+        return QString("%1:%2").arg(host, m_port->text().trimmed());
     }
 
     bool execWalletRpc(const std::string& method, const std::vector<std::string>& args, UniValue& out, QString& error) const;
+    bool execRpc(const std::string& method, const UniValue& params, UniValue& out, QString& error) const;
     bool validateInput(QString& error) const;
     bool autoFillAddresses();
     bool generateBls();
@@ -294,16 +303,24 @@ bool MasternodeSetupWizard::execWalletRpc(const std::string& method, const std::
     }
 
     try {
-        const UniValue params{RPCConvertValues(method, args)};
-        out = m_wallet_model->node().executeRpc(method, params, walletUri());
-        return true;
-    } catch (const UniValue& rpc_error) {
-        error = ExtractRpcError(rpc_error);
-        return false;
+        return execRpc(method, RPCConvertValues(method, args), out, error);
     } catch (const std::exception& e) {
         error = QString::fromStdString(e.what());
         return false;
     }
+}
+
+bool MasternodeSetupWizard::execRpc(const std::string& method, const UniValue& params, UniValue& out, QString& error) const
+{
+    try {
+        out = m_wallet_model->node().executeRpc(method, params, walletUri());
+        return true;
+    } catch (const UniValue& rpc_error) {
+        error = ExtractRpcError(rpc_error);
+    } catch (const std::exception& e) {
+        error = QString::fromStdString(e.what());
+    }
+    return false;
 }
 
 bool MasternodeSetupWizard::validateInput(QString& error) const
@@ -313,22 +330,34 @@ bool MasternodeSetupWizard::validateInput(QString& error) const
         return false;
     }
 
+    if ((!gArgs.GetBoolArg("-listen", DEFAULT_LISTEN) && Params().RequireRoutableExternalIP()) ||
+        !gArgs.GetBoolArg("-txindex", DEFAULT_TXINDEX) ||
+        !gArgs.GetBoolArg("-peerbloomfilters", DEFAULT_PEERBLOOMFILTERS) ||
+        gArgs.GetIntArg("-prune", 0) > 0 ||
+        gArgs.GetIntArg("-maxconnections", DEFAULT_MAX_PEER_CONNECTIONS) < DEFAULT_MAX_PEER_CONNECTIONS ||
+        gArgs.GetBoolArg("-disablegovernance", !DEFAULT_GOVERNANCE_ENABLE)) {
+        error = tr("This node cannot restart as a masternode. Enable listen, txindex, peerbloomfilters and governance; disable pruning and allow at least %1 connections. Restart with those settings before registering.")
+                    .arg(DEFAULT_MAX_PEER_CONNECTIONS);
+        return false;
+    }
     bool ok_port{false};
     const int port = m_port->text().trimmed().toInt(&ok_port);
     if (!ok_port || port < 1 || port > 65535) {
         error = tr("Invalid P2P port. Use a value between 1 and 65535.");
         return false;
     }
-    // Legacy-format registrations (used until V24) only support the network P2P port.
-    if (port != Params().GetDefaultPort()) {
+    // The RPC preparation below applies activation-aware endpoint rules.
+    if (Params().NetworkIDString() == "main" && port != Params().GetDefaultPort()) {
         error = tr("The masternode service port must be %1, the Korsh P2P port for this network. "
                    "Port 8383 belongs to the old chain and will not connect.")
                     .arg(Params().GetDefaultPort());
         return false;
     }
 
-    if (m_ip->text().trimmed().isEmpty()) {
-        error = tr("Public IP is required.");
+    QString host = m_ip->text().trimmed();
+    if (host.startsWith('[') && host.endsWith(']')) host = host.mid(1, host.size() - 2);
+    if (QHostAddress(host).isNull()) {
+        error = tr("A numeric public IP address is required.");
         return false;
     }
 
@@ -374,36 +403,32 @@ bool MasternodeSetupWizard::validateInput(QString& error) const
 
 bool MasternodeSetupWizard::autoFillAddresses()
 {
+    if (!m_wallet_model || !m_raw_transaction.isEmpty()) return false;
+    auto unlock_context{m_wallet_model->requestUnlock(false)};
+    if (!unlock_context.isValid()) return false;
     QString error;
-    UniValue result;
-
-    auto get_new = [this, &error, &result](const std::string& label, QLineEdit* out) {
-        if (!execWalletRpc("getnewaddress", {label}, result, error)) {
+    QStringList addresses;
+    for (const std::string label : {"mn_collateral", "mn_owner", "mn_voting", "mn_payout"}) {
+        UniValue result;
+        if (!execWalletRpc("getnewaddress", {label}, result, error) || !result.isStr()) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"), tr("Failed to auto-fill addresses: %1").arg(error));
             return false;
         }
-        if (!result.isStr()) {
-            error = tr("Unexpected RPC response for getnewaddress.");
-            return false;
-        }
-        out->setText(QString::fromStdString(result.get_str()));
-        return true;
-    };
-
-    if (!get_new("mn_collateral", m_collateral_address) ||
-        !get_new("mn_owner", m_owner_address) ||
-        !get_new("mn_voting", m_voting_address) ||
-        !get_new("mn_payout", m_payout_address)) {
-        QMessageBox::warning(this, tr("MN Setup Wizard"), tr("Failed to auto-fill addresses: %1").arg(error));
-        return false;
+        addresses << QString::fromStdString(result.get_str());
     }
-    // Fee source is always automatic from wallet UTXOs.
+    // Wallet address allocation cannot be rolled back, but never partially
+    // replace the user's fields when a later keypool request fails.
+    m_collateral_address->setText(addresses[0]);
+    m_owner_address->setText(addresses[1]);
+    m_voting_address->setText(addresses[2]);
+    m_payout_address->setText(addresses[3]);
     m_fee_address->setText(tr("(auto)"));
-
     return true;
 }
 
 bool MasternodeSetupWizard::generateBls()
 {
+    if (!m_raw_transaction.isEmpty()) return false;
     QString error;
     UniValue result;
     if (!execWalletRpc("bls", {"generate"}, result, error)) {
@@ -455,92 +480,24 @@ bool MasternodeSetupWizard::deriveBlsPublic(bool legacy_bls, QString& public_key
 
 bool MasternodeSetupWizard::saveOperatorSecretToConfig(QString& error)
 {
-    const std::string secret{m_bls_secret->text().trimmed().toStdString()};
-    if (secret.empty()) {
-        error = tr("BLS secret key is empty.");
-        return false;
-    }
-
-    const fs::path config_path{GetConfigFile(gArgs.GetPathArg("-conf", BITCOIN_CONF_FILENAME))};
-    if (config_path.empty()) {
-        error = tr("Unable to resolve korsh.conf path.");
-        return false;
-    }
-    const fs::path config_dir{config_path.parent_path()};
-    if (!config_dir.empty()) {
-        try {
-            // TryCreateDirectories returns false when the directory already exists.
-            // Treat that as success and only fail on exceptions or non-directory paths.
-            TryCreateDirectories(config_dir);
-        } catch (const fs::filesystem_error&) {
-            error = tr("Unable to create config directory: %1").arg(GUIUtil::PathToQString(config_dir));
+    try {
+        const fs::path path{GetConfigFile(gArgs.GetPathArg("-conf", BITCOIN_CONF_FILENAME))};
+        const QString secret = m_bls_secret->text().trimmed();
+        const std::string configured = gArgs.GetArg("-masternodeblsprivkey", "");
+        // An explicit empty CLI/runtime setting also shadows the config file.
+        if (gArgs.IsArgSet("-masternodeblsprivkey") && configured != secret.toStdString()) {
+            error = tr("An operator key setting (possibly empty) overrides the intended key. Remove the conflicting setting before continuing; the wizard will not replace it.");
             return false;
         }
-        if (!fs::exists(config_dir) || !fs::is_directory(config_dir)) {
-            error = tr("Unable to create config directory: %1").arg(GUIUtil::PathToQString(config_dir));
-            return false;
-        }
-    }
-
-    std::vector<std::string> lines;
-    if (fs::exists(config_path)) {
-        std::ifstream in{config_path};
-        if (!in.is_open()) {
-            error = tr("Unable to read config file: %1").arg(GUIUtil::PathToQString(config_path));
-            return false;
-        }
-        for (std::string line; std::getline(in, line); ) {
-            lines.push_back(std::move(line));
-        }
-    }
-
-    constexpr std::string_view key{"masternodeblsprivkey"};
-    bool found_key{false};
-    bool changed{false};
-    for (std::string& line : lines) {
-        const std::string_view trimmed{TrimLeft(line)};
-        if (trimmed.empty() || trimmed.front() == '#') {
-            continue;
-        }
-        if (trimmed.rfind(std::string(key) + "=", 0) == 0) {
-            const std::string old_value{std::string(trimmed.substr(key.size() + 1))};
-            found_key = true;
-            changed = old_value != secret;
-            line = std::string(key) + "=" + secret;
-            break;
-        }
-    }
-
-    if (!found_key) {
-        lines.push_back(std::string(key) + "=" + secret);
-        changed = true;
-    }
-
-    if (!changed) {
+        bool changed = false;
+        if (!MasternodeWizardConfig::Save(GUIUtil::PathToQString(path),
+                QString::fromStdString(Params().NetworkIDString()), secret, changed, error)) return false;
+        m_restart_required |= changed;
         return true;
-    }
-
-    fs::path tmp_path{config_path};
-    tmp_path += ".tmp-mnsetup";
-    std::ofstream out{tmp_path, std::ios::out | std::ios::trunc};
-    if (!out.is_open()) {
-        error = tr("Unable to write temporary config file: %1").arg(GUIUtil::PathToQString(tmp_path));
+    } catch (const std::exception& e) {
+        error = QString::fromStdString(e.what());
         return false;
     }
-
-    for (const std::string& line : lines) {
-        out << line << '\n';
-    }
-    out.close();
-
-    if (!RenameOver(tmp_path, config_path)) {
-        fs::remove(tmp_path);
-        error = tr("Failed to update config file: %1").arg(GUIUtil::PathToQString(config_path));
-        return false;
-    }
-
-    m_restart_required = true;
-    return true;
 }
 
 bool MasternodeSetupWizard::registerMasternode(QString& txid, QString& registered_operator_pubkey, QString& error)
@@ -581,7 +538,16 @@ bool MasternodeSetupWizard::registerMasternode(QString& txid, QString& registere
         }
 
         UniValue result;
-        if (!execWalletRpc("protx", args, result, out_error)) {
+        UniValue params;
+        try {
+            params = RPCConvertValues("protx", args);
+        } catch (const std::exception& e) {
+            out_error = QString::fromStdString(e.what());
+            return false;
+        }
+        params.push_back(UniValue()); // Automatic wallet funding (JSON null).
+        params.push_back(false); // Prepare/sign only. Never broadcast before fee approval.
+        if (!execRpc("protx", params, result, out_error)) {
             return false;
         }
         if (!result.isStr()) {
@@ -589,8 +555,15 @@ bool MasternodeSetupWizard::registerMasternode(QString& txid, QString& registere
             return false;
         }
 
+        UniValue decoded;
+        if (!execWalletRpc("decoderawtransaction", {result.get_str()}, decoded, out_error) ||
+            !decoded.isObject() || !decoded.find_value("proRegTx").isObject() ||
+            !decoded["proRegTx"].find_value("pubKeyOperator").isStr()) {
+            out_error = tr("Could not verify the prepared registration payload. Nothing sent.");
+            return false;
+        }
         txid = QString::fromStdString(result.get_str());
-        registered_operator_pubkey = operator_pubkey;
+        registered_operator_pubkey = QString::fromStdString(decoded["proRegTx"]["pubKeyOperator"].get_str());
         return true;
     };
 
@@ -623,14 +596,8 @@ void MasternodeSetupWizard::updateTypeUi()
     m_collateral_label->setText(evo ? tr("7500 KSH") : tr("1500 KSH"));
     m_evo_group->setVisible(evo);
 
-    // Auto-generate a random Platform Node ID when switching to Evo
-    if (evo && m_evo_platform_node_id->text().trimmed().isEmpty()) {
-        QString hex;
-        for (int i = 0; i < 40; ++i) {
-            hex += QString::number(QRandomGenerator::global()->bounded(16), 16);
-        }
-        m_evo_platform_node_id->setText(hex);
-    }
+    // The Platform Node ID must come from the node's actual P2P identity;
+    // an arbitrary random identifier cannot configure a working Platform node.
 
 }
 
@@ -657,51 +624,143 @@ void MasternodeSetupWizard::updateSummary()
 
     const fs::path config_path{GetConfigFile(gArgs.GetPathArg("-conf", BITCOIN_CONF_FILENAME))};
     lines << tr("Config file: %1").arg(GUIUtil::PathToQString(config_path));
-    lines << tr("Action on Finish: send ProTx registration, then save masternodeblsprivkey.");
+    lines << tr("Action on Finish: prepare NEW collateral, confirm the exact fee, save private recovery data, then broadcast and save masternodeblsprivkey.");
     m_summary->setPlainText(lines.join('\n'));
+}
+
+void MasternodeSetupWizard::reject()
+{
+    if (m_busy) return;
+    if (!m_recovery_path.isEmpty()) {
+        QMessageBox::warning(this, tr("MN Setup Wizard"),
+            tr("Keep the private recovery file safe: %1\nIt contains the operator secret, signed transaction and transaction ID. Check the transaction status before starting another registration.")
+                .arg(m_recovery_path));
+    }
+    QWizard::reject();
 }
 
 void MasternodeSetupWizard::accept()
 {
+    if (m_busy) return;
+    m_busy = true;
+    struct BusyReset { bool& busy; ~BusyReset() { busy = false; } } reset{m_busy};
     QString error;
-    if (!validateInput(error)) {
-        QMessageBox::warning(this, tr("MN Setup Wizard"), error);
+    const QString config_file = GUIUtil::PathToQString(GetConfigFile(gArgs.GetPathArg("-conf", BITCOIN_CONF_FILENAME)));
+    const QString network = QString::fromStdString(Params().NetworkIDString());
+    const QString recovery = config_file + ".mnsetup-" + network + ".json";
+    QLockFile recovery_lock(recovery + ".lock");
+    if (!recovery_lock.tryLock(0)) {
+        QMessageBox::warning(this, tr("MN Setup Wizard"), tr("Another registration is in progress."));
         return;
     }
 
-    auto unlock_context{m_wallet_model->requestUnlock(false)};
-    if (!unlock_context.isValid()) {
-        QMessageBox::warning(this, tr("MN Setup Wizard"), tr("Wallet unlock was canceled or failed."));
-        return;
+    const auto config_preflight = [&]() {
+        const QString configured = QString::fromStdString(gArgs.GetArg("-masternodeblsprivkey", ""));
+        if (gArgs.IsArgSet("-masternodeblsprivkey") && configured != m_bls_secret->text().trimmed()) {
+            error = tr("The effective operator key conflicts with this registration.");
+            return false;
+        }
+        return MasternodeWizardConfig::Preflight(config_file, network, m_bls_secret->text().trimmed(), error);
+    };
+    if (m_raw_transaction.isEmpty()) {
+        if (QFileInfo::exists(recovery) || QFileInfo(recovery).isSymLink()) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"),
+                tr("A previous registration requires recovery. No new transaction was created. Keep this private file and reconcile its transaction ID before removing it: %1").arg(recovery));
+            return;
+        }
+        if (!validateInput(error)) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"), error);
+            return;
+        }
+        if (!config_preflight()) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"),
+                tr("Configuration preflight failed. No transaction prepared or sent. %1\nBack up the configuration and use a regular, single-link file owned by your wallet user in a supported local data directory. Resolve file-access problems before retrying; do not loosen permissions.").arg(error));
+            return;
+        }
+        auto unlock_context{m_wallet_model->requestUnlock(false)};
+        if (!unlock_context.isValid()) return;
+        QString raw, public_key;
+        if (!registerMasternode(raw, public_key, error)) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"), error);
+            return;
+        }
+        UniValue raw_array(UniValue::VARR), params(UniValue::VARR), tested;
+        raw_array.push_back(raw.toStdString());
+        params.push_back(raw_array);
+        if (!execRpc("testmempoolaccept", params, tested, error) || !tested.isArray() || tested.size() != 1 ||
+            !tested[0].find_value("allowed").isBool() || !tested[0]["allowed"].get_bool() ||
+            !tested[0].find_value("txid").isStr() || !tested[0].find_value("fees").isObject() ||
+            !tested[0]["fees"].find_value("base").isNum()) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"), tr("Transaction preflight failed; nothing sent. %1").arg(error));
+            return;
+        }
+        const QString txid = QString::fromStdString(tested[0]["txid"].get_str());
+        const QString fee = QString::fromStdString(tested[0]["fees"]["base"].getValStr());
+        if (QMessageBox::question(this, tr("Confirm masternode registration"),
+                tr("Create NEW collateral of %1 KSH, plus a transaction fee of %2 KSH?\nThis does not reuse an existing collateral output.\n\nThe operator secret and signed transaction will be saved privately to %3 before broadcast.")
+                    .arg(currentType() == MnType::Evo ? "7500" : "1500", fee, recovery),
+                QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) return;
+
+        UniValue journal(UniValue::VOBJ);
+        journal.pushKV("network", network.toStdString());
+        journal.pushKV("wallet", m_wallet_model->getWalletName().toStdString());
+        journal.pushKV("config", config_file.toStdString());
+        journal.pushKV("txid", txid.toStdString());
+        journal.pushKV("raw", raw.toStdString());
+        journal.pushKV("operator_secret", m_bls_secret->text().trimmed().toStdString());
+        journal.pushKV("operator_public", public_key.toStdString());
+        const QByteArray bytes = QByteArray::fromStdString(journal.write());
+        if (!MasternodeWizardConfig::SaveRecovery(recovery, bytes, error)) {
+            QMessageBox::critical(this, tr("MN Setup Wizard"), tr("Could not persist recovery data; nothing sent. %1").arg(error));
+            return;
+        }
+        m_raw_transaction = raw;
+        m_txid = txid;
+        m_recovery_path = recovery;
+        m_bls_public->setText(public_key);
+        // After approval, all retries refer to this exact signed transaction.
+        // Back/Generate cannot discard or substitute its operator identity.
+        for (int id : pageIds()) page(id)->setEnabled(false);
+        button(QWizard::BackButton)->setEnabled(false);
     }
 
-    QString txid;
-    QString registered_operator_pubkey;
-    if (!registerMasternode(txid, registered_operator_pubkey, error)) {
-        QMessageBox::warning(this, tr("MN Setup Wizard"), tr("Masternode registration failed: %1").arg(error));
-        return;
+    if (!m_sent) {
+        // Approval and retries can outlive the first check. Do not submit a
+        // transaction when config admission is already known to fail. Preserve
+        // the exact signed intent/journal; a prior send may be ambiguous.
+        if (!config_preflight()) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"),
+                tr("Configuration preflight failed; this attempt did not submit the transaction. %1\nKeep the private recovery file: %2\nResolve the configuration access problem without loosening permissions, then retry this same transaction. Check its status before starting any other registration.").arg(error, m_recovery_path));
+            return;
+        }
+        UniValue result;
+        if (!execWalletRpc("sendrawtransaction", {m_raw_transaction.toStdString()}, result, error)) {
+            // A response can be lost after submission. Resolve the exact txid,
+            // never build another registration on an ambiguous failure.
+            UniValue known;
+            if (!execWalletRpc("getrawtransaction", {m_txid.toStdString()}, known, error) ||
+                !known.isStr() || known.get_str() != m_raw_transaction.toStdString()) {
+                QMessageBox::warning(this, tr("MN Setup Wizard"),
+                    tr("Broadcast not confirmed. Retry sends only the same transaction.\nTxID: %1\nPrivate recovery: %2\n%3").arg(m_txid, m_recovery_path, error));
+                return;
+            }
+        } else if (!result.isStr() || QString::fromStdString(result.get_str()) != m_txid) {
+            QMessageBox::warning(this, tr("MN Setup Wizard"), tr("Unexpected broadcast response. Keep the recovery file and verify transaction %1.").arg(m_txid));
+            return;
+        }
+        m_sent = true;
     }
-    m_bls_public->setText(registered_operator_pubkey);
-
     if (!saveOperatorSecretToConfig(error)) {
         QMessageBox::critical(this, tr("MN Setup Wizard"),
-                              tr("Masternode registration transaction was sent, but the operator key could not be saved to korsh.conf.\n\n"
-                                 "TxID:\n%1\n\n"
-                                 "Registered operator public key:\n%2\n\n"
-                                 "Error:\n%3\n\n"
-                                 "Do not restart this node as a masternode until masternodeblsprivkey is saved manually.")
-                                  .arg(txid, registered_operator_pubkey, error));
+            tr("Transaction sent: %1\nOperator config could not be saved: %2\nPrivate recovery: %3\nFinish retries saving only; it will not register again.").arg(m_txid, error, m_recovery_path));
         return;
     }
-
-    const fs::path config_path{GetConfigFile(gArgs.GetPathArg("-conf", BITCOIN_CONF_FILENAME))};
-    QString success = tr("Masternode registration transaction sent.\n\nTxID:\n%1").arg(txid);
-    success += tr("\n\nRegistered operator public key:\n%1").arg(registered_operator_pubkey);
-    success += tr("\n\nOperator key saved to:\n%1").arg(GUIUtil::PathToQString(config_path));
-    if (m_restart_required) {
-        success += tr("\n\nRestart Korsh Core so local masternode service uses the new key.");
-    }
-    QMessageBox::information(this, tr("MN Setup Wizard"), success);
+    // The config now contains the key. Keep the recovery file as a private
+    // backup; requiring explicit reconciliation prevents a reopened wizard
+    // from silently registering again after an uncertain process exit.
+    QMessageBox::information(this, tr("MN Setup Wizard"),
+        tr("Registration transaction sent: %1\nOperator key saved to %2.\nPrivate recovery backup: %3\nRestart only after verifying masternode configuration. Registration still requires confirmation.")
+            .arg(m_txid, config_file, m_recovery_path));
     QWizard::accept();
 }
 } // anonymous namespace
@@ -886,7 +945,9 @@ void MasternodeList::updateServicePort()
     }
 
     const auto* entry = GetSelectedEntry();
-    if (!entry) {
+    if (!entry) return;
+    if (entry->type() != MnType::Regular) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Evo service changes require the Platform endpoints and update_service_evo; this action is for regular masternodes only."));
         return;
     }
 
@@ -942,49 +1003,98 @@ void MasternodeList::updateServicePort()
 
     QString error;
     UniValue unspent;
-    if (!execute_wallet_rpc("listunspent", {"1", "9999999"}, unspent, error)) {
+    if (!execute_wallet_rpc("listunspent", {"1", "9999999"}, unspent, error) || !unspent.isArray()) {
         QMessageBox::warning(this, tr("Masternode service"), tr("Could not find a fee source: %1").arg(error));
         return;
     }
-    QString fee_source;
-    if (unspent.isArray()) {
-        for (size_t i = 0; i < unspent.size(); ++i) {
-            const UniValue& output = unspent[i];
-            const UniValue& spendable = output.find_value("spendable");
-            const UniValue& address = output.find_value("address");
-            if (spendable.isBool() && spendable.get_bool() && address.isStr() && !address.get_str().empty()) {
-                fee_source = QString::fromStdString(address.get_str());
-                break;
-            }
+    std::set<std::string> candidates;
+    for (const UniValue& output : unspent.getValues()) {
+        const UniValue& spendable = output.find_value("spendable");
+        const UniValue& address = output.find_value("address");
+        const UniValue& amount = output.find_value("amount");
+        if (spendable.isBool() && spendable.get_bool() && address.isStr() &&
+            !address.get_str().empty() && amount.isNum() && amount.get_real() > 0) {
+            candidates.insert(address.get_str());
         }
     }
-    if (fee_source.isEmpty()) {
-        QMessageBox::warning(this, tr("Masternode service"),
-                             tr("This wallet has no confirmed spendable output available to pay the service-update fee."));
-        return;
-    }
-
-    UniValue txid;
-    const std::vector<std::string> args{
-        "update_service",
-        protx_hash.toStdString(),
-        new_service.toStdString(),
-        operator_key,
-        "", // Keep the registered operator payout address unchanged.
-        fee_source.toStdString(),
+    auto no_collateral_inputs = [&](const std::string& raw) {
+        UniValue decoded, registered;
+        if (!execute_wallet_rpc("decoderawtransaction", {raw}, decoded, error) ||
+            !decoded.isObject() || !decoded.find_value("vin").isArray() ||
+            !execute_wallet_rpc("protx", {"list", "registered", "true"}, registered, error) || !registered.isArray()) return false;
+        std::set<std::pair<std::string, int>> collateral;
+        for (const UniValue& mn : registered.getValues()) {
+            const auto& hash = mn.find_value("collateralHash");
+            const auto& index = mn.find_value("collateralIndex");
+            if (!hash.isStr() || !index.isNum()) return false;
+            collateral.emplace(hash.get_str(), index.getInt<int>());
+        }
+        for (const UniValue& input : decoded["vin"].getValues()) {
+            const auto& hash = input.find_value("txid");
+            const auto& index = input.find_value("vout");
+            if (!hash.isStr() || !index.isNum() || collateral.count({hash.get_str(), index.getInt<int>()})) {
+                error = tr("The prepared update would spend registered collateral; it was not sent.");
+                return false;
+            }
+            // Also protect prepared/pending collateral not yet in the registry,
+            // even if its wallet lock was manually removed. Conservatively
+            // require a non-collateral-sized fee input for this guided action.
+            UniValue coin;
+            if (!execute_wallet_rpc("gettxout", {hash.get_str(), index.getValStr(), "true"}, coin, error) ||
+                !coin.isObject() || !coin.find_value("value").isNum()) return false;
+            const double value = coin["value"].get_real();
+            if (value == static_cast<double>(dmn_types::Regular.collat_amount) / COIN ||
+                value == static_cast<double>(dmn_types::Evo.collat_amount) / COIN) {
+                error = tr("Use a separate non-collateral output to pay the service-update fee.");
+                return false;
+            }
+        }
+        return true;
     };
-    if (!execute_wallet_rpc("protx", args, txid, error)) {
-        QMessageBox::warning(this, tr("Masternode service"), tr("Service update failed: %1").arg(error));
+    UniValue prepared;
+    bool funded = false;
+    for (const std::string& address : candidates) {
+        // Funding itself, rather than a guessed fee threshold or list order,
+        // proves this address has sufficient eligible coins. No submit here.
+        if (execute_wallet_rpc("protx", {"update_service", protx_hash.toStdString(), new_service.toStdString(),
+                operator_key, "", address, "false"}, prepared, error) && prepared.isStr() &&
+                no_collateral_inputs(prepared.get_str())) {
+            funded = true;
+            break;
+        }
+    }
+    if (!funded) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("No eligible fee source could fund the update: %1").arg(error));
         return;
     }
-    if (!txid.isStr()) {
-        QMessageBox::warning(this, tr("Masternode service"), tr("Unexpected response from protx update_service."));
+    const std::string raw = prepared.get_str();
+    UniValue raw_array(UniValue::VARR), tested;
+    raw_array.push_back(raw);
+    if (!execute_wallet_rpc("testmempoolaccept", {raw_array.write()}, tested, error) ||
+        !tested.isArray() || tested.size() != 1 || !tested[0].find_value("allowed").isBool() ||
+        !tested[0]["allowed"].get_bool() || !tested[0].find_value("fees").isObject() ||
+        !tested[0]["fees"].find_value("base").isNum() || !tested[0].find_value("txid").isStr()) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Update preflight failed; nothing sent. %1").arg(error));
         return;
     }
-
+    const QString expected_txid = QString::fromStdString(tested[0]["txid"].get_str());
+    if (QMessageBox::question(this, tr("Confirm service update fee"),
+            tr("Pay exactly %1 KSH to update %2?\nTransaction: %3")
+                .arg(QString::fromStdString(tested[0]["fees"]["base"].getValStr()), new_service, expected_txid),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) return;
+    if (!no_collateral_inputs(raw)) {
+        QMessageBox::warning(this, tr("Masternode service"), tr("Collateral safety recheck failed; nothing sent. %1").arg(error));
+        return;
+    }
+    UniValue txid;
+    if (!execute_wallet_rpc("sendrawtransaction", {raw}, txid, error) || !txid.isStr()) {
+        QMessageBox::warning(this, tr("Masternode service"),
+            tr("Broadcast was not confirmed. Check transaction %1 before retrying. %2").arg(expected_txid, error));
+        return;
+    }
     QMessageBox::information(this, tr("Masternode service"),
-                             tr("Service update submitted.\n\nTransaction ID:\n%1\n\nThe registered collateral remains locked until the masternode is deregistered or its collateral is otherwise released.")
-                                 .arg(QString::fromStdString(txid.get_str())));
+        tr("Service update submitted.\nTransaction ID: %1\nThis updates the endpoint only; wait for confirmation.")
+            .arg(QString::fromStdString(txid.get_str())));
 }
 
 void MasternodeList::handleMasternodeListChanged()

@@ -5,6 +5,7 @@
 #
 # Each mining thread needs one 2 MB huge page for its Yespower memory; a few extra pages are reserved as slack.
 # Without --persist the setting lasts until reboot. --off releases the reservation.
+export LC_ALL=C
 set -euo pipefail
 THREADS="$(( $(nproc 2>/dev/null || echo 2) - 2 ))" PERSIST=no OFF=no
 while [ $# -gt 0 ]; do
