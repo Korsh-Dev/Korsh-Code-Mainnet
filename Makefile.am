@@ -57,6 +57,12 @@ DIST_CARGO = \
   $(top_srcdir)/.cargo/config.offline \
   $(top_srcdir)/Cargo.toml \
   $(top_srcdir)/rust-toolchain \
+  $(top_srcdir)/src/rust/src/rustzcash.rs \
+  $(top_srcdir)/src/rust/src/tests/key_agreement.rs \
+  $(top_srcdir)/src/rust/src/tests/key_components.rs \
+  $(top_srcdir)/src/rust/src/tests/mod.rs \
+  $(top_srcdir)/src/rust/src/tests/notes.rs \
+  $(top_srcdir)/src/rust/src/tests/signatures.rs \
   $(top_srcdir)/params/install-params.sh
 
 BIN_CHECKS=$(top_srcdir)/contrib/guix/symbol-check.py \
