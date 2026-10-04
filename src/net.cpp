@@ -2723,12 +2723,10 @@ void CConnman::ThreadDNSAddressSeed()
                             if (pnode->fSuccessfullyConnected && pnode->IsFullOutboundConn() && !pnode->m_masternode_probe_connection) ++nRelevant;
                         }
                     }
-                    if (nRelevant >= 2 && found > 0) {
+                    if (nRelevant >= 2) {
                         LogPrintf("%d addresses found from DNS seeds\n", found);
-                        LogPrintf("P2P peers available. Finished DNS seeding.\n");
+                        LogPrintf("P2P peers available. Skipped DNS seeding.\n");
                         return;
-                    } else if (nRelevant >= 2) {
-                        LogPrintf("P2P peers available, but refreshing DNS seeds because no seed addresses were loaded yet.\n");
                     }
                 }
             }

@@ -6048,7 +6048,7 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
             }
         }
 
-        if (!state.fSyncStarted && CanServeBlocks(*peer) && !fImporting && !fReindex && pto->CanRelay()) {
+        if (!state.fSyncStarted && CanServeBlocks(*peer) && !fImporting && !fReindex && pto->CanRelay() && !pto->IsAddrFetchConn()) {
             // Only actively request headers from a single peer, unless we're close to end of initial download.
             if ((nSyncStarted == 0 && sync_blocks_and_headers_from_peer) || m_chainman.m_best_header->GetBlockTime() > GetAdjustedTime() - nMaxTipAge) {
                 const CBlockIndex* pindexStart = m_chainman.m_best_header;

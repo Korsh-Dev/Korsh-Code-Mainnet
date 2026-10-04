@@ -48,13 +48,17 @@ class TestP2PConn(P2PInterface):
         return self.last_mnlistdiff
 
 class LLMQEvoNodesTest(DashTestFramework):
+    # Korsh's dmn_types::Evo.voting_weight, before MN RewardReallocation.
+    EVO_PAYMENT_WEIGHT = 5
+
     def add_options(self, parser):
         self.add_wallet_options(parser)
 
     def set_test_params(self):
         # we just need a couple of regular nodes to be ensured that they are not included in platform quorum, 2 is enough
         self.set_dash_test_params(3, 2, evo_count=4)
-        self.mn_rr_height = 320
+        # Keep the full pre-reallocation payment window after quorum setup.
+        self.mn_rr_height = 400
 
     def run_test(self):
         # Connect all nodes to node1 so that we always have the whole network connected
@@ -92,7 +96,7 @@ class LLMQEvoNodesTest(DashTestFramework):
         self.log.info("Test that EvoNodes are present in MN list")
         self.test_evo_protx_are_in_mnlist(evo_protxhash_list)
 
-        self.log.info("Test that EvoNodes are paid 4x blocks in a row")
+        self.log.info(f"Test that EvoNodes are paid {self.EVO_PAYMENT_WEIGHT}x blocks in a row")
         self.test_evo_payments(window_analysis=48, mnrr_active=False)
         self.test_masternode_winners()
 
@@ -108,9 +112,11 @@ class LLMQEvoNodesTest(DashTestFramework):
         self.test_masternode_winners(mn_rr_active=True)
 
     def test_evo_payments(self, window_analysis, mnrr_active):
+        if not mnrr_active:
+            assert self.nodes[0].getblockcount() + window_analysis < self.mn_rr_height
         current_evo: MasternodeInfo = None
         consecutive_payments = 0
-        n_payments = 0 if mnrr_active else 4
+        n_payments = 0 if mnrr_active else self.EVO_PAYMENT_WEIGHT
         for i in range(0, window_analysis):
             payee: MasternodeInfo = self.get_mn_payee_for_block(self.nodes[0].getbestblockhash())
             if payee is not None and payee.evo:
@@ -203,8 +209,17 @@ class LLMQEvoNodesTest(DashTestFramework):
         # ignore recent winners, test future ones only
         # we get up to 21 entries here: tip + up to 20 future payees
         winners = self.nodes[0].masternode('winners', '0')
-        weighted_count = self.mn_count + self.evo_count * (1 if mn_rr_active else 4)
+        weighted_count = self.mn_count + self.evo_count * (1 if mn_rr_active else self.EVO_PAYMENT_WEIGHT)
         assert_equal(len(winners.keys()) - 1, 20 if weighted_count > 20 else weighted_count)
+        # A capped projection can return to the first Evo payee before a full
+        # weighted cycle if the tip is already partway through its payment run.
+        initial_payment_offset = 0
+        if not mn_rr_active:
+            payee = self.get_mn_payee_for_block(self.nodes[0].getbestblockhash())
+            assert payee is not None
+            if payee.evo:
+                initial_payment_offset = self.nodes[0].protx('info', payee.proTxHash)['state']['consecutivePayments'] - 1
+                assert 0 <= initial_payment_offset < self.EVO_PAYMENT_WEIGHT
         consecutive_payments = 0
         full_consecutive_payments_found = 0
         payment_cycles = 0
@@ -218,10 +233,10 @@ class LLMQEvoNodesTest(DashTestFramework):
                 if prev_winner == winner:
                     consecutive_payments += 1
                 else:
-                    if consecutive_payments == 3:
+                    if consecutive_payments == self.EVO_PAYMENT_WEIGHT - 1:
                         full_consecutive_payments_found += 1
                     consecutive_payments = 0
-                assert_greater_than_or_equal(3, consecutive_payments)
+                assert_greater_than_or_equal(self.EVO_PAYMENT_WEIGHT - 1, consecutive_payments)
             if consecutive_payments == 0 and winner == first_payee:
                 payment_cycles += 1
             if first_payee is None:
@@ -230,8 +245,8 @@ class LLMQEvoNodesTest(DashTestFramework):
         if mn_rr_active:
             assert_equal(full_consecutive_payments_found, 0)
         else:
-            assert_greater_than_or_equal(full_consecutive_payments_found, (len(winners.keys()) - 1 - self.mn_count) // 4 - 1)
-        assert_equal(payment_cycles, (len(winners.keys()) - 1) // weighted_count)
+            assert_greater_than_or_equal(full_consecutive_payments_found, (len(winners.keys()) - 1 - self.mn_count) // self.EVO_PAYMENT_WEIGHT - 1)
+        assert_equal(payment_cycles, (len(winners.keys()) - 1 + initial_payment_offset) // weighted_count)
 
     def test_getmnlistdiff(self, baseBlockHash, blockHash, baseMNList, expectedDeleted, expectedUpdated):
         d = self.test_getmnlistdiff_base(baseBlockHash, blockHash)

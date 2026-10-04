@@ -10,6 +10,7 @@ import time
 
 from test_framework.messages import (
     CAddress,
+    NODE_HEADERS_COMPRESSED,
     msg_addr,
 )
 from test_framework.p2p import (
@@ -42,6 +43,8 @@ class P2PAddrFetch(BitcoinTestFramework):
 
     def run_test(self):
         node = self.nodes[0]
+        # Exercise the recent-best-header alternative even on a clean chain.
+        node.setmocktime(node.getblockheader(node.getbestblockhash())["time"])
         self.log.info("Connect to an addr-fetch peer")
         peer_id = 0
         peer = node.add_outbound_p2p_connection(P2PInterface(), p2p_idx=peer_id, connection_type="addr-fetch")
@@ -52,6 +55,7 @@ class P2PAddrFetch(BitcoinTestFramework):
         with p2p_lock:
             assert peer.message_count['getaddr'] == 1
             assert peer.message_count['getheaders'] == 0
+            assert peer.message_count['getheaders2'] == 0
 
         self.log.info("Check that answering the getaddr with a single address does not lead to disconnect")
         # This prevents disconnecting on self-announcements
@@ -80,6 +84,36 @@ class P2PAddrFetch(BitcoinTestFramework):
         node.setmocktime(time_now + 301)
         peer.wait_for_disconnect(timeout=5)
         self.assert_getpeerinfo(peer_ids=[])
+        node.disconnect_p2ps()
+
+        # Neither the recent-tip OR arm nor the ordinary IBD path may start
+        # sync with address-only peers. Full/block relay must still sync when
+        # the peer does or does not advertise compressed-header support.
+        tip_time = node.getblockheader(node.getbestblockhash())["time"]
+        for age in (0, 2 * 24 * 60 * 60):
+            node.setmocktime(tip_time + age)
+            for compressed in (False, True):
+                services = (P2P_SERVICES & ~NODE_HEADERS_COMPRESSED) | (NODE_HEADERS_COMPRESSED if compressed else 0)
+                for connection_type in ("addr-fetch", "outbound-full-relay", "block-relay-only"):
+                    self.log.info(f"Check initial headers: age={age}, compressed={compressed}, role={connection_type}")
+                    peer = node.add_outbound_p2p_connection(
+                        P2PInterface(), p2p_idx=0, connection_type=connection_type, services=services,
+                    )
+                    assert_equal(node.getpeerinfo()[0]['connection_type'], connection_type)
+                    peer.sync_send_with_ping()
+                    if connection_type == "addr-fetch":
+                        with p2p_lock:
+                            assert_equal(peer.message_count['getaddr'], 1)
+                            assert_equal(peer.message_count['getheaders'], 0)
+                            assert_equal(peer.message_count['getheaders2'], 0)
+                    else:
+                        # Compressed headers require support from both sides.
+                        negotiated = bool(services & peer.nServices & NODE_HEADERS_COMPRESSED)
+                        header_message = 'getheaders2' if negotiated else 'getheaders'
+                        peer.wait_until(lambda: peer.message_count[header_message] > 0)
+                        with p2p_lock:
+                            assert_equal(peer.message_count['getheaders' if negotiated else 'getheaders2'], 0)
+                    node.disconnect_p2ps()
 
 
 if __name__ == '__main__':
