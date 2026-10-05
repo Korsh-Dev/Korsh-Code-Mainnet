@@ -22,10 +22,11 @@ from _decimal import Decimal
 from random import randint
 from typing import List, Optional
 
-# Height at which BIP9 deployment DEPLOYMENT_V24 is activated
-V24_ACTIVATION_THRESHOLD = 100
+# Keep V24 inactive through the cached 200-block chain, collateral funding,
+# and all legacy-address checks; activate it explicitly in activate_v24().
+V24_ACTIVATION_THRESHOLD = 500
 # See CMainParams in src/chainparams.cpp
-DEFAULT_PORT_MAINNET_CORE_P2P = 9999
+DEFAULT_PORT_MAINNET_CORE_P2P = 9777
 # See CRegTestParams in src/chainparams.cpp
 DEFAULT_PORT_PLATFORM_P2P = 22200
 DEFAULT_PORT_PLATFORM_HTTP = 22201
@@ -193,6 +194,10 @@ class NetInfoTest(BitcoinTestFramework):
         # Used for update RPC tests
         self.node_two: EvoNode = EvoNode(self.nodes[1])
         self.node_two.generate_collateral(self)
+        # Empty Core plus numeric Platform ports is valid only for legacy
+        # addresses. Preserve this registration for test_empty_fields().
+        for node in self.nodes:
+            assert not softfork_active(node, "v24")
         self.node_two.register_mn(self, True, "", DEFAULT_PORT_PLATFORM_P2P, DEFAULT_PORT_PLATFORM_HTTP)
         # Test routines
         self.log.info("Test input validation for masternode address fields (pre-fork)")
@@ -200,6 +205,8 @@ class NetInfoTest(BitcoinTestFramework):
         self.test_validation_legacy()
         self.log.info("Test output masternode address fields for consistency (pre-fork)")
         self.test_fields()
+        for node in self.nodes:
+            assert not softfork_active(node, "v24")
         self.log.info("Mine blocks to activate DEPLOYMENT_V24")
         self.activate_v24()
         self.log.info("Test input validation for masternode address fields (post-fork)")

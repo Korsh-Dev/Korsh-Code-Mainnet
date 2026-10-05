@@ -67,7 +67,10 @@ class UTXOSetHashTest(BitcoinTestFramework):
         assert_equal(finalized[::-1].hex(), node_muhash)
 
         self.log.info("Test deterministic UTXO set hash results")
-        assert_equal(node.gettxoutsetinfo()['hash_serialized_2'], "1d640be368b1d811619bc27bc435db672e3ce17f524c0f78def9f7398aef9eac")
+        # The legacy hash also commits to the Korsh block hash; MuHash only
+        # commits to the coins. Independently replaying this fixture's 102
+        # blocks yields 101 UTXOs and the following two golden vectors.
+        assert_equal(node.gettxoutsetinfo()['hash_serialized_2'], "177871a1214c251e6801fade1c981e4054c8748be10a396b397e15138035bd1a")
         assert_equal(node.gettxoutsetinfo("muhash")['muhash'], "c2ca3b5233cf7f4f9ba63ecd3166abf9a6b8c76fe050cf7d51acaeca0d52e78e")
 
     def run_test(self):
