@@ -80,7 +80,9 @@ class TestNode():
         self.p2p_conn_index = 1
         self.datadir = datadir
         self.chain = chain
-        self.bitcoinconf = os.path.join(self.datadir, "korsh.conf")
+        # Previous-release Dash binaries still read dash.conf; current Korsh
+        # binaries read korsh.conf. Both files are kept in sync by the framework.
+        self.bitcoinconf = os.path.join(self.datadir, "dash.conf" if version is not None else "korsh.conf")
         self.stdout_dir = os.path.join(self.datadir, "stdout")
         self.stderr_dir = os.path.join(self.datadir, "stderr")
         self.rpchost = rpchost

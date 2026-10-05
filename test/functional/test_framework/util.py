@@ -388,6 +388,10 @@ def initialize_datadir(dirname, n, chain, disable_autoconnect=True):
     if not os.path.isdir(datadir):
         os.makedirs(datadir)
     write_config(os.path.join(datadir, "korsh.conf"), n=n, chain=chain, disable_autoconnect=disable_autoconnect)
+    # Previous-release Dash binaries read dash.conf, not korsh.conf. Keep a
+    # byte-identical copy so mixed-version tests (e.g. wallet_backwards_compatibility)
+    # start old nodes in regtest with the assigned ports.
+    write_config(os.path.join(datadir, "dash.conf"), n=n, chain=chain, disable_autoconnect=disable_autoconnect)
     os.makedirs(os.path.join(datadir, 'stderr'), exist_ok=True)
     os.makedirs(os.path.join(datadir, 'stdout'), exist_ok=True)
     return datadir
@@ -433,9 +437,10 @@ def get_datadir_path(dirname, n):
 
 
 def append_config(datadir, options):
-    with open(os.path.join(datadir, "korsh.conf"), 'a', encoding='utf8') as f:
-        for option in options:
-            f.write(option + "\n")
+    for conf_name in ("korsh.conf", "dash.conf"):
+        with open(os.path.join(datadir, conf_name), 'a', encoding='utf8') as f:
+            for option in options:
+                f.write(option + "\n")
 
 
 def get_auth_cookie(datadir, chain):
