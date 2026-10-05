@@ -117,8 +117,8 @@ public:
     /** Make sure all changes are flushed to database file.
      */
     void Flush() override;
-    /** Flush to the database file and close the database.
-     *  Also close the environment if no other databases are open in it.
+    /** Flush to the database file and close idle database handles.
+     *  The shared environment remains open until its last owner is destroyed.
      */
     void Close() override;
     /* flush the wallet passively (TRY_LOCK)

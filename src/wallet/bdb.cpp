@@ -438,7 +438,9 @@ BerkeleyEnvironment::~BerkeleyEnvironment()
 {
     LOCK(cs_db);
     g_dbenvs.erase(strPath);
-    Close();
+    // Database owners keep the shared environment alive through their final
+    // writes. Only the last owner's destruction may remove its logs and close it.
+    Flush(true);
 }
 
 bool BerkeleyEnvironment::Open(bilingual_str& err)
@@ -1030,7 +1032,11 @@ void BerkeleyDatabase::Flush()
 
 void BerkeleyDatabase::Close()
 {
-    env->Flush(true);
+    // A zero batch refcount does not mean the other database owners are done
+    // with this environment (for example, StopWallets still writes locators).
+    // Checkpoint and detach idle databases, but leave environment teardown to
+    // its shared ownership lifetime.
+    env->Flush(false);
 }
 
 void BerkeleyDatabase::ReloadDbEnv()
