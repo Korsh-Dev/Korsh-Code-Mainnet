@@ -134,8 +134,11 @@ class AssumeValidTest(BitcoinTestFramework):
         self.block_time += 1
         height += 1
 
-        # Bury the assumed valid block 8400 deep (Korsh needs 4x as much blocks to allow -assumevalid to work)
-        for _ in range(8400):
+        # Bury the assumed valid block deep enough for -assumevalid to skip script verification.
+        # assumevalid only skips when the buried chain work is > 2 weeks worth. Korsh regtest mines
+        # every 60s (vs Bitcoin Core's 10 min), so 2 weeks requires > 1209600/60 = 20160 blocks.
+        # Use 21000 to leave margin.
+        for _ in range(21000):
             block = create_block(self.tip, create_coinbase(height), self.block_time)
             block.solve()
             self.blocks.append(block)
@@ -160,12 +163,11 @@ class AssumeValidTest(BitcoinTestFramework):
         assert_equal(self.nodes[0].getblockcount(), COINBASE_MATURITY + 1)
 
         p2p1 = self.nodes[1].add_p2p_connection(BaseNode())
-        # node1 must receive all headers as otherwise assumevalid is ignored in ConnectBlock
-        p2p1.send_header_for_blocks(self.blocks[0:2000])
-        p2p1.send_header_for_blocks(self.blocks[2000:4000])
-        p2p1.send_header_for_blocks(self.blocks[4000:6000])
-        p2p1.send_header_for_blocks(self.blocks[6000:8000])
-        p2p1.send_header_for_blocks(self.blocks[8000:])
+        # node1 must receive all headers as otherwise assumevalid is ignored in ConnectBlock.
+        # Headers messages are capped at 2000 entries (MAX_HEADERS_UNCOMPRESSED_RESULT),
+        # so batch the (now 21000+) blocks into chunks of 2000.
+        for start in range(0, len(self.blocks), 2000):
+            p2p1.send_header_for_blocks(self.blocks[start:start + 2000])
 
         # Send 200 blocks to node1. All blocks, including block 102, will be accepted.
         for i in range(200):
