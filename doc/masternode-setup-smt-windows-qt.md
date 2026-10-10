@@ -22,7 +22,7 @@ Required commands:
 
 ## Step 1. Requirements
 
-- Korsh Qt `v0.0.6` fully synced.
+- Korsh Qt `v0.0.6.1` fully synced.
 - Enough balance for collateral + fee.
 - Stable public IP and port `9777` open.
 

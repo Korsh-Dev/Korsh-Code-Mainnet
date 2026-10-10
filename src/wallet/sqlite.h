@@ -48,7 +48,7 @@ public:
 
     bool StartCursor() override;
     bool ReadAtCursor(CDataStream& key, CDataStream& value, bool& complete) override;
-    void CloseCursor() override;
+    bool CloseCursor() override;
     bool TxnBegin() override;
     bool TxnCommit() override;
     bool TxnAbort() override;

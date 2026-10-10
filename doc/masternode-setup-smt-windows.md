@@ -21,7 +21,7 @@ Chain values:
 
 ## 1. Requirements
 
-- Korsh Core v0.0.6 installed on Windows.
+- Korsh Core v0.0.6.1 installed on Windows.
 - Wallet fully synced.
 - Public IP (if running from home) and port `9777` open in router/firewall.
 - `korsh-cli.exe` available (from release zip).

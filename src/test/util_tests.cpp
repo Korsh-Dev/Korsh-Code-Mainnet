@@ -1051,6 +1051,10 @@ BOOST_AUTO_TEST_CASE(test_FormatSubVersion)
     BOOST_CHECK_EQUAL(FormatSubVersion("Test", 99900, std::vector<std::string>()),std::string("/Test:9.99.0/"));
     BOOST_CHECK_EQUAL(FormatSubVersion("Test", 99900, comments),std::string("/Test:9.99.0(comment1)/"));
     BOOST_CHECK_EQUAL(FormatSubVersion("Test", 99900, comments2),std::string("/Test:9.99.0(comment1; Comment2; .,_?@-; )/"));
+#if CLIENT_VERSION_REVISION > 0
+    BOOST_CHECK_EQUAL(FormatSubVersion("Test", CLIENT_VERSION, std::vector<std::string>()),
+                      "/Test:" + FormatFullVersion().substr(1) + "/");
+#endif
 }
 
 BOOST_AUTO_TEST_CASE(test_ParseFixedPoint)
@@ -1207,6 +1211,34 @@ BOOST_AUTO_TEST_CASE(test_LockDirectory)
     thr.join();
     BOOST_CHECK_EQUAL(threadresult, true);
 #ifndef WIN32
+    const fs::path alias_dir = dirname.parent_path() / "lock_dir_symlink";
+    const fs::path retarget_dir = dirname.parent_path() / "lock_dir_retarget";
+    BOOST_REQUIRE(!fs::exists(alias_dir));
+    BOOST_REQUIRE(!fs::exists(retarget_dir));
+    fs::create_directories(retarget_dir);
+    fs::create_directory_symlink(dirname, alias_dir);
+    // An alias must resolve to the existing lock entry, not open a second
+    // descriptor for the same fcntl-locked file. Closing any same-process
+    // descriptor can drop all record locks held for that file.
+    std::string lock_key;
+    BOOST_CHECK_EQUAL(LockDirectory(alias_dir, lockname, false, &lock_key), true);
+    BOOST_CHECK(!lock_key.empty());
+    fs::remove(alias_dir);
+    fs::create_directory_symlink(retarget_dir, alias_dir);
+    // Unlock must use the identity captured when the lock was acquired, not
+    // resolve a retargeted alias to a different directory.
+    UnlockDirectoryByKey(lock_key);
+    // The forked child still uses the original dirname captured above, so this
+    // must prove that the original directory's OS lock was actually released.
+    char retarget_lock_result;
+    BOOST_CHECK_EQUAL(write(fd[1], &LockCommand, 1), 1);
+    BOOST_CHECK_EQUAL(read(fd[1], &retarget_lock_result, 1), 1);
+    BOOST_CHECK_EQUAL((bool)retarget_lock_result, true);
+    BOOST_CHECK_EQUAL(write(fd[1], &UnlockCommand, 1), 1);
+    BOOST_CHECK_EQUAL(read(fd[1], &retarget_lock_result, 1), 1);
+    BOOST_CHECK_EQUAL((bool)retarget_lock_result, true);
+    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname), true);
+
     // Try to acquire lock in child process while we're holding it, this should fail.
     char ch;
     BOOST_CHECK_EQUAL(write(fd[1], &LockCommand, 1), 1);
@@ -1250,6 +1282,10 @@ BOOST_AUTO_TEST_CASE(test_LockDirectory)
 #endif
     // Clean up
     ReleaseDirectoryLocks();
+#ifndef WIN32
+    fs::remove(alias_dir);
+    fs::remove_all(retarget_dir);
+#endif
     fs::remove_all(dirname);
 }
 

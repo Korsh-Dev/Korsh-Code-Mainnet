@@ -1,4 +1,4 @@
-Korsh Core v0.0.6 - Linux x86_64 (Ubuntu 22.04+ / glibc 2.35+)
+Korsh Core v0.0.6.1 - Linux x86_64 (Ubuntu 22.04+ / glibc 2.35+)
 
 Runtime requirements (Ubuntu 22.04):
   sudo apt-get install libdb5.3++ libdb5.3 libevent-2.1-7 libevent-pthreads-2.1-7 \
@@ -6,6 +6,13 @@ Runtime requirements (Ubuntu 22.04):
     libboost-chrono1.74.0 libboost-program-options1.74.0 libminiupnpc17 \
     libnatpmp1 libsqlite3-0 libqt5core5a libqt5gui5 libqt5widgets5 \
     libqt5network5 libqt5dbus5 libgmp10 zlib1g libssl3
+
+This Linux package retains the Berkeley DB 5.3 wallet backend used by the v0.0.6
+Linux build. Wallet files are not guaranteed portable between operating systems
+or Berkeley DB versions; keep a backup and do not move a wallet between the Linux,
+Windows, and macOS builds without verifying backend compatibility. Read the
+included Release-Notes.md before upgrading; it contains wallet-safety and recovery
+precautions for this hotfix.
 
 Usage (from the extracted directory):
   ./bin/korshd -daemon                Start the full node

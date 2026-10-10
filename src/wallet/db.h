@@ -94,7 +94,7 @@ public:
 
     virtual bool StartCursor() = 0;
     virtual bool ReadAtCursor(CDataStream& ssKey, CDataStream& ssValue, bool& complete) = 0;
-    virtual void CloseCursor() = 0;
+    virtual bool CloseCursor() = 0;
     virtual bool TxnBegin() = 0;
     virtual bool TxnCommit() = 0;
     virtual bool TxnAbort() = 0;
@@ -173,7 +173,7 @@ public:
 
     bool StartCursor() override { return true; }
     bool ReadAtCursor(CDataStream& ssKey, CDataStream& ssValue, bool& complete) override { return true; }
-    void CloseCursor() override {}
+    bool CloseCursor() override { return true; }
     bool TxnBegin() override { return true; }
     bool TxnCommit() override { return true; }
     bool TxnAbort() override { return true; }

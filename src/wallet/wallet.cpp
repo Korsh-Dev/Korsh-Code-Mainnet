@@ -50,7 +50,9 @@
 
 #include <algorithm>
 #include <cassert>
+#include <exception>
 #include <ranges>
+#include <string>
 
 using interfaces::FoundBlock;
 
@@ -547,8 +549,27 @@ void CWallet::chainStateFlushed(const CBlockLocator& loc)
     if (m_attaching_chain) {
         return;
     }
-    WalletBatch batch(GetDatabase());
-    batch.WriteBestBlock(loc);
+    PersistBestBlock(loc);
+}
+
+bool CWallet::PersistBestBlock(const CBlockLocator& locator)
+{
+    if (m_database_flush_failed.load()) return false;
+
+    std::string failure;
+    try {
+        WalletBatch batch(GetDatabase());
+        if (batch.WriteBestBlock(locator)) return true;
+        failure = "database batch rejected the best-block locator";
+    } catch (const std::exception& e) {
+        failure = e.what();
+    } catch (...) {
+        failure = "unknown database error";
+    }
+
+    m_database_flush_failed.store(true);
+    WalletLogPrintf("%s: best-block locator write failed; later wallet flushes will be skipped: %s\n", __func__, failure);
+    return false;
 }
 
 bool CWallet::WriteBestBlockFromLastProcessed()
@@ -572,8 +593,10 @@ bool CWallet::WriteBestBlockFromLastProcessed()
         return false;
     }
 
-    WalletBatch batch(GetDatabase());
-    return batch.WriteBestBlock(locator);
+    if (!PersistBestBlock(locator)) {
+        throw std::runtime_error("Unable to persist the wallet's last processed block");
+    }
+    return true;
 }
 
 void CWallet::SetMinVersion(enum WalletFeature nVersion, WalletBatch* batch_in)
@@ -630,17 +653,48 @@ bool CWallet::HasWalletSpend(const CTransactionRef& tx) const
 
 void CWallet::Flush()
 {
-    if (!m_database_closed.load()) {
-        WriteBestBlockFromLastProcessed();
+    if (m_database_flush_failed.load()) {
+        return;
     }
-    GetDatabase().Flush();
+    try {
+        if (!m_database_closed.load()) {
+            WriteBestBlockFromLastProcessed();
+        }
+        GetDatabase().Flush();
+    } catch (const std::exception& e) {
+        m_database_flush_failed.store(true);
+        WalletLogPrintf("%s: wallet database flush failed; skipping further writes: %s\n", __func__, e.what());
+    } catch (...) {
+        m_database_flush_failed.store(true);
+        WalletLogPrintf("%s: wallet database flush failed with an unknown exception; skipping further writes\n", __func__);
+    }
 }
 
 void CWallet::Close()
 {
     if (!m_database_closed.exchange(true)) {
-        WriteBestBlockFromLastProcessed();
-        GetDatabase().Close();
+        if (m_database_flush_failed.load()) {
+            WalletLogPrintf("%s: skipping final best-block write after an earlier database failure\n", __func__);
+        } else {
+            try {
+                WriteBestBlockFromLastProcessed();
+            } catch (const std::exception& e) {
+                m_database_flush_failed.store(true);
+                WalletLogPrintf("%s: final best-block write failed; recovery data will be preserved: %s\n", __func__, e.what());
+            } catch (...) {
+                m_database_flush_failed.store(true);
+                WalletLogPrintf("%s: final best-block write failed with an unknown exception; recovery data will be preserved\n", __func__);
+            }
+        }
+        try {
+            GetDatabase().Close();
+        } catch (const std::exception& e) {
+            m_database_flush_failed.store(true);
+            WalletLogPrintf("%s: wallet database close failed; recovery data will be preserved: %s\n", __func__, e.what());
+        } catch (...) {
+            m_database_flush_failed.store(true);
+            WalletLogPrintf("%s: wallet database close failed with an unknown exception; recovery data will be preserved\n", __func__);
+        }
     }
 }
 
@@ -1944,8 +1998,7 @@ CWallet::ScanResult CWallet::ScanForWalletTransactions(const uint256& start_bloc
 
                 if (!loc.IsNull()) {
                     WalletLogPrintf("Saving scan progress %d.\n", block_height);
-                    WalletBatch batch(GetDatabase());
-                    batch.WriteBestBlock(loc);
+                    PersistBestBlock(loc);
                 }
             }
         } else {
@@ -1994,8 +2047,7 @@ CWallet::ScanResult CWallet::ScanForWalletTransactions(const uint256& start_bloc
             CBlockLocator loc = m_chain->getActiveChainLocator(result.last_scanned_block);
             if (!loc.IsNull()) {
                 WalletLogPrintf("Saving completed scan progress %d.\n", *result.last_scanned_height);
-                WalletBatch batch(GetDatabase());
-                batch.WriteBestBlock(loc);
+                PersistBestBlock(loc);
             }
         }
     }
@@ -3549,7 +3601,23 @@ bool CWallet::AutoBackupWallet(const fs::path& wallet_path, bilingual_str& error
     } else {
         // ... strWalletName file
         fs::path strSourceFile = BDBDataFile(wallet_path);
-        std::shared_ptr<BerkeleyEnvironment> env = GetBerkeleyEnv(strSourceFile.parent_path(), /*use_shared_memory=*/true);
+        std::shared_ptr<BerkeleyEnvironment> env;
+        try {
+            env = GetBerkeleyEnv(strSourceFile.parent_path(), /*use_shared_memory=*/true);
+        } catch (const fs::filesystem_error& e) {
+            error_string = Untranslated(strprintf("Failed to resolve Berkeley DB wallet directory '%s': %s",
+                fs::PathToString(strSourceFile.parent_path()), fsbridge::get_filesystem_error_message(e)));
+            warnings.push_back(error_string);
+            WalletLogPrintf("%s\n", error_string.original);
+            nWalletBackups = -1;
+            return false;
+        }
+        if (!env) {
+            error_string = Untranslated("The previous Berkeley DB environment is still shutting down; retry wallet backup.");
+            warnings.push_back(error_string);
+            WalletLogPrintf("%s\n", error_string.original);
+            return false;
+        }
         fs::path sourceFile = env->Directory() / strSourceFile;
         fs::path backupFile = backupsDir / fs::u8path(strWalletName + dateTimeStr);
         sourceFile.make_preferred();

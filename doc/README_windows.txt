@@ -14,6 +14,8 @@ Setup
 Unpack the archive into a directory and run `bin\korsh-qt.exe`. Command-line tools are in the same `bin` directory.
 Sapling parameter files are included in `params`; keep it next to `bin` after extraction. If an operation requires the external files, pass `-paramsdir=.\params` to `korshd.exe` or `korsh-qt.exe`.
 
+Read the included `Release-Notes.md` under `docs` before upgrading. If wallet recovery is required, keep the original wallet and its transaction logs together; do not delete the database directory or log files.
+
 Korsh Core is the original Korsh client and it builds the backbone of the network.
 However, it downloads and stores the entire history of Korsh transactions;
 depending on the speed of your computer and network connection, the synchronization

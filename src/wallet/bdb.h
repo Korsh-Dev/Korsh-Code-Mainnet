@@ -14,6 +14,7 @@
 #include <util/system.h>
 #include <wallet/db.h>
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -24,7 +25,14 @@ struct bilingual_str;
 
 #include <db_cxx.h>
 
+#include <atomic>
+#include <mutex>
+#include <shared_mutex>
+#include <utility>
+
 namespace wallet {
+extern RecursiveMutex cs_db;
+
 struct WalletDatabaseFileId {
     uint8_t value[DB_FILE_ID_LEN];
     bool operator==(const WalletDatabaseFileId& rhs) const;
@@ -37,11 +45,24 @@ class BerkeleyEnvironment
 private:
     bool fDbEnvInit;
     bool fMockDb;
+    std::atomic<bool> m_recovery_required{false};
+    bool m_directory_lock_held{false};
+    std::string m_directory_lock_key;
+    mutable std::shared_mutex m_db_operation_mutex;
+    void UnlockDirectoryLock();
     // Don't change into fs::path, as that can result in
     // shutdown problems/crashes caused by a static initialized internal pointer.
     std::string strPath;
 
 public:
+    enum class WalletMigrationResult {
+        SUCCESS,
+        DATABASE_IN_USE,
+        CLOSE_FAILED,
+        CONVERSION_FAILED,
+        OPEN_FAILED,
+    };
+
     std::unique_ptr<DbEnv> dbenv;
     std::map<fs::path, std::reference_wrapper<BerkeleyDatabase>> m_databases;
     std::unordered_map<std::string, WalletDatabaseFileId> m_fileids;
@@ -57,25 +78,61 @@ public:
     bool IsInitialized() const { return fDbEnvInit; }
     fs::path Directory() const { return fs::PathFromString(strPath); }
 
-    bool Open(bilingual_str& error);
-    void Close();
-    void Flush(bool fShutdown);
-    void CheckpointLSN(const std::string& strFile);
+    bool Open(bilingual_str& error, bool preserve_directory_lock_on_failure = false);
+    bool Close(bool preserve_files = false, bool preserve_directory_lock = false);
+    WalletMigrationResult ConvertWalletFile(const std::function<bool()>& converter, bilingual_str& open_error);
+    bool Flush(bool fShutdown, bool preserve_directory_lock = false);
+    bool CheckpointLSN(const std::string& strFile);
+    void MarkRecoveryRequired();
+    bool IsRecoveryRequired() const;
+    bool IsDirectoryLockHeld() const;
 
-    void CloseDb(const fs::path& filename);
+    /** Run one BDB call while admitted against recovery and rewrite promotion. */
+    template <typename Function>
+    int RunDatabaseOperation(Function&& operation, bool latch_on_any_error = false, bool* operation_ran = nullptr)
+    {
+        if (operation_ran) *operation_ran = false;
+        std::shared_lock<std::shared_mutex> lock{m_db_operation_mutex};
+        if (IsRecoveryRequired()) return DB_RUNRECOVERY;
+        if (operation_ran) *operation_ran = true;
+        const int ret = std::forward<Function>(operation)();
+        if (ret == DB_RUNRECOVERY || (latch_on_any_error && ret != 0)) MarkRecoveryRequired();
+        return ret;
+    }
+
+    /** Run teardown/cleanup BDB calls even after recovery has been latched. */
+    template <typename Function>
+    int RunCleanupDatabaseOperation(Function&& operation, bool latch_on_any_error = false)
+    {
+        std::shared_lock<std::shared_mutex> lock{m_db_operation_mutex};
+        const int ret = std::forward<Function>(operation)();
+        if (ret == DB_RUNRECOVERY || (latch_on_any_error && ret != 0)) MarkRecoveryRequired();
+        return ret;
+    }
+
+    /** Exclude other BDB operations while atomically replacing a wallet database. */
+    template <typename Function>
+    bool RunExclusiveDatabaseOperation(Function&& operation)
+    {
+        std::unique_lock<std::shared_mutex> lock{m_db_operation_mutex};
+        if (IsRecoveryRequired()) return false;
+        return std::forward<Function>(operation)();
+    }
+
+    bool CloseDb(const fs::path& filename);
     void ReloadDbEnv();
 
     DbTxn* TxnBegin(int flags = DB_TXN_WRITE_NOSYNC)
     {
         DbTxn* ptxn = nullptr;
-        int ret = dbenv->txn_begin(nullptr, &ptxn, flags);
+        const int ret = RunDatabaseOperation([&] { return dbenv->txn_begin(nullptr, &ptxn, flags); });
         if (!ptxn || ret != 0)
             return nullptr;
         return ptxn;
     }
 };
 
-/** Get BerkeleyEnvironment given a directory path. */
+/** Get BerkeleyEnvironment for a directory; returns empty while a prior environment is tearing down. */
 std::shared_ptr<BerkeleyEnvironment> GetBerkeleyEnv(const fs::path& env_directory, bool use_shared_memory);
 
 class BerkeleyBatch;
@@ -211,7 +268,7 @@ public:
 
     bool StartCursor() override;
     bool ReadAtCursor(CDataStream& ssKey, CDataStream& ssValue, bool& complete) override;
-    void CloseCursor() override;
+    bool CloseCursor() override;
     bool TxnBegin() override;
     bool TxnCommit() override;
     bool TxnAbort() override;

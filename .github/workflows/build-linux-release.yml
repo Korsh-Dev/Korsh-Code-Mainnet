@@ -79,7 +79,7 @@ jobs:
 
       - name: Package
         run: |
-          VERSION=$(python3 -c 'import re; d=dict(re.findall(r"^define\(_CLIENT_VERSION_(MAJOR|MINOR|BUILD),\s*([^)]+)\)", open("configure.ac").read(), re.M)); print(".".join(d[k] for k in ("MAJOR", "MINOR", "BUILD")))')
+          VERSION=$(python3 -c 'import re; d=dict(re.findall(r"^define\(_CLIENT_VERSION_(MAJOR|MINOR|BUILD|REVISION),\s*([^)]+)\)", open("configure.ac").read(), re.M)); v=".".join(d[k] for k in ("MAJOR", "MINOR", "BUILD")); print(v + ("." + d["REVISION"] if int(d.get("REVISION", "0")) else ""))')
           PACKAGE_NAME="korsh-${VERSION}-linux-x86_64"
           PACKAGE_DIR="dist/${PACKAGE_NAME}"
           ASSET="$GITHUB_WORKSPACE/korsh-${VERSION}-linux-x86_64.tar.gz"
@@ -88,6 +88,7 @@ jobs:
           cp params/sapling-spend.params params/sapling-output.params "$PACKAGE_DIR/params/"
           cp doc/README_linux.txt "$PACKAGE_DIR/README.txt"
           cp COPYING "$PACKAGE_DIR/COPYING"
+          cp "doc/release-notes/korsh/release-notes-${VERSION}.md" "$PACKAGE_DIR/Release-Notes.md"
           test -s "$PACKAGE_DIR/params/sapling-spend.params"
           test -s "$PACKAGE_DIR/params/sapling-output.params"
           strip "$PACKAGE_DIR"/bin/*

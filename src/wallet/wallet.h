@@ -383,6 +383,7 @@ private:
     /** Internal database handle. */
     std::unique_ptr<WalletDatabase> const m_database;
     std::atomic<bool> m_database_closed{false};
+    std::atomic<bool> m_database_flush_failed{false};
 
     /** Korsh Sapling key and note state. Stored outside CWalletTx serialization for BDB compatibility. */
     std::unique_ptr<SaplingWallet> m_sapling_wallet;
@@ -430,6 +431,8 @@ private:
 
     /** Persist the last block processed by the wallet before flushing/closing. */
     bool WriteBestBlockFromLastProcessed();
+    /** Persist a locator and fail-stop wallet flushing if the write fails. */
+    bool PersistBestBlock(const CBlockLocator& locator);
 
 public:
     /**

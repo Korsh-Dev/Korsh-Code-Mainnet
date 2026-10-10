@@ -67,7 +67,7 @@ jobs:
 
       - name: Resolve package version
         run: |
-          VERSION=$(python -c 'import re; d=dict(re.findall(r"^define\(_CLIENT_VERSION_(MAJOR|MINOR|BUILD),\s*([^)]+)\)", open("configure.ac").read(), re.M)); print(".".join(d[k] for k in ("MAJOR", "MINOR", "BUILD")))')
+          VERSION=$(python -c 'import re; d=dict(re.findall(r"^define\(_CLIENT_VERSION_(MAJOR|MINOR|BUILD|REVISION),\s*([^)]+)\)", open("configure.ac").read(), re.M)); v=".".join(d[k] for k in ("MAJOR", "MINOR", "BUILD")); print(v + ("." + d["REVISION"] if int(d.get("REVISION", "0")) else ""))')
           echo "KORSH_VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Building Korsh Core v$VERSION"
 
@@ -141,7 +141,7 @@ jobs:
           # MSYS2's /mingw64/lib/libdb_cxx.a is actually the *import library*
           # for libdb_cxx-6.2.dll (1.6 MB stub). The true static archive is
           # libdb_cxx-6.2.a (2.6 MB, contains the .o files). Pointing
-          # BDB_LIBS at that pulls Berkeley DB 6.2 into the binary.
+          # BDB_LIBS at both static archives pulls the wrapper and core into the binary.
           #
           # qt5-static lives at /mingw64/qt5-static/ in MSYS2 — its
           # .pc files ship the full static-link dependency list (libpng,
@@ -157,6 +157,11 @@ jobs:
           # -isystem /mingw64/include, which breaks the GCC C++ headers
           # (#include_next <stdlib.h>). Keep pkg-config from emitting it.
           export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/mingw64/include
+          # The unversioned -ldb_cxx resolves to MSYS2's import library. Force
+          # both static archives so the released executables do not depend on
+          # libdb_cxx-6.2.dll or libdb-6.2.dll at runtime.
+          BDB_CFLAGS="-I/mingw64/include" \
+          BDB_LIBS="/mingw64/lib/libdb_cxx-6.2.a /mingw64/lib/libdb-6.2.a" \
           ./configure \
             --disable-bench \
             --disable-tests \
@@ -170,7 +175,7 @@ jobs:
             --with-incompatible-bdb \
             --disable-maintainer-mode \
             --disable-dependency-tracking \
-            BDB_LIBS="/mingw64/lib/libdb_cxx-6.2.a" \
+            BDB_LIBS="/mingw64/lib/libdb_cxx-6.2.a /mingw64/lib/libdb-6.2.a" \
             LIBS="-L/mingw64/qt5-static/lib -L/mingw64/lib -lqtlibpng -lqtharfbuzz -lqtpcre2 -lz -lzstd -lfreetype -lbz2 -lpng16 -lgraphite2 -lbrotlidec -lbrotlicommon -lpcre2-8 -lusp10 -lrpcrt4 -lgdi32 -lole32 -loleaut32 -luuid -luser32 -lws2_32 -ladvapi32 -lkernel32" \
             LDFLAGS="-static -static-libgcc -static-libstdc++ -L/mingw64/qt5-static/lib -L/mingw64/qt5-static/share/qt5/plugins/platforms -L/mingw64/qt5-static/share/qt5/plugins/styles" \
             || (cat config.log; false)
@@ -321,7 +326,7 @@ jobs:
           Copy-Item "doc/README_windows.txt" (Join-Path $stage "README.txt")
           Copy-Item "COPYING" (Join-Path $stage "COPYING")
           Copy-Item "doc/masternode-setup-smt-windows-qt.md" (Join-Path $docs "Masternode-Setup.md")
-          Copy-Item "doc/release-notes/korsh/release-notes-0.0.6.md" (Join-Path $docs "Release-Notes.md")
+          Copy-Item "doc/release-notes/korsh/release-notes-$($env:KORSH_VERSION).md" (Join-Path $docs "Release-Notes.md")
 
           $zip = Join-Path $env:GITHUB_WORKSPACE "korsh-$env:KORSH_VERSION-win64.zip"
           Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip -CompressionLevel Optimal -Force

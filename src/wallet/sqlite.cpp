@@ -534,10 +534,11 @@ bool SQLiteBatch::ReadAtCursor(CDataStream& key, CDataStream& value, bool& compl
     return true;
 }
 
-void SQLiteBatch::CloseCursor()
+bool SQLiteBatch::CloseCursor()
 {
-    sqlite3_reset(m_cursor_stmt);
+    const int ret = sqlite3_reset(m_cursor_stmt);
     m_cursor_init = false;
+    return ret == SQLITE_OK;
 }
 
 bool SQLiteBatch::TxnBegin()

@@ -28,7 +28,7 @@ const std::string CLIENT_NAME("Korsh Core");
 #endif
 
 //! git will put "#define ARCHIVE_GIT_DESCRIPTION ..." on the next line inside archives. 
-#define ARCHIVE_GIT_DESCRIPTION "v0.0.6"
+#define ARCHIVE_GIT_DESCRIPTION "v0.0.6.1"
 
 #if CLIENT_VERSION_IS_RELEASE
     #define BUILD_DESC "v" PACKAGE_VERSION
@@ -66,7 +66,16 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
 {
     std::ostringstream ss;
     ss << "/";
+#if CLIENT_VERSION_REVISION > 0
+    if (nClientVersion == CLIENT_VERSION) {
+        const std::string full_version = FormatFullVersion();
+        ss << name << ":" << (full_version.size() > 0 && full_version[0] == 'v' ? full_version.substr(1) : FormatVersion(nClientVersion));
+    } else {
+        ss << name << ":" << FormatVersion(nClientVersion);
+    }
+#else
     ss << name << ":" << FormatVersion(nClientVersion);
+#endif
     if (!comments.empty())
     {
         std::vector<std::string>::const_iterator it(comments.begin());

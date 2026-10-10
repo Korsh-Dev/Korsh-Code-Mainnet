@@ -85,7 +85,10 @@ bool DumpWallet(const ArgsManager& args, WalletDatabase& db, bilingual_str& erro
         }
     }
 
-    batch->CloseCursor();
+    if (!batch->CloseCursor()) {
+        error = _("Error closing database cursor");
+        ret = false;
+    }
     batch.reset();
 
     if (ret) {

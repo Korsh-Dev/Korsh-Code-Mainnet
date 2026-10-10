@@ -102,13 +102,21 @@ static GlobalMutex cs_dir_locks;
  */
 static std::map<std::string, std::unique_ptr<fsbridge::FileLock>> dir_locks GUARDED_BY(cs_dir_locks);
 
-bool LockDirectory(const fs::path& directory, const fs::path& lockfile_name, bool probe_only)
+bool LockDirectory(const fs::path& directory, const fs::path& lockfile_name, bool probe_only, std::string* lock_key_out)
 {
+    if (lock_key_out) lock_key_out->clear();
     LOCK(cs_dir_locks);
-    fs::path pathLockFile = directory / lockfile_name;
+    std::error_code canonical_error;
+    const fs::path canonical_directory = fs::weakly_canonical(directory, canonical_error);
+    if (canonical_error) {
+        return error("Error while resolving lock directory %s: %s", fs::PathToString(directory), canonical_error.message());
+    }
+    const fs::path pathLockFile = canonical_directory / lockfile_name;
+    const std::string lock_key = fs::PathToString(pathLockFile);
 
     // If a lock for this directory already exists in the map, don't try to re-lock it
-    if (dir_locks.count(fs::PathToString(pathLockFile))) {
+    if (dir_locks.count(lock_key)) {
+        if (lock_key_out) *lock_key_out = lock_key;
         return true;
     }
 
@@ -121,7 +129,8 @@ bool LockDirectory(const fs::path& directory, const fs::path& lockfile_name, boo
     }
     if (!probe_only) {
         // Lock successful and we're not just probing, put it into the map
-        dir_locks.emplace(fs::PathToString(pathLockFile), std::move(lock));
+        dir_locks.emplace(lock_key, std::move(lock));
+        if (lock_key_out) *lock_key_out = lock_key;
     }
     return true;
 }
@@ -129,7 +138,19 @@ bool LockDirectory(const fs::path& directory, const fs::path& lockfile_name, boo
 void UnlockDirectory(const fs::path& directory, const fs::path& lockfile_name)
 {
     LOCK(cs_dir_locks);
-    dir_locks.erase(fs::PathToString(directory / lockfile_name));
+    std::error_code canonical_error;
+    const fs::path canonical_directory = fs::weakly_canonical(directory, canonical_error);
+    if (canonical_error) {
+        LogPrintf("UnlockDirectory: unable to resolve lock directory %s: %s\n", fs::PathToString(directory), canonical_error.message());
+        return;
+    }
+    dir_locks.erase(fs::PathToString(canonical_directory / lockfile_name));
+}
+
+void UnlockDirectoryByKey(const std::string& lock_key)
+{
+    LOCK(cs_dir_locks);
+    dir_locks.erase(lock_key);
 }
 
 void ReleaseDirectoryLocks()

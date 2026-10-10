@@ -38,8 +38,8 @@ Mainnet chain parameters contain fixed peer addresses `195.26.244.209:9777` and
 discovery is unavailable, start with `-addnode=<reachable-peer>:9777`. Keep RPC
 bound to localhost unless remote access is explicitly secured.
 
-The v0.0.6 Linux archive includes a `README.txt` with the Ubuntu 22.04 runtime
-package list and glibc baseline. Other distributions need equivalent shared
+The v0.0.6 and v0.0.6.1 Linux archives include a `README.txt` with the Ubuntu
+22.04 runtime package list and glibc baseline. Other distributions need equivalent shared
 libraries; use `ldd` on the packaged executables to check the local runtime.
 
 ## 2. Mine the first blocks

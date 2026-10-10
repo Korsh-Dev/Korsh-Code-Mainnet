@@ -218,7 +218,7 @@ bool WalletBatch::EraseWatchOnly(const CScript &dest)
 
 bool WalletBatch::WriteBestBlock(const CBlockLocator& locator)
 {
-    WriteIC(DBKeys::BESTBLOCK, CBlockLocator()); // Write empty block locator so versions that require a merkle branch automatically rescan
+    if (!WriteIC(DBKeys::BESTBLOCK, CBlockLocator())) return false; // Write empty block locator so versions that require a merkle branch automatically rescan
     return WriteIC(DBKeys::BESTBLOCK_NOMERKLE, locator);
 }
 
@@ -970,7 +970,10 @@ DBErrors WalletBatch::LoadWallet(CWallet* pwallet)
     } catch (...) {
         result = DBErrors::CORRUPT;
     }
-    m_batch->CloseCursor();
+    if (!m_batch->CloseCursor()) {
+        pwallet->WalletLogPrintf("Error closing wallet database cursor\n");
+        return result == DBErrors::CORRUPT || result == DBErrors::TOO_NEW ? result : DBErrors::LOAD_FAIL;
+    }
 
     // Validate HD chain encryption consistency now that all data is loaded
     if (auto spk_man = pwallet->GetLegacyScriptPubKeyMan()) {
@@ -1131,7 +1134,10 @@ DBErrors WalletBatch::FindWalletTxHashes(std::vector<uint256>& tx_hashes)
     } catch (...) {
         result = DBErrors::CORRUPT;
     }
-    m_batch->CloseCursor();
+    if (!m_batch->CloseCursor()) {
+        LogPrintf("Error closing wallet database cursor while scanning transaction hashes\n");
+        return result == DBErrors::CORRUPT ? result : DBErrors::LOAD_FAIL;
+    }
 
     return result;
 }

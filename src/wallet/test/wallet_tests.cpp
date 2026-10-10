@@ -4,10 +4,14 @@
 
 #include <wallet/wallet.h>
 
+#include <chrono>
+#include <fstream>
 #include <future>
 #include <iostream>
 #include <memory>
 #include <stdint.h>
+#include <stdexcept>
+#include <thread>
 #include <vector>
 
 #include <coinjoin/client.h>
@@ -23,6 +27,7 @@
 #include <util/translation.h>
 #include <policy/settings.h>
 #include <validation.h>
+#include <wallet/bdb.h>
 #include <wallet/coincontrol.h>
 #include <wallet/context.h>
 #include <wallet/receive.h>
@@ -50,6 +55,90 @@ extern RPCHelpMan addmultisigaddress();
 static_assert(DEFAULT_TRANSACTION_MINFEE >= DEFAULT_MIN_RELAY_TX_FEE, "wallet minimum fee is smaller than default relay fee");
 
 BOOST_FIXTURE_TEST_SUITE(wallet_tests, WalletTestingSetup)
+
+class FailedWriteBatch final : public DummyBatch
+{
+private:
+    bool WriteKey(CDataStream&&, CDataStream&&, bool = true) override
+    {
+        throw std::runtime_error("injected wallet database write failure");
+    }
+};
+
+class FailedWriteDatabase final : public DummyDatabase
+{
+public:
+    std::unique_ptr<DatabaseBatch> MakeBatch(bool = true) override
+    {
+        return std::make_unique<FailedWriteBatch>();
+    }
+};
+
+class FailedReturnWriteBatch final : public DummyBatch
+{
+private:
+    bool WriteKey(CDataStream&&, CDataStream&&, bool = true) override
+    {
+        return false;
+    }
+};
+
+class FailedReturnWriteDatabase final : public DummyDatabase
+{
+private:
+    std::shared_ptr<int> m_flush_calls;
+
+public:
+    explicit FailedReturnWriteDatabase(std::shared_ptr<int> flush_calls) : m_flush_calls(std::move(flush_calls)) {}
+
+    std::unique_ptr<DatabaseBatch> MakeBatch(bool = true) override
+    {
+        return std::make_unique<FailedReturnWriteBatch>();
+    }
+
+    void Flush() override { ++*m_flush_calls; }
+};
+
+class FailedCursorCloseBatch final : public DummyBatch
+{
+private:
+    std::shared_ptr<int> m_close_calls;
+
+public:
+    explicit FailedCursorCloseBatch(std::shared_ptr<int> close_calls) : m_close_calls(std::move(close_calls)) {}
+
+    bool ReadAtCursor(CDataStream&, CDataStream&, bool& complete) override
+    {
+        complete = true;
+        return true;
+    }
+
+    bool CloseCursor() override
+    {
+        ++*m_close_calls;
+        return false;
+    }
+};
+
+class FailedCursorCloseDatabase final : public DummyDatabase
+{
+private:
+    std::shared_ptr<int> m_close_calls;
+
+public:
+    explicit FailedCursorCloseDatabase(std::shared_ptr<int> close_calls) : m_close_calls(std::move(close_calls)) {}
+
+    std::unique_ptr<DatabaseBatch> MakeBatch(bool = true) override
+    {
+        return std::make_unique<FailedCursorCloseBatch>(m_close_calls);
+    }
+};
+
+class BackupSupportedDummyDatabase final : public DummyDatabase
+{
+public:
+    bool SupportsAutoBackup() override { return true; }
+};
 
 static std::shared_ptr<CWallet> TestLoadWallet(WalletContext& context)
 {
@@ -100,6 +189,112 @@ static void AddKey(CWallet& wallet, const CKey& key)
     assert(desc);
     WalletDescriptor w_desc(std::move(desc), 0, 0, 1, 1);
     if (!wallet.AddWalletDescriptor(w_desc, provider, "", false)) assert(false);
+}
+
+BOOST_FIXTURE_TEST_CASE(wallet_close_database_write_failure_is_nonfatal, TestChain100Setup)
+{
+    CWallet wallet(m_node.chain.get(), m_node.coinjoin_loader.get(), "", m_args, std::make_unique<FailedWriteDatabase>());
+    const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
+    BOOST_REQUIRE(tip);
+    {
+        LOCK(wallet.cs_wallet);
+        wallet.SetLastBlockProcessed(tip->nHeight, tip->GetBlockHash());
+    }
+    BOOST_CHECK_NO_THROW(wallet.Close());
+}
+
+BOOST_FIXTURE_TEST_CASE(wallet_close_false_best_block_write_stops_future_flushes, TestChain100Setup)
+{
+    auto flush_calls = std::make_shared<int>(0);
+    CWallet wallet(m_node.chain.get(), m_node.coinjoin_loader.get(), "", m_args,
+                   std::make_unique<FailedReturnWriteDatabase>(flush_calls));
+    const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
+    BOOST_REQUIRE(tip);
+    {
+        LOCK(wallet.cs_wallet);
+        wallet.SetLastBlockProcessed(tip->nHeight, tip->GetBlockHash());
+    }
+
+    wallet.Close();
+    wallet.Flush();
+
+    BOOST_CHECK_EQUAL(*flush_calls, 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(wallet_chain_state_best_block_write_failure_stops_future_flushes, TestChain100Setup)
+{
+    auto flush_calls = std::make_shared<int>(0);
+    CWallet wallet(m_node.chain.get(), m_node.coinjoin_loader.get(), "", m_args,
+                   std::make_unique<FailedReturnWriteDatabase>(flush_calls));
+
+    wallet.chainStateFlushed(CBlockLocator{});
+    wallet.Flush();
+
+    BOOST_CHECK_EQUAL(*flush_calls, 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(wallet_load_fails_if_database_cursor_cannot_close, TestChain100Setup)
+{
+    auto close_calls = std::make_shared<int>(0);
+    CWallet wallet(m_node.chain.get(), m_node.coinjoin_loader.get(), "", m_args,
+                   std::make_unique<FailedCursorCloseDatabase>(close_calls));
+    WalletBatch batch{wallet.GetDatabase()};
+
+    BOOST_CHECK(batch.LoadWallet(&wallet) == DBErrors::LOAD_FAIL);
+    BOOST_CHECK_EQUAL(*close_calls, 1);
+}
+
+BOOST_FIXTURE_TEST_CASE(wallet_auto_backup_reports_environment_teardown, TestChain100Setup)
+{
+    const fs::path wallet_dir = m_args.GetDataDirNet() / "auto-backup-environment-teardown";
+    const fs::path wallet_file = wallet_dir / "wallet.dat";
+    fs::create_directories(wallet_dir);
+    std::string synthetic_bdb_file(4096, '\0');
+    synthetic_bdb_file.replace(12, 4, "\x62\x31\x05\x00", 4);
+    {
+        std::ofstream stream{wallet_file, std::ios::binary};
+        stream.write(synthetic_bdb_file.data(), synthetic_bdb_file.size());
+        BOOST_REQUIRE(stream.good());
+    }
+    BOOST_REQUIRE(IsBDBFile(wallet_file));
+
+    auto environment = GetBerkeleyEnv(wallet_dir, false);
+    std::weak_ptr<BerkeleyEnvironment> environment_weak{environment};
+    std::promise<void> dropping_last_reference;
+    auto dropping_last_reference_future = dropping_last_reference.get_future();
+    std::jthread destroyer;
+    auto wallet = std::make_unique<CWallet>(m_node.chain.get(), m_node.coinjoin_loader.get(), "", m_args,
+                                            std::make_unique<BackupSupportedDummyDatabase>());
+    CWallet::InitAutoBackup();
+    const int backups_before_teardown = ::nWalletBackups;
+    BOOST_REQUIRE_GT(backups_before_teardown, 0);
+    bilingual_str error;
+    std::vector<bilingual_str> warnings;
+    bool backup_result{true};
+    bool observed_expiration{false};
+
+    {
+        LOCK(cs_db);
+        destroyer = std::jthread([environment = std::move(environment), &dropping_last_reference]() mutable {
+            dropping_last_reference.set_value();
+            environment.reset();
+        });
+        dropping_last_reference_future.wait();
+
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds{5};
+        while (!environment_weak.expired() && std::chrono::steady_clock::now() < deadline) {
+            std::this_thread::yield();
+        }
+        observed_expiration = environment_weak.expired();
+        if (observed_expiration) backup_result = wallet->AutoBackupWallet(wallet_file, error, warnings);
+    }
+
+    destroyer.join();
+    BOOST_CHECK(observed_expiration);
+    BOOST_CHECK(!backup_result);
+    BOOST_CHECK(error.original.find("still shutting down") != std::string::npos);
+    BOOST_CHECK_EQUAL(::nWalletBackups, backups_before_teardown);
+    CWallet::InitAutoBackup();
 }
 
 BOOST_FIXTURE_TEST_CASE(scan_for_wallet_transactions, TestChain100Setup)
@@ -1536,7 +1731,7 @@ public:
 
     bool StartCursor() override { return true; }
     bool ReadAtCursor(CDataStream& ssKey, CDataStream& ssValue, bool& complete) override { return false; }
-    void CloseCursor() override {}
+    bool CloseCursor() override { return true; }
     bool TxnBegin() override { return false; }
     bool TxnCommit() override { return false; }
     bool TxnAbort() override { return false; }
